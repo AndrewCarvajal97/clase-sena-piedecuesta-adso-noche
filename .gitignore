@@ -1,0 +1,11 @@
+# Secretos: NUNCA subir claves de API a GitHub
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Modelos entrenados
+*.pkl

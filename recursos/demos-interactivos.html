@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Laboratorio interactivo — Curso IA SENA</title>
+  <style>
+    :root{
+      --verde:#39a900; --verde-osc:#2b7d00; --azul:#00304d; --tinta:#1b2733;
+      --gris:#5b6b7b; --gris-cl:#eef2f5; --blanco:#fff;
+      --sombra:0 8px 30px rgba(0,48,77,.12); --fuente:"Segoe UI",Roboto,Arial,sans-serif;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--fuente);background:#f4f7fa;color:var(--tinta);line-height:1.5}
+    header{
+      background:linear-gradient(135deg,var(--azul),#024b6e 60%,var(--verde-osc));
+      color:#fff;padding:38px 24px 30px;text-align:center;
+    }
+    header .marca{color:#bfe6ff;font-weight:800;letter-spacing:2px;font-size:13px}
+    header h1{font-size:clamp(26px,4vw,40px);margin:6px 0}
+    header p{color:#d7f3c8;max-width:60ch;margin:0 auto;font-size:clamp(14px,2vw,18px)}
+    .wrap{max-width:1100px;margin:0 auto;padding:24px 18px 60px}
+    .filtros{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:26px 0 10px}
+    .filtro{
+      border:2px solid var(--azul);background:#fff;color:var(--azul);cursor:pointer;
+      padding:7px 16px;border-radius:999px;font-weight:700;font-size:14px;transition:.15s;
+    }
+    .filtro:hover{background:var(--gris-cl)}
+    .filtro.activo{background:var(--verde);border-color:var(--verde);color:#fff}
+    .grupo-titulo{
+      margin:34px 0 6px;color:var(--azul);font-size:22px;
+      border-bottom:3px solid var(--verde);padding-bottom:5px;
+    }
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;margin-top:16px}
+    .card{
+      background:#fff;border-radius:14px;box-shadow:var(--sombra);padding:18px 18px 16px;
+      display:flex;flex-direction:column;border-top:5px solid var(--verde);transition:.15s;
+    }
+    .card:hover{transform:translateY(-4px);box-shadow:0 14px 40px rgba(0,48,77,.18)}
+    .card .ic{font-size:30px;margin-bottom:6px}
+    .card h3{color:var(--azul);font-size:18px;margin-bottom:4px}
+    .card .tema{display:inline-block;background:var(--gris-cl);color:var(--gris);
+      font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+      padding:2px 9px;border-radius:999px;margin-bottom:8px;width:fit-content}
+    .card p{font-size:14px;color:var(--tinta);flex:1;margin-bottom:12px}
+    .card a{
+      text-decoration:none;background:var(--verde);color:#fff;text-align:center;
+      padding:9px 12px;border-radius:8px;font-weight:700;font-size:14px;transition:.15s;
+    }
+    .card a:hover{background:var(--verde-osc)}
+    .clase-badges{margin-top:4px}
+    .cb{display:inline-block;font-size:11px;font-weight:800;color:#fff;background:var(--azul);
+      border-radius:6px;padding:1px 7px;margin-right:4px}
+    .nota{background:#fff8e2;border-left:5px solid #ffcf3f;border-radius:8px;
+      padding:12px 16px;margin:22px 0;font-size:14px}
+    footer{text-align:center;color:var(--gris);font-size:13px;padding:20px}
+    .hidden{display:none!important}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="marca">SENA · PIEDECUESTA — CURSO DE INTELIGENCIA ARTIFICIAL</div>
+    <h1>🔬 Laboratorio interactivo</h1>
+    <p>Demos en vivo para <strong>ver</strong> cómo funciona la IA: cómo un LLM predice el siguiente token,
+    cómo aprende una red neuronal, cómo se ven los embeddings, y más. ¡Ábrelas y experimenta con el grupo!</p>
+  </header>
+
+  <div class="wrap">
+
+    <div class="filtros" id="filtros">
+      <button class="filtro activo" data-f="todos">Todos</button>
+      <button class="filtro" data-f="c1">Clase 1 · Fundamentos</button>
+      <button class="filtro" data-f="c2">Clase 2 · LLMs</button>
+      <button class="filtro" data-f="c3">Clase 3 · Datos</button>
+      <button class="filtro" data-f="c4">Clase 4 · Agentes</button>
+    </div>
+
+    <div class="nota">
+      <strong>💡 Cómo usarlas en clase:</strong> proyecta la demo, deja que un aprendiz la maneje,
+      y comenten juntos lo que ven. Todas funcionan en el navegador, son gratuitas y la mayoría
+      no requiere cuenta.
+    </div>
+
+    <!-- =================== CÓMO RESPONDE UN LLM =================== -->
+    <h2 class="grupo-titulo">🧠 Cómo funciona un LLM (por dentro)</h2>
+    <div class="grid">
+
+      <div class="card" data-clase="c2">
+        <div class="ic">🎲</div>
+        <span class="tema">Predicción del siguiente token</span>
+        <h3>Transformer Explainer</h3>
+        <p>Corre un GPT-2 real en tu navegador y muestra <strong>cada palabra candidata con su
+        porcentaje de probabilidad (certeza)</strong>. Mueve el control de <strong>temperatura</strong> y
+        observa cómo cambia la respuesta. La mejor demo para ver que un LLM responde por
+        <strong>probabilidad</strong>.</p>
+        <div class="clase-badges"><span class="cb">Clase 2</span></div>
+        <a href="https://poloclub.github.io/transformer-explainer/" target="_blank" rel="noopener">Abrir demo ↗</a>
+      </div>
+
+      <div class="card" data-clase="c2">
+        <div class="ic">🧊</div>
+        <span class="tema">Transformer en 3D</span>
+        <h3>LLM Visualization (3D)</h3>
+        <p>Recorre en <strong>3D</strong> un modelo tipo GPT: mira cómo fluyen los datos por la atención y las
+        capas, multiplicación a multiplicación. Ideal para "ver por dentro" un transformer.</p>
+        <div class="clase-badges"><span class="cb">Clase 2</span></div>
+        <a href="https://bbycroft.net/llm" target="_blank" rel="noopener">Abrir demo ↗</a>
+      </div>
+
+      <div class="card" data-clase="c2">
+        <div class="ic">✂️</div>
+        <span class="tema">Tokenización</span>
+        <h3>OpenAI Tokenizer</h3>
+        <p>Escribe una frase y mira cómo se parte en <strong>tokens</strong> y cuántos ocupa. Prueba palabras
+        largas en español para ver que un token no es una palabra.</p>
+        <div class="clase-badges"><span class="cb">Clase 2</span></div>
+        <a href="https://platform.openai.com/tokenizer" target="_blank" rel="noopener">Abrir demo ↗</a>
+      </div>
+
+      <div class="card" data-clase="c2">
+        <div class="ic">📖</div>
+        <span class="tema">Explicación visual</span>
+        <h3>FT: cómo funciona la IA generativa</h3>
+        <p>Reportaje visual e interactivo del Financial Times que explica paso a paso cómo un LLM y el
+        transformer generan texto. Excelente para introducir el tema.</p>
+        <div class="clase-badges"><span class="cb">Clase 2</span></div>
+        <a href="https://ig.ft.com/generative-ai/" target="_blank" rel="noopener">Abrir demo ↗</a>
+      </div>
+
+      <div class="card" data-clase="c2">
+        <div class="ic">🎚️</div>
+        <span class="tema">Temperatura y probabilidad (sencilla)</span>
+        <h3>LLM Sampling Visualizer</h3>
+        <p>Versión <strong>más sencilla</strong>: muestra las palabras candidatas como <strong>barras con su
+        porcentaje</strong> y ajustas <strong>temperatura, top-p y top-k</strong> para ver cómo cambia la elección.</p>
+        <div class="clase-badges"><span class="cb">Clase 2</span></div>
+        <a href="https://louis-7.github.io/llm-sampling-visualizer/" target="_blank" rel="noopener">Abrir demo ↗</a>
+      </div>
+
+      <div class="card" data-clase="c2">
+        <div class="ic">⌨️</div>
+        <span class="tema">Autocompletar con GPT-2</span>
+        <h3>Write With Transformer</h3>
+        <p>Escribe y pulsa <strong>Tab</strong>: GPT-2 sugiere las siguientes palabras con su probabilidad. La
+        forma más <strong>simple</strong> de sentir cómo un modelo "predice lo que sigue".</p>
+        <div class="clase-badges"><span class="cb">Clase 2</span></div>
+        <a href="https://banana-projects-transformer-autocomplete.hf.space/" target="_blank" rel="noopener">Abrir demo ↗</a>
+      </div>
+
+      <div class="card" data-clase="c2">
+        <div class="ic">📉</div>
+        <span class="tema">Sampling paso a paso</span>
+        <h3>Learn AI Visually</h3>
+        <p>Simulador de generación: mueves la <strong>temperatura</strong> y ves cómo las <strong>barras de
+        probabilidad</strong> se aplanan o se agudizan token por token.</p>
+        <div class="clase-badges"><span class="cb">Clase 2</span></div>
+        <a href="https://learnaivisually.com/tracks/llm-internals/generation" target="_blank" rel="noopener">Abrir demo ↗</a>
+      </div>
+
+    </div>
+
+    <!-- =================== EMBEDDINGS =================== -->
+    <h2 class="grupo-titulo">📍 Embeddings y significado (vectorización)</h2>
+    <div class="grid">
+
+      <div class="card" data-clase="c2">
+        <div class="ic">🌌</div>
+        <span class="tema">Embeddings en 3D</span>
+        <h3>Embedding Projector</h3>
+        <p>Visualiza miles de palabras como puntos en un <strong>mapa 3D del significado</strong>. Busca una
+        palabra y mira sus vecinas más cercanas. Hace tangible la idea de "significado = distancia".</p>
+        <div class="clase-badges"><span class="cb">Clase 2</span></div>
+        <a href="https://projector.tensorflow.org/" target="_blank" rel="noopener">Abrir demo ↗</a>
+      </div>
+
+      <div class="card" data-clase="c2">
+        <div class="ic">🕹️</div>
+        <span class="tema">Juego de similitud semántica</span>
+        <h3>Semantris (Google)</h3>
+        <p>Juego de asociación de palabras donde la IA usa <strong>embeddings</strong> para entender qué tan
+        relacionadas están tus pistas. Divertido y perfecto para jugar en grupo.</p>
+        <div class="clase-badges"><span class="cb">Clase 2</span></div>
+        <a href="https://research.google.com/semantris/" target="_blank" rel="noopener">Abrir demo ↗</a>
+      </div>
+
+    </div>
+
+    <!-- =================== REDES NEURONALES / ML =================== -->
+    <h2 class="grupo-titulo">🕸️ Redes neuronales y aprendizaje automático</h2>
+    <div class="grid">
+
+      <div class="card" data-clase="c1">
+        <div class="ic">🎛️</div>
+        <span class="tema">Red neuronal en vivo</span>
+        <h3>TensorFlow Playground</h3>
+        <p>Entrena una <strong>red neuronal</strong> en el navegador. Agrega capas y neuronas y observa cómo
+        aprende a separar los datos época tras época, con el error bajando en tiempo real.</p>
+        <div class="clase-badges"><span class="cb">Clase 1</span></div>
+        <a href="https://playground.tensorflow.org/" target="_blank" rel="noopener">Abrir demo ↗</a>
+      </div>
+
+      <div class="card" data-clase="c1">
+        <div class="ic">🌳</div>
+        <span class="tema">Aprendizaje supervisado (visual)</span>
+        <h3>R2D3: Introducción visual al ML</h3>
+        <p>Historia visual e interactiva de cómo funciona un <strong>árbol de decisión</strong>, y cómo aparece
+        el <strong>sobreajuste</strong> y la división train/test. Bellísimo y muy claro.</p>
+        <div class="clase-badges"><span class="cb">Clase 1</span> <span class="cb">Clase 3</span></div>
+        <a href="https://r2d3.us/visual-intro-to-machine-learning-part-1/" target="_blank" rel="noopener">Abrir demo ↗</a>
+      </div>
+
+      <div class="card" data-clase="c1">
+        <div class="ic">🎯</div>
+        <span class="tema">Aprendizaje por refuerzo</span>
+        <h3>REINFORCEjs · Gridworld</h3>
+        <p>Un agente aprende a moverse por una cuadrícula buscando recompensas. Visualiza el
+        <strong>aprendizaje por refuerzo</strong>: estados, acciones y premios.</p>
+        <div class="clase-badges"><span class="cb">Clase 1</span></div>
+        <a href="https://cs.stanford.edu/people/karpathy/reinforcejs/gridworld_td.html" target="_blank" rel="noopener">Abrir demo ↗</a>
+      </div>
+
+      <div class="card" data-clase="c1">
+        <div class="ic">✏️</div>
+        <span class="tema">Clasificación en vivo</span>
+        <h3>Quick, Draw! (Google)</h3>
+        <p>Dibuja y una <strong>red neuronal</strong> adivina qué es, en tiempo real. Demuestra la clasificación
+        de imágenes de forma súper participativa.</p>
+        <div class="clase-badges"><span class="cb">Clase 1</span></div>
+        <a href="https://quickdraw.withgoogle.com/" target="_blank" rel="noopener">Abrir demo ↗</a>
+      </div>
+
+    </div>
+
+    <!-- =================== DATOS / ENTRENAR MODELOS =================== -->
+    <h2 class="grupo-titulo">📊 Crear y entrenar modelos con datos</h2>
+    <div class="grid">
+
+      <div class="card" data-clase="c3">
+        <div class="ic">📸</div>
+        <span class="tema">Entrenar sin código</span>
+        <h3>Teachable Machine (Google)</h3>
+        <p>Entrena un modelo con tu <strong>cámara o micrófono</strong> en minutos y sin programar. Perfecto
+        para vivir el ciclo: recolectar datos → entrenar → probar → evaluar.</p>
+        <div class="clase-badges"><span class="cb">Clase 3</span> <span class="cb">Clase 1</span></div>
+        <a href="https://teachablemachine.withgoogle.com/" target="_blank" rel="noopener">Abrir demo ↗</a>
+      </div>
+
+      <div class="card" data-clase="c3">
+        <div class="ic">⚖️</div>
+        <span class="tema">Overfitting y train/test</span>
+        <h3>R2D3 · Parte 2 (sesgo-varianza)</h3>
+        <p>Continuación visual sobre cómo ajustar un modelo: <strong>sobreajuste vs. subajuste</strong> y el
+        equilibrio sesgo-varianza. Ideal para la evaluación de modelos.</p>
+        <div class="clase-badges"><span class="cb">Clase 3</span></div>
+        <a href="https://r2d3.us/visual-intro-to-machine-learning-part-2/" target="_blank" rel="noopener">Abrir demo ↗</a>
+      </div>
+
+      <div class="card" data-clase="c3">
+        <div class="ic">🗃️</div>
+        <span class="tema">Conjuntos de datos reales</span>
+        <h3>Kaggle Datasets</h3>
+        <p>Miles de <strong>datasets gratuitos</strong> para practicar. Busca uno de tu interés (deportes, música,
+        salud) y úsalo con el código de la Clase 3.</p>
+        <div class="clase-badges"><span class="cb">Clase 3</span></div>
+        <a href="https://www.kaggle.com/datasets" target="_blank" rel="noopener">Abrir demo ↗</a>
+      </div>
+
+    </div>
+
+    <!-- =================== AGENTES / PLAYGROUNDS =================== -->
+    <h2 class="grupo-titulo">🤖 Probar modelos y agentes</h2>
+    <div class="grid">
+
+      <div class="card" data-clase="c4">
+        <div class="ic">✨</div>
+        <span class="tema">Playground de Gemini</span>
+        <h3>Google AI Studio</h3>
+        <p>Prueba prompts con Gemini, ajusta la <strong>temperatura</strong> y ve las respuestas al instante.
+        También es donde creas tu API key.</p>
+        <div class="clase-badges"><span class="cb">Clase 4</span> <span class="cb">Clase 0</span></div>
+        <a href="https://aistudio.google.com/" target="_blank" rel="noopener">Abrir demo ↗</a>
+      </div>
+
+      <div class="card" data-clase="c4">
+        <div class="ic">🔷</div>
+        <span class="tema">Playground de Cohere</span>
+        <h3>Cohere Dashboard</h3>
+        <p>Prueba el chat y los <strong>embeddings</strong> de Cohere desde el navegador, y obtén tu API key
+        gratuita para los agentes de la Clase 4.</p>
+        <div class="clase-badges"><span class="cb">Clase 4</span> <span class="cb">Clase 0</span></div>
+        <a href="https://dashboard.cohere.com/" target="_blank" rel="noopener">Abrir demo ↗</a>
+      </div>
+
+    </div>
+
+    <!-- =================== MATERIAL EN ESPAÑOL =================== -->
+    <h2 class="grupo-titulo">📚 Material de estudio en español</h2>
+    <div class="grid">
+
+      <div class="card" data-clase="c1">
+        <div class="ic">🎓</div>
+        <span class="tema">Curso gratuito · principiantes</span>
+        <h3>Elementos de la IA</h3>
+        <p>Curso en <strong>español</strong> de la Universidad de Helsinki para aprender IA desde cero, sin
+        programar. Explica machine learning y redes neuronales con ejercicios. Ideal como base del curso.</p>
+        <div class="clase-badges"><span class="cb">Todo el curso</span></div>
+        <a href="https://course.elementsofai.com/es/" target="_blank" rel="noopener">Abrir curso ↗</a>
+      </div>
+
+      <div class="card" data-clase="c1">
+        <div class="ic">▶️</div>
+        <span class="tema">Canal de YouTube · español</span>
+        <h3>DotCSV (Carlos Santana)</h3>
+        <p>El canal de IA en <strong>español</strong> más reconocido. Explica redes neuronales, cómo funcionan
+        los LLM (GPT, Gemini) y las últimas novedades con gran claridad. Perfecto para repasar en video.</p>
+        <div class="clase-badges"><span class="cb">Clases 1 y 2</span></div>
+        <a href="https://www.youtube.com/@DotCSV" target="_blank" rel="noopener">Abrir canal ↗</a>
+      </div>
+
+      <div class="card" data-clase="c3">
+        <div class="ic">📗</div>
+        <span class="tema">Curso técnico · español</span>
+        <h3>Google: Curso intensivo de ML</h3>
+        <p>Curso gratuito de Google sobre <strong>machine learning</strong> en español, con teoría, ejercicios
+        y visualizaciones. Excelente complemento para las Clases 1 y 3.</p>
+        <div class="clase-badges"><span class="cb">Clases 1 y 3</span></div>
+        <a href="https://developers.google.com/machine-learning/crash-course?hl=es" target="_blank" rel="noopener">Abrir curso ↗</a>
+      </div>
+
+    </div>
+
+    <div class="nota" style="margin-top:34px">
+      <strong>Nota:</strong> son sitios externos que pueden cambiar de dirección o requerir cuenta con el
+      tiempo. Si alguno no abre, búscalo por su nombre en internet. Elige siempre la opción de
+      <strong>rechazar cookies no esenciales</strong> cuando el sitio lo pregunte.
+    </div>
+
+  </div>
+
+  <footer>Curso de Inteligencia Artificial · SENA Piedecuesta · Laboratorio interactivo</footer>
+
+  <script>
+    const filtros = document.querySelectorAll(".filtro");
+    const cards = document.querySelectorAll(".card");
+    const grupos = document.querySelectorAll(".grupo-titulo");
+    filtros.forEach(b => b.addEventListener("click", () => {
+      filtros.forEach(x => x.classList.remove("activo"));
+      b.classList.add("activo");
+      const f = b.dataset.f;
+      cards.forEach(c => {
+        const match = f === "todos" || c.dataset.clase === f;
+        c.classList.toggle("hidden", !match);
+      });
+      // Oculta un título de grupo si todas sus tarjetas quedaron ocultas
+      grupos.forEach(g => {
+        let grid = g.nextElementSibling;
+        const visibles = grid.querySelectorAll(".card:not(.hidden)").length;
+        g.classList.toggle("hidden", visibles === 0);
+        grid.classList.toggle("hidden", visibles === 0);
+      });
+    }));
+  </script>
+</body>
+</html>

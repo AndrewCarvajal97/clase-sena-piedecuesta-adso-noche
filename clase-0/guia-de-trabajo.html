@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Guía de trabajo — Clase 0</title>
+  <link rel="stylesheet" href="../recursos/guia.css">
+</head>
+<body>
+
+  <!-- PORTADA -->
+  <div class="portada">
+    <div class="marca">SENA · PIEDECUESTA — CURSO DE INTELIGENCIA ARTIFICIAL</div>
+    <h1>Clase 0<br>Configuración, cuentas y OpenCode</h1>
+    <p class="sub">Guía de trabajo del aprendiz · Sesión de preparación</p>
+    <div class="banda"></div>
+    <div class="datos">
+      Sesión rápida de preparación (no es una clase con horario)<br>
+      Pablo Andrés Carvajal — Desarrollador Full Stack<br>
+      <a href="https://pablocarvajal.dev">pablocarvajal.dev</a><br>
+      Nombre del aprendiz: _______________________________
+    </div>
+  </div>
+
+  <!-- OBJETIVOS -->
+  <div class="objetivos">
+    <h3>🎯 ¿Qué sabré hacer al terminar esta guía?</h3>
+    <ul>
+      <li>Explicar qué es una API y una API key, y por qué la clave es secreta.</li>
+      <li>Crear cuentas y obtener claves en Google AI Studio (Gemini), Cohere y GitHub.</li>
+      <li>Instalar Python, VS Code y OpenCode.</li>
+      <li>Guardar mis claves de forma segura en un archivo <code>.env</code>.</li>
+      <li>Hacer mi primera petición a un modelo de IA desde Python.</li>
+    </ul>
+  </div>
+
+  <div class="caja ojo"><span class="et">Ten en cuenta</span>La Clase 0 <strong>no es una clase con horario</strong>: es una preparación rápida para dejar tu entorno listo. Puedes completarla en casa siguiendo esta guía paso a paso, para que en la Clase 1 empecemos directamente con el contenido.</div>
+
+  <p><em>Marca cada casilla a medida que avanzas.</em></p>
+
+  <h2>1. Conceptos base</h2>
+  <h3>¿Qué es una API?</h3>
+  <p>Piensa en un <strong>restaurante</strong>: el <strong>modelo de IA</strong> es la cocina,
+  tú eres el cliente y la <strong>API</strong> es el mesero que lleva tu pedido y te trae la
+  respuesta. No necesitas entrar a la cocina.</p>
+  <p>Una API es, entonces, la forma en que un programa le pide algo a otro. Nosotros le
+  pedimos respuestas a la IA <strong>sin tenerla instalada</strong> en el computador.</p>
+
+  <h3>¿Qué es una API key?</h3>
+  <p>Es una clave personal que <strong>identifica quién hace el pedido</strong>, para medir y
+  limitar el uso (como una tarjeta de cliente).</p>
+  <div class="caja alerta">
+    <span class="et">Regla de oro</span>
+    La API key es <strong>personal y secreta</strong>. Nunca se comparte, nunca se sube a
+    internet y nunca se pega en un chat público. Si se filtra, otra persona puede usar tu cuenta.
+  </div>
+
+  <h3>Tres palabras que vas a oír: SDK, librería y repositorio</h3>
+  <p>Durante el curso instalaremos "librerías", usaremos "SDKs" y trabajaremos con "repos".
+  Conviene tener clara la diferencia desde el principio:</p>
+  <ul>
+    <li><strong>Librería (library):</strong> un conjunto de código ya hecho para <strong>una tarea
+    concreta</strong>. La importas en tu programa y la usas. Ejemplos: <code>numpy</code> (matemáticas),
+    <code>requests</code> (conectarse a internet).</li>
+    <li><strong>SDK (Software Development Kit, "kit de desarrollo"):</strong> un <strong>kit completo</strong>
+    para trabajar con una plataforma o servicio. Suele incluir <strong>una o varias librerías</strong> más
+    herramientas, ejemplos y documentación, y normalmente es <strong>oficial</strong> del proveedor.
+    Ejemplos: el SDK de Gemini (<code>google-generativeai</code>) o el de Cohere (<code>cohere</code>).</li>
+    <li><strong>Repositorio (repo):</strong> el <strong>lugar donde se guarda y se versiona el código</strong>
+    (con Git, por ejemplo en GitHub). No es un tipo de código, sino su "almacén" con historial de
+    cambios. Dentro de un repo puede haber una librería, un SDK o una aplicación entera.</li>
+  </ul>
+  <table>
+    <tr><th>Concepto</th><th>Qué es</th><th>Analogía (taller)</th></tr>
+    <tr><td>Librería</td><td>Código para una tarea</td><td>Una herramienta (un destornillador)</td></tr>
+    <tr><td>SDK</td><td>Kit para una plataforma (incluye librerías)</td><td>Una caja de herramientas con manual</td></tr>
+    <tr><td>Repo</td><td>Dónde se guarda y versiona el código</td><td>El estante/bodega con su historial</td></tr>
+  </table>
+  <div class="caja idea"><span class="et">En resumen</span>Un <strong>SDK</strong> suele contener <strong>librerías</strong>; un <strong>repositorio</strong> es donde vive el código de cualquiera de los dos.</div>
+
+  <h2>2. Crear cuentas y obtener claves</h2>
+
+  <h3>2.1 Google AI Studio (Gemini) — gratis</h3>
+  <ol>
+    <li>Entra a <code>aistudio.google.com</code> e inicia sesión con tu cuenta de Google.</li>
+    <li>Acepta los términos.</li>
+    <li>Haz clic en <strong>"Get API key" → "Create API key"</strong>.</li>
+    <li>Copia la clave y guárdala temporalmente en un bloc de notas.</li>
+  </ol>
+
+  <h3>2.2 Cohere — gratis</h3>
+  <ol>
+    <li>Entra a <code>dashboard.cohere.com</code> y regístrate.</li>
+    <li>Ve a la sección <strong>"API Keys"</strong>.</li>
+    <li>Copia la <strong>Trial key</strong> (gratuita, con límites de uso).</li>
+  </ol>
+
+  <h3>2.3 GitHub — gratis</h3>
+  <ol>
+    <li>Entra a <code>github.com</code> y haz clic en <strong>Sign up</strong>.</li>
+    <li>Crea tu usuario y verifica el correo.</li>
+  </ol>
+
+  <h3>2.4 Guardar las claves de forma segura</h3>
+  <p>Crea un archivo llamado <code>.env</code> con este contenido (reemplazando por tus claves):</p>
+  <pre><code>GEMINI_API_KEY=pega_aqui_tu_clave_de_gemini
+COHERE_API_KEY=pega_aqui_tu_clave_de_cohere</code></pre>
+  <div class="caja ojo"><span class="et">Recuerda</span>El <code>.env</code> guarda secretos y nunca se sube a GitHub.</div>
+
+  <h2>3. Instalar las herramientas</h2>
+  <h3>3.1 Python</h3>
+  <ul>
+    <li>Descárgalo desde <code>python.org/downloads</code> (versión 3.11 o superior).</li>
+    <li><strong>En Windows marca la casilla "Add Python to PATH".</strong></li>
+    <li>Verifica con: <code>python --version</code></li>
+  </ul>
+  <h3>3.2 VS Code</h3>
+  <ul>
+    <li>Descárgalo desde <code>code.visualstudio.com</code>.</li>
+    <li>Instala las extensiones <strong>Python</strong> y <strong>Jupyter</strong>.</li>
+  </ul>
+
+  <h2 class="nueva-pagina">4. OpenCode a fondo</h2>
+  <p><strong>OpenCode</strong> es un agente de IA de código abierto que trabaja en la
+  <strong>terminal</strong>: le escribes en lenguaje natural y él lee, crea y modifica archivos
+  por ti, ejecuta comandos y construye aplicaciones completas. Funciona con APIs gratuitas
+  (Gemini, Cohere, GitHub Models) y también con modelos de pago.</p>
+
+  <div class="caja idea"><span class="et">¿Por qué nos interesa en este curso?</span>
+  OpenCode es un <strong>agente de IA real</strong> (un modelo + herramientas + memoria + capacidad
+  de actuar). Usarlo desde ahora nos ayuda a entender, en la práctica, lo que construiremos
+  nosotros mismos en la Clase 4.</div>
+
+  <h3>4.1 Instalación y la TUI</h3>
+  <pre><code>npm install -g opencode-ai
+opencode --version</code></pre>
+  <p>Si no tienes Node.js, instálalo desde <code>nodejs.org</code> (versión LTS). Luego, dentro
+  de una carpeta de proyecto, ejecuta <code>opencode</code>, elige proveedor (Gemini/Cohere),
+  pega tu API key y elige un modelo gratuito.</p>
+  <p>La <strong>TUI</strong> (interfaz de texto) se maneja sin mouse. Dentro de ella escribes tu
+  petición en lenguaje natural y OpenCode actúa. Hay tres formas de "hablarle":
+  <strong><code>/</code></strong> para comandos, <strong><code>@</code></strong> para mencionar archivos y
+  <strong><code>!</code></strong> para ejecutar comandos del sistema (lo vemos abajo).</p>
+
+  <h4>Comandos con <code>/</code></h4>
+  <p>Escribe <code>/</code> y aparece la lista. Los más importantes:</p>
+  <table>
+    <tr><th>Comando</th><th>Para qué sirve</th></tr>
+    <tr><td><code>/help</code></td><td>Ver la ayuda y los comandos disponibles</td></tr>
+    <tr><td><code>/new</code> (o <code>/clear</code>)</td><td>Empezar una sesión nueva (limpia el contexto)</td></tr>
+    <tr><td><code>/sessions</code></td><td>Listar y cambiar entre sesiones</td></tr>
+    <tr><td><code>/undo</code> · <code>/redo</code></td><td>Deshacer (revierte cambios en archivos) y rehacer</td></tr>
+    <tr><td><code>/models</code></td><td>Elegir el modelo a usar</td></tr>
+    <tr><td><code>/compact</code></td><td>Resumir la sesión para gastar menos tokens</td></tr>
+    <tr><td><code>/init</code></td><td>Crear el archivo <code>AGENTS.md</code> (reglas del proyecto)</td></tr>
+    <tr><td><code>/editor</code></td><td>Redactar el mensaje en un editor externo</td></tr>
+    <tr><td><code>/export</code></td><td>Exportar la conversación a Markdown</td></tr>
+    <tr><td><code>/share</code> · <code>/unshare</code></td><td>Compartir / dejar de compartir la sesión</td></tr>
+    <tr><td><code>/exit</code> (o <code>/q</code>)</td><td>Salir de OpenCode</td></tr>
+  </table>
+
+  <h4>Atajos de teclado (keybinds)</h4>
+  <p>OpenCode usa una <strong>tecla líder</strong> (<em>leader</em>): <code>Ctrl+X</code>. Se pulsa
+  <code>Ctrl+X</code> y <strong>luego</strong> otra tecla (tienes unos 2 segundos). Por ejemplo,
+  "<code>Ctrl+X</code> <code>n</code>" significa: pulsa Ctrl+X, suéltalo y pulsa la N.</p>
+  <table>
+    <tr><th>Atajo</th><th>Acción</th></tr>
+    <tr><td><code>Tab</code> / <code>Shift+Tab</code></td><td>Cambiar de modo/agente (Build ⇄ Plan)</td></tr>
+    <tr><td><code>Enter</code></td><td>Enviar el mensaje</td></tr>
+    <tr><td><code>Shift+Enter</code></td><td>Salto de línea sin enviar</td></tr>
+    <tr><td><code>Esc</code></td><td>Interrumpir / detener a la IA</td></tr>
+    <tr><td><code>Ctrl+P</code></td><td>Abrir la paleta de comandos</td></tr>
+    <tr><td><code>Ctrl+X</code> <code>n</code></td><td>Nueva sesión</td></tr>
+    <tr><td><code>Ctrl+X</code> <code>l</code></td><td>Listar / cambiar de sesión</td></tr>
+    <tr><td><code>Ctrl+X</code> <code>m</code></td><td>Elegir modelo</td></tr>
+    <tr><td><code>Ctrl+X</code> <code>a</code></td><td>Listar modos/agentes</td></tr>
+    <tr><td><code>Ctrl+X</code> <code>t</code></td><td>Cambiar el tema</td></tr>
+    <tr><td><code>Ctrl+X</code> <code>e</code></td><td>Abrir editor externo</td></tr>
+    <tr><td><code>Ctrl+C</code></td><td>Salir de OpenCode</td></tr>
+  </table>
+
+  <h4>El <code>@</code> (archivos) y el <code>!</code> (terminal)</h4>
+  <p><strong><code>@</code> — mencionar archivos:</strong> escribe <code>@</code> y busca un archivo del
+  proyecto para <strong>dárselo como contexto</strong> a la IA, sin copiar y pegar. Puedes mencionar
+  varios en un mismo mensaje:</p>
+  <pre><code>Explícame qué hace @app.py y corrige el error de @utils/db.py</code></pre>
+  <p><strong><code>!</code> — ejecutar en la terminal:</strong> empieza el mensaje con <code>!</code> para
+  correr un comando del sistema; su salida se incorpora a la conversación como resultado:</p>
+  <pre><code>!python app.py
+!git status
+!pip install requests</code></pre>
+  <div class="caja idea"><span class="et">Regla rápida</span><code>/</code> = comando de OpenCode · <code>@</code> = "mira este archivo" · <code>!</code> = "ejecuta esto en la terminal".</div>
+
+  <h3>4.2 Modos Build y Plan</h3>
+  <ul>
+    <li><strong>Build</strong> (por defecto): tiene <strong>todas las herramientas activas</strong>; crea y modifica
+    archivos y ejecuta comandos. Es el modo normal de trabajo.</li>
+    <li><strong>Plan</strong>: modo restringido. Antes de <strong>editar archivos o ejecutar comandos</strong>
+    siempre <strong>te pregunta</strong>. Sirve para que la IA analice y proponga un plan sin cambiar nada.</li>
+  </ul>
+  <p><strong>Cómo cambiar de modo:</strong> pulsa <code>Tab</code> para alternar Build ⇄ Plan
+  (<code>Shift+Tab</code> para volver). Con <code>Ctrl+X</code> luego <code>a</code> abres la lista de
+  modos/agentes.</p>
+  <div class="caja"><span class="et">Buena práctica</span>Usa primero <strong>Plan</strong> para acordar el enfoque y revisar los pasos; luego cambia a <strong>Build</strong> para que lo ejecute.</div>
+
+  <h3>4.3 Modo Shell y el historial</h3>
+  <p>El <strong>modo Shell</strong> te deja ejecutar comandos de terminal (instalar dependencias,
+  correr el programa, usar git…) sin salir de OpenCode. Además, OpenCode <strong>recuerda el
+  historial</strong> de la sesión: por eso puede continuar tareas largas. Pero ese "recuerdo"
+  es <strong>contexto</strong> y el contexto <strong>gasta tokens</strong>.</p>
+
+  <h3>4.4 Ahorrar tokens y reducir el porcentaje usado</h3>
+  <ul>
+    <li>Abre una <strong>sesión nueva</strong> (<code>/new</code>) al cambiar de tema.</li>
+    <li>Sé <strong>específico y breve</strong> en tus peticiones.</li>
+    <li>Usa <strong>Plan</strong> para no generar código a ciegas.</li>
+    <li>Observa el <strong>porcentaje de contexto usado</strong> que muestra la TUI.</li>
+  </ul>
+
+  <h3>4.5 Flujo de un proyecto real</h3>
+  <p>OpenCode permite pasar de una idea a una <strong>app que funciona</strong>:</p>
+  <ul>
+    <li><strong><code>SPEC.md</code></strong>: describe <em>qué</em> quieres construir; OpenCode lo usa como guía (lo vemos en 4.6).</li>
+    <li><strong>Tareas agrupadas</strong>: divide el trabajo en pasos y los va completando.</li>
+    <li><strong>Timeline</strong>: revisar el avance y los cambios realizados.</li>
+    <li><strong>Revertir</strong> (<code>/undo</code>): volver a un punto anterior si algo sale mal.</li>
+  </ul>
+
+  <h3>4.6 El archivo <code>SPEC.md</code> (especificación)</h3>
+  <p>Un <code>SPEC.md</code> describe <strong>QUÉ</strong> quieres construir, con detalle, <strong>antes</strong> de
+  programar. No es una función oficial de OpenCode: es una <strong>buena práctica</strong> (desarrollo
+  guiado por especificación). Le entregas el archivo al asistente para que tenga claro el objetivo
+  y no se invente cosas.</p>
+  <h4>Cómo usarlo (flujo recomendado)</h4>
+  <ol>
+    <li>Escribe tu <code>SPEC.md</code> con el objetivo, las funcionalidades y los criterios de aceptación.</li>
+    <li>En <strong>modo Plan</strong>, dile: <code>Lee @SPEC.md y propón un plan para construirlo</code>.</li>
+    <li>Revisa el plan; si te gusta, cambia a <strong>modo Build</strong> y dile que lo ejecute paso a paso.</li>
+    <li>Verifica cada <strong>criterio de aceptación</strong> del SPEC.</li>
+  </ol>
+  <p>Un buen <code>SPEC.md</code> incluye: objetivo, usuarios, funcionalidades, qué queda fuera de
+  alcance, requisitos técnicos y criterios de aceptación.</p>
+  <div class="caja idea"><span class="et">Ejemplo listo para copiar</span>Tienes un <code>SPEC.md</code> de ejemplo completo en
+  <code>clase-0/ejemplos-opencode/SPEC.md</code>.</div>
+
+  <h3 class="nueva-pagina">4.7 Personalización</h3>
+  <ul>
+    <li><strong>Tema y notificaciones</strong>: cambiar colores de la TUI y recibir avisos al terminar tareas.</li>
+    <li><strong><code>AGENTS.md</code></strong>: archivo con reglas para el agente. OpenCode lo lee siempre; es como el "manual de la casa" (lo creamos en 4.8).</li>
+    <li><strong>Comandos propios</strong>: atajos para tareas repetidas, que pueden recibir <strong>argumentos</strong>.</li>
+    <li><strong>Agentes</strong> y <strong>Skills</strong>: sub-agentes especializados y "habilidades" empaquetadas que amplían lo que OpenCode sabe hacer.</li>
+  </ul>
+
+  <h3>4.8 Crear un archivo <code>AGENTS.md</code> (paso a paso)</h3>
+  <p>El <code>AGENTS.md</code> es un archivo de texto con <strong>instrucciones para el asistente</strong>.
+  OpenCode lo lee automáticamente en cada sesión, así no tienes que repetir las reglas.
+  Es el "manual de la casa" de tu proyecto.</p>
+
+  <h4>Dónde va (hay tres niveles)</h4>
+  <table>
+    <tr><th>Ubicación</th><th>Alcance</th></tr>
+    <tr><td><code>AGENTS.md</code> en la raíz del proyecto</td><td>Solo ese proyecto (lo más común)</td></tr>
+    <tr><td><code>~/.config/opencode/AGENTS.md</code></td><td>Global: todos tus proyectos</td></tr>
+    <tr><td><code>~/.claude/CLAUDE.md</code></td><td>Compatibilidad (si vienes de Claude Code)</td></tr>
+  </table>
+  <p>OpenCode busca en ese orden y usa el primero que encuentra.</p>
+
+  <h4>Dos formas de crearlo</h4>
+  <ol>
+    <li><strong>Automática (recomendada):</strong> dentro de OpenCode ejecuta <code>/init</code>. Revisa
+    tu proyecto, a veces hace un par de preguntas y crea (o actualiza) el <code>AGENTS.md</code>.</li>
+    <li><strong>Manual:</strong> crea el archivo <code>AGENTS.md</code> en la raíz y escríbelo tú mismo.</li>
+  </ol>
+
+  <h4>Qué escribir dentro</h4>
+  <ul>
+    <li>Descripción del proyecto y tecnologías que usa.</li>
+    <li>Estructura de carpetas.</li>
+    <li>Cómo ejecutar y probar (los comandos exactos).</li>
+    <li>Convenciones de código (idioma, estilo, nombres).</li>
+    <li>Qué debe evitar el asistente.</li>
+  </ul>
+  <div class="caja idea"><span class="et">Ejemplo listo para copiar</span>Tienes un <code>AGENTS.md</code> de ejemplo completo y comentado en
+  <code>clase-0/ejemplos-opencode/AGENTS.md</code>.</div>
+  <div class="caja ojo"><span class="et">Nota técnica</span>OpenCode <strong>no</strong> lee automáticamente otros archivos que menciones dentro del <code>AGENTS.md</code>. Si quieres incluir más archivos de reglas, indícalos en el campo <code>instructions</code> del archivo de configuración <code>opencode.json</code>.</div>
+
+  <h3 class="nueva-pagina">4.9 Sesiones, terminal y modelos</h3>
+  <ul>
+    <li><strong>Cambiar y compartir sesiones</strong>: mantener varias y generar enlaces con <code>/share</code>.</li>
+    <li><strong>Desde la terminal</strong>: lanzar tareas directas y hasta levantar un servidor.</li>
+    <li><strong>Modelos y pagos</strong>: funciona con proveedores gratuitos y de pago; puedes conectar tu propia suscripción y comparar modelos por calidad, velocidad y costo.</li>
+  </ul>
+  <div class="caja alerta"><span class="et">Cuidado al compartir</span>Al usar <code>/share</code> se publica el contenido de la sesión en internet. No compartas sesiones con claves o datos privados.</div>
+
+  <h3 class="nueva-pagina">4.10 Crear comandos, agentes y skills (con ejemplos)</h3>
+  <p>OpenCode se puede personalizar con tres tipos de archivos. Todos se pueden guardar por
+  proyecto (en la carpeta oculta <code>.opencode/</code>) o de forma global (en
+  <code>~/.config/opencode/</code>).</p>
+
+  <h4>a) Comando propio (a fondo)</h4>
+  <p>Un comando es un <strong>atajo para una tarea repetida</strong>. Es un archivo <code>.md</code> y el
+  <strong>nombre del archivo es el comando</strong> (por ejemplo, <code>componente.md</code> crea
+  <code>/componente</code>).</p>
+
+  <p><strong>Ejemplo básico</strong> (con argumentos):</p>
+  <pre><code># archivo: componente.md
+---
+description: Crea un componente de React
+---
+Crea un componente de React llamado $ARGUMENTS con TypeScript,
+tipado correcto y una estructura básica.</code></pre>
+  <p>Se usa escribiendo <code>/componente Boton</code>. <code>$ARGUMENTS</code> recibe todo lo que
+  escribas después del comando; también puedes usar <code>$1</code>, <code>$2</code>… por posición.</p>
+
+  <p><strong>Dónde guardarlo — local, global o remoto:</strong></p>
+  <table>
+    <tr><th>Tipo</th><th>Ubicación</th><th>Alcance</th></tr>
+    <tr><td>Local (del proyecto)</td><td><code>.opencode/commands/</code></td><td>Solo ese proyecto</td></tr>
+    <tr><td>Global (de tu usuario)</td><td><code>~/.config/opencode/commands/</code></td><td>Todos tus proyectos de esa máquina</td></tr>
+    <tr><td>En configuración</td><td>Campo <code>command</code> en <code>opencode.json</code></td><td>Según dónde esté el archivo</td></tr>
+  </table>
+  <p><strong>¿Y "remoto"?</strong> OpenCode no descarga comandos desde una URL. La forma de tener
+  comandos "remotos" (compartidos con el equipo) es <strong>subir la carpeta <code>.opencode/</code> a un
+  repositorio Git</strong> (por ejemplo GitHub): cuando otra persona <strong>clona</strong> el repositorio,
+  recibe automáticamente todos los comandos del proyecto. Así, "local" = tu máquina, y
+  "remoto/compartido" = lo que vive en el repositorio del equipo.</p>
+
+  <p><strong>Comandos avanzados</strong> — puedes incluir archivos con <code>@</code> y meter la salida de
+  la terminal con <code>!`...`</code>:</p>
+  <pre><code># archivo: revisar-tests.md   →   /revisar-tests
+---
+description: Ejecuta las pruebas y sugiere mejoras
+---
+Estos son los resultados de las pruebas:
+!`npm test`
+
+Revisa también el componente @src/components/Boton.tsx
+y, según los resultados, sugiere mejoras.</code></pre>
+  <p>Otros campos útiles del frontmatter: <code>agent</code> (qué agente lo ejecuta),
+  <code>model</code> (forzar un modelo) y <code>subtask</code> (ejecutarlo como subtarea).</p>
+
+  <h4>b) Agente propio</h4>
+  <p>Un asistente especializado. La forma fácil es el asistente interactivo:</p>
+  <pre><code>opencode agent create</code></pre>
+  <p>O a mano en <code>.opencode/agents/</code> (el nombre del archivo es el agente):</p>
+  <pre><code># archivo: .opencode/agents/documentador.md
+---
+description: Escribe y mantiene la documentación del proyecto
+mode: subagent
+permission:
+  bash: deny
+---
+Eres un redactor técnico. Escribe documentación clara,
+bien estructurada y con ejemplos de código.</code></pre>
+  <p>El campo <code>mode</code> puede ser <code>primary</code> (lo eliges con <code>Tab</code>, como Build/Plan)
+  o <code>subagent</code> (lo llama otro agente para una subtarea).</p>
+
+  <h4>c) Skill (habilidad)</h4>
+  <p>Una habilidad empaquetada que el agente activa <strong>solo</strong> cuando encaja con lo que pides.
+  Va en <code>.opencode/skills/&lt;nombre&gt;/SKILL.md</code> con frontmatter obligatorio (<code>name</code> y
+  <code>description</code>).</p>
+  <pre><code># archivo: .opencode/skills/notas-version/SKILL.md
+---
+name: notas-version
+description: Crea notas de versión y changelog consistentes
+---
+## Qué hago
+- Redacto notas de versión a partir de los PR combinados
+- Propongo el nuevo número de versión
+- Doy un comando `gh release create` listo para copiar
+
+## Cuándo usarme
+Cuando estés preparando una nueva versión etiquetada.</code></pre>
+
+  <h3 class="nueva-pagina">4.11 Conectar tu suscripción y pagar OpenCode (Zen)</h3>
+  <h4>Conectar una suscripción existente (por ejemplo, ChatGPT)</h4>
+  <p>Además de una API key, puedes iniciar sesión con una suscripción:</p>
+  <ol>
+    <li>En OpenCode escribe <code>/connect</code>.</li>
+    <li>Elige el proveedor <strong>OpenAI</strong> y la opción <strong>"ChatGPT Plus/Pro"</strong>.</li>
+    <li>Se abre el navegador para <strong>iniciar sesión</strong> y autorizar.</li>
+  </ol>
+  <p>También soporta iniciar sesión con <strong>GitHub Copilot</strong> y <strong>GitLab Duo</strong>. Las
+  credenciales quedan guardadas en <code>~/.local/share/opencode/auth.json</code>.</p>
+  <div class="caja alerta"><span class="et">Importante</span>Anthropic <strong>no permite</strong> usar la suscripción Claude Pro/Max en herramientas de terceros. Para usar Claude en OpenCode, usa una <strong>API key</strong>.</div>
+
+  <h4>Pagar OpenCode (OpenCode Zen)</h4>
+  <p><strong>OpenCode Zen</strong> es el servicio del equipo de OpenCode: una lista de modelos probados,
+  con <strong>pago por uso</strong> (se cobra por tokens) y también algunos modelos <strong>gratuitos</strong>.</p>
+  <ol>
+    <li>Inicia sesión en <strong>OpenCode Zen</strong> y agrega tus datos de <strong>facturación</strong> (tarjeta).</li>
+    <li>Obtén tu <strong>API key</strong> de Zen.</li>
+    <li>En OpenCode: <code>/connect</code> → elige <strong>OpenCode Zen</strong> → pega la key.</li>
+    <li>Selecciona el modelo con el formato <code>opencode/&lt;modelo&gt;</code> (por ejemplo <code>opencode/gpt-5.5</code>).</li>
+  </ol>
+  <div class="caja idea"><span class="et">Para el curso</span>No necesitas pagar nada: con las APIs <strong>gratuitas</strong> (Gemini y Cohere) es suficiente. OpenCode Zen es opcional para cuando quieras modelos más potentes.</div>
+
+  <h3 class="nueva-pagina">4.12 Buenas prácticas con OpenCode</h3>
+  <ul>
+    <li><strong>Empieza en Plan, luego Build.</strong> Acuerda el enfoque antes de que toque el código (<code>Tab</code> cambia de modo).</li>
+    <li><strong>Usa un <code>AGENTS.md</code></strong> desde el inicio con <code>/init</code>: menos repetir, mejores resultados.</li>
+    <li><strong>Escribe un <code>SPEC.md</code></strong> para proyectos con varias partes.</li>
+    <li><strong>Sé específico.</strong> "Crea una función que valide un correo con expresión regular" es mejor que "arréglame esto".</li>
+    <li><strong>Da contexto con <code>@</code></strong> en vez de copiar y pegar archivos.</li>
+    <li><strong>Trabaja en pasos pequeños</strong> y revisa cada cambio; usa <code>/undo</code> si algo sale mal.</li>
+    <li><strong>Nueva sesión (<code>/new</code>) al cambiar de tema</strong> y <code>/compact</code> en charlas largas: ahorra tokens.</li>
+    <li><strong>Usa control de versiones (Git).</strong> Haz commits frecuentes para poder volver atrás.</li>
+    <li><strong>Nunca subas claves.</strong> Mantén el <code>.env</code> en <code>.gitignore</code>.</li>
+    <li><strong>No confíes a ciegas.</strong> Lee y prueba lo que genera: la IA se puede equivocar con seguridad.</li>
+  </ul>
+
+  <h3 class="nueva-pagina">4.13 Video-tutorial (de básico a avanzado)</h3>
+  <p>Para verlo paso a paso, sigue este tutorial y usa las marcas de tiempo:</p>
+  <pre><code>https://www.youtube.com/watch?v=ZZq4TpNgnvg</code></pre>
+  <table>
+    <tr><th>Tema</th><th>Min.</th><th>Tema</th><th>Min.</th></tr>
+    <tr><td>¿Qué es OpenCode?</td><td>0:00</td><td>Timeline / revertir</td><td>30:50</td></tr>
+    <tr><td>Instalación + TUI</td><td>2:58</td><td>Cambiar el tema</td><td>32:50</td></tr>
+    <tr><td>Ventajas</td><td>5:30</td><td>Notificaciones / revertir</td><td>34:19</td></tr>
+    <tr><td>Primer prompt</td><td>9:32</td><td>Modelos de pago (GO)</td><td>38:51</td></tr>
+    <tr><td>Comandos y TUI</td><td>11:22</td><td>App que funciona</td><td>43:05</td></tr>
+    <tr><td>Build y Plan</td><td>13:57</td><td>AGENTS.md</td><td>52:04</td></tr>
+    <tr><td>Ahorrar tokens</td><td>16:53</td><td>Cambiar de sesión</td><td>1:01:35</td></tr>
+    <tr><td>Modo Shell</td><td>20:10</td><td>Skills (AgentSkill)</td><td>1:05:32</td></tr>
+    <tr><td>Importancia del historial</td><td>22:08</td><td>Conectar suscripción</td><td>1:25:00</td></tr>
+    <tr><td>Proyecto desde cero</td><td>23:25</td><td>Comparar modelos</td><td>1:33:01</td></tr>
+    <tr><td>SPEC.md</td><td>27:58</td><td>Agentes</td><td>1:35:14</td></tr>
+    <tr><td>Tareas agrupadas</td><td>29:39</td><td>Comandos propios / args</td><td>1:42:10</td></tr>
+  </table>
+
+  <h2 class="nueva-pagina">5. Práctica guiada: "Hola IA"</h2>
+  <pre><code>pip install google-generativeai python-dotenv</code></pre>
+  <p>Crea <code>hola_ia.py</code> (ya lo tienes en <code>clase-0/codigo/</code>) y ejecútalo con
+  <code>python hola_ia.py</code>. Debe responderte el modelo.</p>
+
+  <div class="caja idea"><span class="et">🔬 Laboratorio interactivo del curso</span>
+    A lo largo del curso usaremos demos en vivo para <strong>ver</strong> cómo funciona la IA
+    (cómo un LLM predice el siguiente token, cómo aprende una red neuronal, etc.). Están
+    reunidas en el hub: <a href="../recursos/demos-interactivos.html">recursos/demos-interactivos.html</a>.
+    Puedes ir explorándolas desde ya.
+  </div>
+
+  <!-- ACTIVIDADES DE REFUERZO -->
+  <h2 class="nueva-pagina">Actividades de refuerzo</h2>
+  <p>Realiza estas actividades para afianzar lo aprendido. Puedes escribir tus respuestas
+  en los espacios en blanco.</p>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">1</span> Con mis palabras <span class="badge facil">Fácil</span></div>
+    <p>Explica con una analogía propia (distinta al restaurante) qué es una API y qué es una API key.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">2</span> Verificación del entorno <span class="badge facil">Fácil</span></div>
+    <p>Ejecuta los siguientes comandos y anota la versión que te muestra cada uno:</p>
+    <table>
+      <tr><th>Comando</th><th>Resultado (versión)</th></tr>
+      <tr><td><code>python --version</code></td><td></td></tr>
+      <tr><td><code>opencode --version</code></td><td></td></tr>
+      <tr><td><code>node --version</code></td><td></td></tr>
+    </table>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">3</span> Tres preguntas a la IA <span class="badge media">Media</span></div>
+    <p>Usando OpenCode o <code>hola_ia.py</code>, hazle 3 preguntas distintas al modelo. Anota
+    la que más te haya sorprendido y por qué.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">4</span> Crea con OpenCode <span class="badge media">Media</span></div>
+    <p>Pídele a OpenCode que cree un programa que convierta grados Celsius a Fahrenheit.
+    Ejecútalo y verifica que funcione. Anota qué instrucción exacta le diste.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">5</span> Plan antes que Build <span class="badge media">Media</span></div>
+    <p>En OpenCode, cambia al modo <strong>Plan</strong> y pídele que planee una calculadora sencilla.
+    Anota los pasos que propone. Luego pasa a <strong>Build</strong> y deja que la construya.
+    ¿En qué se diferenció el resultado de cada modo?</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">6</span> Mi primera app con OpenCode <span class="badge reto">Reto</span></div>
+    <p>Crea una carpeta nueva y, con OpenCode, construye una <strong>página web sencilla</strong>
+    (por ejemplo, una tarjeta de presentación con tu nombre en HTML y CSS). Ábrela en el
+    navegador. Si algo sale mal, usa <code>/undo</code> para revertir. Anota qué le pediste y
+    qué comando usaste para revertir.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">7</span> Explora el video <span class="badge facil">Fácil</span></div>
+    <p>Mira al menos <strong>3 secciones</strong> del video-tutorial de OpenCode (usa las marcas de
+    tiempo de la sección 4.8) y escribe una función de OpenCode que no conocías y para qué sirve.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">8</span> Detective de IA <span class="badge reto">Reto</span></div>
+    <p>Escribe 5 situaciones de tu vida diaria donde ya usas IA sin darte cuenta (por ejemplo,
+    recomendaciones de video, autocorrector, etc.) y explica brevemente qué crees que hace la IA en cada una.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <h2>Lista de verificación final</h2>
+  <ul class="checklist">
+    <li>Tengo mi API key de Gemini y la probé.</li>
+    <li>Tengo mi API key de Cohere.</li>
+    <li>Tengo cuenta de GitHub.</li>
+    <li>Python y VS Code funcionan.</li>
+    <li>OpenCode instalado y me creó un archivo.</li>
+    <li>Mi archivo <code>.env</code> está guardado y sé que es secreto.</li>
+  </ul>
+
+  <div class="caja"><span class="et">Solución de problemas</span>
+    <strong>python no se reconoce:</strong> reinstala Python marcando "Add to PATH". ·
+    <strong>pip no se reconoce:</strong> usa <code>python -m pip install ...</code> ·
+    <strong>API key inválida:</strong> revisa que se copió completa, sin espacios. ·
+    <strong>Se acabó el cupo:</strong> cambia de proveedor (Cohere / GitHub Models).
+  </div>
+
+  <p class="pie">Curso de Inteligencia Artificial · SENA Piedecuesta · Clase 0</p>
+
+</body>
+</html>

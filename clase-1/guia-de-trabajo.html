@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Guía de trabajo — Clase 1</title>
+  <link rel="stylesheet" href="../recursos/guia.css">
+</head>
+<body>
+
+  <!-- PORTADA -->
+  <div class="portada">
+    <div class="marca">SENA · PIEDECUESTA — CURSO DE INTELIGENCIA ARTIFICIAL</div>
+    <h1>Clase 1<br>Fundamentos de IA y tipos de aprendizaje</h1>
+    <p class="sub">Guía de trabajo del aprendiz</p>
+    <div class="banda"></div>
+    <div class="datos">
+      Duración: 4 horas (8:00 am – 12:00 m)<br>
+      Pablo Andrés Carvajal — Desarrollador Full Stack<br>
+      <a href="https://pablocarvajal.dev">pablocarvajal.dev</a><br>
+      Nombre del aprendiz: _______________________________
+    </div>
+  </div>
+
+  <!-- OBJETIVOS -->
+  <div class="objetivos">
+    <h3>🎯 ¿Qué sabré hacer al terminar esta guía?</h3>
+    <ul>
+      <li>Explicar la diferencia entre IA, Machine Learning y Deep Learning.</li>
+      <li>Definir qué es un "modelo" y qué significa "aprender" para una máquina.</li>
+      <li>Diferenciar los 5 tipos de aprendizaje con ejemplos reales.</li>
+      <li>Entender, a nivel intuitivo, qué es una red neuronal.</li>
+      <li>Reconocer los conceptos de datos, features, entrenamiento y predicción.</li>
+    </ul>
+  </div>
+
+  <p><em>Esta guía está escrita para que puedas estudiar por tu cuenta, incluso si faltaste a la clase. Léela con calma y resuelve las actividades del final.</em></p>
+
+  <div class="caja idea"><span class="et">🔬 Demos interactivos de esta clase</span>
+    Abre estas páginas en el navegador para <strong>ver</strong> los conceptos en vivo:
+    <ul>
+      <li><strong>Red neuronal en vivo</strong>: <a href="https://playground.tensorflow.org/">playground.tensorflow.org</a></li>
+      <li><strong>Aprendizaje supervisado y sobreajuste</strong>: <a href="https://r2d3.us/visual-intro-to-machine-learning-part-1/">r2d3.us</a></li>
+      <li><strong>Aprendizaje por refuerzo</strong>: <a href="https://cs.stanford.edu/people/karpathy/reinforcejs/gridworld_td.html">REINFORCEjs Gridworld</a></li>
+      <li><strong>Clasificación en vivo</strong>: <a href="https://quickdraw.withgoogle.com/">Quick, Draw!</a> · <strong>Entrenar sin código</strong>: <a href="https://teachablemachine.withgoogle.com/">Teachable Machine</a></li>
+    </ul>
+    Todas juntas en el hub del curso: <a href="../recursos/demos-interactivos.html">recursos/demos-interactivos.html</a>
+  </div>
+
+  <div class="caja"><span class="et">📚 Material de estudio en español</span>
+    Para reforzar en tu idioma:
+    <ul>
+      <li><strong>Elementos de la IA</strong> (curso gratuito desde cero): <a href="https://course.elementsofai.com/es/">course.elementsofai.com/es</a></li>
+      <li><strong>DotCSV</strong> (canal de YouTube de IA en español): <a href="https://www.youtube.com/@DotCSV">youtube.com/@DotCSV</a></li>
+      <li><strong>Curso intensivo de ML de Google</strong> (en español): <a href="https://developers.google.com/machine-learning/crash-course?hl=es">developers.google.com/machine-learning</a></li>
+    </ul>
+  </div>
+
+  <h2>1. IA vs Machine Learning vs Deep Learning</h2>
+  <p>Estos tres términos se confunden todo el tiempo. La mejor forma de entenderlos es
+  imaginarlos como <strong>muñecas rusas</strong>: uno vive dentro del otro.</p>
+  <ul>
+    <li><strong>Inteligencia Artificial (IA):</strong> es el término más amplio. Cubre
+    <em>cualquier</em> técnica para que una máquina imite comportamiento que llamaríamos
+    "inteligente" (jugar ajedrez, reconocer una cara, traducir un texto).</li>
+    <li><strong>Machine Learning (ML):</strong> una rama de la IA en la que la máquina
+    <strong>aprende de datos</strong>, sin que le programemos cada regla a mano.</li>
+    <li><strong>Deep Learning:</strong> un tipo de ML que usa <strong>redes neuronales
+    profundas</strong>. Aquí viven los modelos modernos como los LLMs (ChatGPT, Gemini).</li>
+  </ul>
+
+  <h3>La gran diferencia: programación tradicional vs ML</h3>
+  <p>En la programación de toda la vida, el humano escribe las reglas. En Machine Learning,
+  la máquina <strong>descubre las reglas sola</strong> a partir de ejemplos.</p>
+  <table>
+    <tr><th></th><th>Programación tradicional</th><th>Machine Learning</th></tr>
+    <tr><td>Le damos…</td><td>Reglas + datos</td><td>Datos + respuestas</td></tr>
+    <tr><td>Obtenemos…</td><td>Respuestas</td><td><strong>Las reglas (el modelo)</strong></td></tr>
+    <tr><td>Ejemplo</td><td>"Si el correo dice 'gratis' → spam"</td><td>Le muestro 10.000 correos marcados como spam/no-spam y el modelo <em>descubre solo</em> qué es spam</td></tr>
+  </table>
+  <div class="caja idea"><span class="et">Idea central</span>En ML no escribimos las reglas: le mostramos ejemplos a la máquina y ella <strong>infiere el patrón</strong>. Ese patrón aprendido se llama <strong>modelo</strong>.</div>
+
+  <h2>2. ¿Cómo aprende una máquina?</h2>
+  <p>Para entender el resto del curso necesitas dominar este vocabulario. Lo usaremos siempre.</p>
+  <ul>
+    <li><strong>Dato / Dataset:</strong> los ejemplos con los que aprende (por ejemplo, una tabla de casas).</li>
+    <li><strong>Feature (característica):</strong> cada columna de entrada (tamaño, número de cuartos).</li>
+    <li><strong>Label / Etiqueta (target):</strong> la respuesta correcta (el precio de la casa).</li>
+    <li><strong>Modelo:</strong> la "fórmula" aprendida que relaciona las features con el label.</li>
+    <li><strong>Entrenamiento:</strong> el proceso de ajustar el modelo con los datos.</li>
+    <li><strong>Predicción / Inferencia:</strong> usar el modelo ya entrenado con datos nuevos.</li>
+  </ul>
+
+  <h3>Un ejemplo concreto: el precio de las casas</h3>
+  <table>
+    <tr><th>Tamaño (m²)</th><th># Cuartos</th><th>Barrio</th><th>→ Precio (label)</th></tr>
+    <tr><td>80</td><td>3</td><td>Centro</td><td>$200M</td></tr>
+    <tr><td>120</td><td>4</td><td>Norte</td><td>$350M</td></tr>
+    <tr><td>60</td><td>2</td><td>Sur</td><td>$150M</td></tr>
+    <tr><td>100</td><td>3</td><td>Norte</td><td><strong>¿? ← el modelo predice</strong></td></tr>
+  </table>
+  <p>Las tres primeras columnas son las <strong>features</strong>; el precio es el
+  <strong>label</strong>. El modelo estudia las filas que sí tienen precio para aprender la
+  relación, y así puede estimar el precio de la última fila.</p>
+
+  <h3>El aprendizaje es prueba y error medido</h3>
+  <p>Una máquina no "entiende" como nosotros. Aprende repitiendo un ciclo muy simple:</p>
+  <ol>
+    <li>El modelo hace una predicción (al principio, casi al azar).</li>
+    <li>Comparamos con la respuesta real y calculamos el <strong>error</strong> (la función de pérdida o <em>loss</em>).</li>
+    <li>Ajustamos el modelo un poquito para que el error sea menor.</li>
+    <li>Repetimos miles de veces. Cada vuelta completa se llama <strong>época (epoch)</strong>.</li>
+  </ol>
+  <div class="caja idea"><span class="et">Sin magia</span>Aprender = <strong>minimizar el error</strong> ajustando parámetros. Es optimización matemática. En Deep Learning se hace con una técnica llamada <em>gradiente descendente</em>, que veremos como intuición.</div>
+
+  <h3>Los dos enemigos del aprendizaje</h3>
+  <div class="caja alerta">
+    <span class="et">Overfitting (sobreajuste)</span>
+    El modelo <strong>memoriza</strong> los ejemplos en lugar de aprender el patrón. Le va
+    muy bien en el examen que ya vio, pero mal en preguntas nuevas. Es como un estudiante que
+    se aprende las respuestas de memoria pero no entiende el tema.
+  </div>
+  <div class="caja alerta">
+    <span class="et">Underfitting (subajuste)</span>
+    El modelo es <strong>demasiado simple</strong> y no capta el patrón. Se equivoca incluso
+    con los datos que ya conoce. Es como intentar explicar algo complejo con una sola regla.
+  </div>
+  <div class="caja ojo"><span class="et">El objetivo</span>Un buen modelo <strong>generaliza</strong>: aprende el patrón real, no las respuestas de memoria, para acertar con datos que nunca ha visto.</div>
+
+  <h2 class="nueva-pagina">3. Los cinco tipos de aprendizaje</h2>
+  <p>Esta es la parte central de la clase. La pregunta clave que los diferencia es:
+  <strong>¿los datos traen la respuesta correcta?</strong></p>
+
+  <h3>3.1 Aprendizaje supervisado 🏷️</h3>
+  <p>Aprende con <strong>datos etiquetados</strong>: cada ejemplo trae su respuesta correcta.
+  Es como un estudiante con un profesor que le corrige cada ejercicio.</p>
+  <ul>
+    <li><strong>Clasificación:</strong> predecir una categoría (spam / no spam, perro / gato).</li>
+    <li><strong>Regresión:</strong> predecir un número (precio, temperatura).</li>
+    <li><strong>Ejemplos reales:</strong> detección de spam, diagnóstico por imágenes médicas, predicción de ventas, reconocimiento facial.</li>
+  </ul>
+  <div class="caja ojo"><span class="et">Su límite</span>Necesita muchos datos etiquetados, y etiquetar a mano es costoso y lento.</div>
+
+  <h3>3.2 Aprendizaje no supervisado 🔍</h3>
+  <p>Aprende con datos <strong>SIN etiquetas</strong>. Nadie le dice la respuesta; el modelo
+  <strong>descubre por sí mismo la estructura oculta</strong> de los datos.</p>
+  <ul>
+    <li><strong>Clustering (agrupamiento):</strong> juntar cosas parecidas, por ejemplo segmentar clientes.</li>
+    <li><strong>Reducción de dimensionalidad:</strong> simplificar datos muy complejos.</li>
+    <li><strong>Detección de anomalías:</strong> encontrar lo "raro", como un fraude bancario.</li>
+  </ul>
+  <div class="caja idea"><span class="et">Analogía</span>Te dan una caja de fichas de LEGO revueltas y las organizas por color y forma <strong>sin que nadie te diga cuáles son las categorías</strong>. Tú mismo descubres los grupos.</div>
+
+  <h3>3.3 Aprendizaje por refuerzo 🎮</h3>
+  <p>Un <strong>agente</strong> aprende <strong>actuando</strong> en un entorno y recibiendo
+  <strong>recompensas o castigos</strong>. No hay respuestas dadas de antemano: aprende de las
+  <strong>consecuencias</strong> de sus acciones.</p>
+  <p>El ciclo es: el agente observa el <strong>estado</strong>, toma una <strong>acción</strong>,
+  el entorno le devuelve una <strong>recompensa</strong> y un nuevo estado, y así repite,
+  buscando siempre <strong>maximizar la recompensa total</strong>.</p>
+  <div class="caja idea"><span class="et">Analogía</span>Enseñar a un perro. No le explicas con palabras: premias lo bueno (galleta) y no premias lo malo. Con el tiempo aprende la conducta que le da más galletas.</div>
+  <p><strong>Ejemplos reales:</strong> IAs que juegan ajedrez, Go o videojuegos; robots que
+  aprenden a caminar; autos autónomos; y el famoso <strong>RLHF</strong> (aprendizaje por
+  refuerzo con retroalimentación humana), que se usa para "educar" a los LLMs como ChatGPT y Gemini.</p>
+
+  <h3>3.4 Aprendizaje semi-supervisado 🏷️+🔍</h3>
+  <p>Es una mezcla: <strong>pocos datos etiquetados y muchos sin etiquetar</strong>. Es muy
+  útil precisamente porque etiquetar es caro.</p>
+  <div class="caja idea"><span class="et">Ejemplo</span>Tienes 1.000.000 de fotos, pero solo etiquetaste 1.000. El modelo usa esas 1.000 para orientarse y aprovecha las 999.000 restantes para afinar el patrón.</div>
+  <p><strong>Ejemplos reales:</strong> clasificación de páginas web, o análisis de imágenes
+  médicas donde etiquetar requiere un especialista costoso.</p>
+
+  <h3>3.5 Aprendizaje autosupervisado 🧩 (¡el de los LLMs!)</h3>
+  <p>El modelo <strong>crea sus propias etiquetas a partir de los datos</strong>. No necesita
+  humanos etiquetando. Es la base de los LLMs modernos.</p>
+  <p>En texto funciona así: se le tapa una palabra de una frase y el modelo debe
+  <strong>predecir la palabra que falta</strong>.</p>
+  <pre><code>"El gato se subió al ___"  →  el modelo aprende que
+probablemente es "techo" o "árbol".</code></pre>
+  <p>Como la respuesta correcta <strong>ya está en el propio texto</strong>, se pueden usar
+  <strong>millones de documentos</strong> sin etiquetar a mano. Por eso los LLMs pudieron
+  entrenarse con casi todo internet.</p>
+  <div class="caja ojo"><span class="et">Ejemplos</span>GPT, Gemini, Cohere y BERT se pre-entrenan de esta forma.</div>
+
+  <h3>Tabla comparativa</h3>
+  <table>
+    <tr><th>Tipo</th><th>¿Datos etiquetados?</th><th>Aprende de…</th><th>Ejemplo estrella</th></tr>
+    <tr><td>Supervisado</td><td>Sí, todos</td><td>Respuestas dadas</td><td>Detección de spam</td></tr>
+    <tr><td>No supervisado</td><td>No</td><td>Estructura oculta</td><td>Segmentar clientes</td></tr>
+    <tr><td>Por refuerzo</td><td>No (recompensas)</td><td>Consecuencias</td><td>IA que juega ajedrez</td></tr>
+    <tr><td>Semi-supervisado</td><td>Pocos</td><td>Mezcla</td><td>Clasificar millones de imágenes</td></tr>
+    <tr><td>Autosupervisado</td><td>Se autogenera</td><td>El propio dato</td><td>LLMs (GPT, Gemini)</td></tr>
+  </table>
+
+  <h2>4. Redes neuronales y Deep Learning</h2>
+  <h3>La neurona artificial</h3>
+  <p>Inspirada (muy libremente) en las neuronas del cerebro, una neurona artificial hace
+  cuatro cosas:</p>
+  <ol>
+    <li>Recibe varias <strong>entradas</strong> (números).</li>
+    <li>Cada entrada tiene un <strong>peso</strong> que indica qué tan importante es.</li>
+    <li>Suma todo y le aplica una <strong>función de activación</strong> que decide si "se enciende".</li>
+    <li>Produce una <strong>salida</strong>.</li>
+  </ol>
+  <pre><code>entradas   pesos
+ x1 ──w1──┐
+ x2 ──w2──┼─►  (Σ suma) ─► [activación] ─► salida
+ x3 ──w3──┘</code></pre>
+  <div class="caja idea"><span class="et">Aprender</span>= ajustar los <strong>pesos</strong> para que la salida se parezca cada vez más a la respuesta correcta.</div>
+
+  <h3>De una neurona a una red profunda</h3>
+  <p>Al conectar <strong>muchas neuronas en capas</strong> obtenemos una <strong>red
+  neuronal</strong>. Cuando tiene <strong>muchas capas</strong>, hablamos de <strong>Deep
+  Learning</strong> (aprendizaje profundo).</p>
+  <pre><code>Entrada    Capa oculta 1   Capa oculta 2   Salida
+  O ───────── O ─────────── O ─────────── O
+  O ───────── O ─────────── O ───────────
+  O ───────── O ─────────── O
+        (cada línea = un peso que se ajusta)</code></pre>
+  <ul>
+    <li>Las <strong>primeras capas</strong> detectan cosas simples (bordes, letras).</li>
+    <li>Las <strong>capas profundas</strong> combinan eso en conceptos complejos (una cara, el significado de una frase).</li>
+  </ul>
+  <div class="caja ojo"><span class="et">🧠 Los LLMs</span>Son redes neuronales profundas gigantescas (miles de millones de pesos, llamados <strong>parámetros</strong>) con una arquitectura especial llamada <strong>Transformer</strong>. La Clase 2 abre esta caja negra.</div>
+
+  <h2>5. Práctica sugerida</h2>
+  <p>Puedes hacer estas prácticas en casa para afianzar lo aprendido:</p>
+  <ul>
+    <li><strong>Demo visual:</strong> abre <code>playground.tensorflow.org</code> en el
+    navegador. Es un simulador de red neuronal. Observa cómo, al darle puntos azules y
+    naranjas, la red aprende a separarlos ajustando pesos, época tras época.</li>
+    <li><strong>Pídele a la IA:</strong> con OpenCode o <code>hola_ia.py</code> (de la Clase 0),
+    escríbele: <em>"Dame un ejemplo cotidiano y distinto para cada uno de los 5 tipos de
+    aprendizaje automático, en una sola frase cada uno."</em> Luego compara su respuesta con
+    esta guía: ¿acertó?, ¿se equivocó en algo?</li>
+  </ul>
+  <div class="caja alerta"><span class="et">Ojo crítico</span>Los LLMs a veces "alucinan" (inventan datos con seguridad). Comparar siempre con una fuente confiable es parte de tu trabajo como desarrollador de IA.</div>
+
+  <!-- ACTIVIDADES DE REFUERZO -->
+  <h2 class="nueva-pagina">Actividades de refuerzo</h2>
+  <p>Realiza estas actividades para afianzar lo aprendido. Puedes escribir tus respuestas en
+  los espacios en blanco.</p>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">1</span> Muñecas rusas <span class="badge facil">Fácil</span></div>
+    <p>Explica con tus propias palabras la diferencia entre IA, Machine Learning y Deep Learning.
+    Puedes usar una analogía distinta a la de las muñecas rusas.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">2</span> El vocabulario en acción <span class="badge facil">Fácil</span></div>
+    <p>Imagina que quieres predecir la nota final de un estudiante a partir de sus horas de
+    estudio y sus asistencias. Identifica en ese problema qué serían las <strong>features</strong>
+    y qué sería el <strong>label</strong>.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">3</span> Clasifica el problema <span class="badge media">Media</span></div>
+    <p>Para cada situación, escribe <strong>qué tipo de aprendizaje</strong> usarías y por qué:</p>
+    <table>
+      <tr><th>Situación</th><th>Tipo de aprendizaje</th></tr>
+      <tr><td>Predecir cuántos clientes vendrán mañana a un local.</td><td></td></tr>
+      <tr><td>Agrupar canciones parecidas sin conocer sus géneros.</td><td></td></tr>
+      <tr><td>Un robot que aprende a estacionar un carro.</td><td></td></tr>
+      <tr><td>Un modelo que aprende idioma tapando palabras de libros.</td><td></td></tr>
+      <tr><td>Detectar transacciones fraudulentas nunca antes vistas.</td><td></td></tr>
+    </table>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">4</span> Sobreajuste vs subajuste <span class="badge media">Media</span></div>
+    <p>Explica con un ejemplo de tu vida escolar qué es el <strong>overfitting</strong> y qué es
+    el <strong>underfitting</strong>. ¿Por qué queremos que un modelo "generalice"?</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">5</span> Compara con la IA <span class="badge media">Media</span></div>
+    <p>Pídele a Gemini o Cohere un ejemplo cotidiano para cada uno de los 5 tipos de aprendizaje.
+    Anota si estuvo de acuerdo con lo visto en clase y si detectaste algún error o "alucinación".</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">6</span> La neurona con tus palabras <span class="badge reto">Reto</span></div>
+    <p>Dibuja o describe una neurona artificial con 3 entradas. Explica qué papel cumplen los
+    <strong>pesos</strong> y por qué decimos que "aprender es ajustar los pesos".</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <h2>Lista de verificación</h2>
+  <ul class="checklist">
+    <li>Sé explicar IA vs ML vs Deep Learning.</li>
+    <li>Entiendo qué es un modelo y qué significa "entrenar".</li>
+    <li>Reconozco los conceptos de dato, feature, label y predicción.</li>
+    <li>Puedo dar un ejemplo real de cada uno de los 5 tipos de aprendizaje.</li>
+    <li>Entiendo qué son el overfitting y el underfitting.</li>
+    <li>Sé, a grandes rasgos, qué es una red neuronal.</li>
+    <li>Hice la tarea para la Clase 2 (supervisado vs autosupervisado, y token/embedding).</li>
+  </ul>
+
+  <div class="caja"><span class="et">Tarea para la Clase 2</span>
+    <strong>1.</strong> Escribe con tus palabras la diferencia entre aprendizaje supervisado y
+    autosupervisado (5–6 líneas). ·
+    <strong>2.</strong> Pregúntale a Gemini/Cohere <em>"¿Qué es un token y qué es un embedding?"</em>
+    y trae la respuesta. No hay que entenderla aún: será nuestro punto de partida.
+  </div>
+
+  <p class="pie">Curso de Inteligencia Artificial · SENA Piedecuesta · Clase 1</p>
+
+</body>
+</html>

@@ -1,0 +1,15 @@
+# Dependencias del curso. Instalar con:  pip install -r requirements.txt
+
+# Clase 0 y 4 (Gemini)
+google-generativeai
+python-dotenv
+
+# Clase 2 y 4 (Cohere: embeddings, RAG, chat)
+cohere
+numpy
+
+# Clase 3 (modelos de datos)
+scikit-learn
+pandas
+joblib
+matplotlib

@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clase 1 — Fundamentos de IA y tipos de aprendizaje | Curso IA SENA</title>
+  <link rel="stylesheet" href="../recursos/presentacion.css">
+</head>
+<body>
+  <div class="barra-sup">
+    <span class="logo">SENA <span>·</span> Curso IA</span>
+    <span>Clase 1 — Fundamentos de IA y tipos de aprendizaje</span>
+  </div>
+  <div class="ayuda">← → para navegar · F pantalla completa</div>
+
+  <div class="deck">
+
+    <!-- 1 -->
+    <section class="slide portada">
+      <span class="pill">CLASE 1 · 8:00 am – 12:00 m</span>
+      <h1>Fundamentos de IA y tipos de aprendizaje</h1>
+      <p class="subtitulo">¿Qué es de verdad la Inteligencia Artificial y cómo "aprende" una máquina?</p>
+      <p class="meta">Curso: IA, Modelos de Aprendizaje y Agentes con LLMs · SENA Piedecuesta — Sábados<br><strong style="color:#fff">Pablo Andrés Carvajal</strong> · Desarrollador Full Stack · <a href="https://pablocarvajal.dev" target="_blank" rel="noopener" style="color:#8fe1ff;font-weight:700;text-decoration:underline">pablocarvajal.dev</a></p>
+    </section>
+
+    <!-- 2 -->
+    <section class="slide">
+      <h2>¿Qué haremos hoy?</h2>
+      <ul>
+        <li>Distinguir <strong>IA</strong>, <strong>Machine Learning</strong> y <strong>Deep Learning</strong>.</li>
+        <li>Entender qué es un <strong>modelo</strong> y qué significa <strong>"aprender"</strong>.</li>
+        <li>Conocer los <strong>5 tipos de aprendizaje</strong> con ejemplos reales.</li>
+        <li>Ganar intuición sobre las <strong>redes neuronales</strong>.</li>
+      </ul>
+      <div class="caja idea"><span class="et">Meta del día</span>Salir con un mapa mental claro de cómo aprenden las máquinas… y de dónde nacen los LLMs como ChatGPT o Gemini.</div>
+    </section>
+
+    <!-- 3 -->
+    <section class="slide">
+      <h2>Agenda</h2>
+      <table class="t">
+        <tr><th>Hora</th><th>Bloque</th><th>Contenido</th></tr>
+        <tr><td>8:00 – 8:20</td><td>Repaso</td><td>Tarea de la Clase 0 y dudas de configuración</td></tr>
+        <tr><td>8:20 – 9:00</td><td>¿Qué es la IA?</td><td>IA vs ML vs Deep Learning</td></tr>
+        <tr><td>9:00 – 9:45</td><td>¿Cómo aprende?</td><td>Datos, features, modelo, entrenamiento</td></tr>
+        <tr><td>9:45 – 10:00</td><td>☕ Descanso</td><td></td></tr>
+        <tr><td>10:00 – 11:00</td><td>Tipos de aprendizaje</td><td>Supervisado, no superv., refuerzo, semi, auto</td></tr>
+        <tr><td>11:00 – 11:30</td><td>Redes neuronales</td><td>La neurona artificial y el deep learning</td></tr>
+        <tr><td>11:30 – 11:55</td><td>Demo / Práctica</td><td>Clasificador intuitivo + demo visual</td></tr>
+        <tr><td>11:55 – 12:00</td><td>Cierre</td><td>Mapa mental y tarea</td></tr>
+      </table>
+    </section>
+
+    <!-- 4 -->
+    <section class="slide">
+      <h2>IA vs ML vs Deep Learning</h2>
+      <div class="cols">
+        <div>
+          <p>Piénsalos como <strong>muñecas rusas</strong>: uno vive dentro del otro.</p>
+          <ul>
+            <li><strong>IA:</strong> cualquier técnica para que una máquina imite comportamiento "inteligente".</li>
+            <li><strong>ML:</strong> la máquina <strong>aprende de datos</strong>, sin reglas escritas a mano.</li>
+            <li><strong>Deep Learning:</strong> ML con <strong>redes neuronales profundas</strong>. Aquí viven los LLMs.</li>
+          </ul>
+        </div>
+        <pre><code>┌─ INTELIGENCIA ARTIFICIAL ─────┐
+│  imita lo "inteligente"       │
+│  ┌─ MACHINE LEARNING ───────┐ │
+│  │  aprende de datos        │ │
+│  │  ┌─ DEEP LEARNING ─────┐ │ │
+│  │  │  redes neuronales   │ │ │
+│  │  │  (aquí los LLMs)    │ │ │
+│  │  └─────────────────────┘ │ │
+│  └──────────────────────────┘ │
+└───────────────────────────────┘</code></pre>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section class="slide">
+      <h2>Programación tradicional vs ML</h2>
+      <table class="t">
+        <tr><th></th><th>Programación tradicional</th><th>Machine Learning</th></tr>
+        <tr><td>Le damos…</td><td>Reglas + datos</td><td>Datos + respuestas</td></tr>
+        <tr><td>Obtenemos…</td><td>Respuestas</td><td><strong>Las reglas (el modelo)</strong></td></tr>
+        <tr><td>Ejemplo</td><td>"Si dice 'gratis' → spam"</td><td>Le muestro 10.000 correos marcados y él <em>descubre</em> qué es spam</td></tr>
+      </table>
+      <div class="caja idea"><span class="et">Idea central</span>En ML <strong>no escribimos las reglas</strong>: le mostramos ejemplos y la máquina infiere el patrón. Ese patrón aprendido se llama <strong>modelo</strong>.</div>
+    </section>
+
+    <!-- 6 -->
+    <section class="slide">
+      <h2>El vocabulario del curso</h2>
+      <ul>
+        <li><strong>Dato / Dataset:</strong> los ejemplos con los que aprende.</li>
+        <li><strong>Feature (característica):</strong> cada columna de entrada (tamaño, # cuartos).</li>
+        <li><strong>Label / Etiqueta:</strong> la respuesta correcta (el precio).</li>
+        <li><strong>Modelo:</strong> la "fórmula" aprendida que va de features → label.</li>
+        <li><strong>Entrenamiento:</strong> ajustar el modelo con los datos.</li>
+        <li><strong>Predicción / Inferencia:</strong> usar el modelo ya entrenado con datos nuevos.</li>
+      </ul>
+    </section>
+
+    <!-- 7 -->
+    <section class="slide">
+      <h2>Ejemplo: precio de casas</h2>
+      <table class="t">
+        <tr><th>Tamaño (m²)</th><th># Cuartos</th><th>Barrio</th><th>→ Precio (label)</th></tr>
+        <tr><td>80</td><td>3</td><td>Centro</td><td>$200M</td></tr>
+        <tr><td>120</td><td>4</td><td>Norte</td><td>$350M</td></tr>
+        <tr><td>60</td><td>2</td><td>Sur</td><td>$150M</td></tr>
+        <tr><td>100</td><td>3</td><td>Norte</td><td><strong>¿? ← el modelo predice</strong></td></tr>
+      </table>
+      <div class="caja"><span class="et">Fíjate</span>Las <strong>features</strong> son las 3 primeras columnas; el <strong>label</strong> es el precio. El modelo aprende la relación entre ambos.</div>
+    </section>
+
+    <!-- 8 -->
+    <section class="slide">
+      <h2>¿Cómo "aprende"?</h2>
+      <p>Con <strong>prueba y error medido</strong>:</p>
+      <ol>
+        <li>El modelo hace una predicción (al principio, casi al azar).</li>
+        <li>La comparamos con la respuesta real → calculamos el <strong>error</strong> (pérdida / <em>loss</em>).</li>
+        <li>Ajustamos el modelo un poquito para reducir ese error.</li>
+        <li>Repetimos miles de veces. Cada vuelta es una <strong>época (epoch)</strong>.</li>
+      </ol>
+      <div class="caja idea"><span class="et">Sin magia</span>Aprender = <strong>minimizar el error</strong> ajustando parámetros. Es optimización matemática (en Deep Learning: <em>gradiente descendente</em>).</div>
+    </section>
+
+    <!-- 9 -->
+    <section class="slide">
+      <h2>Los dos enemigos del aprendizaje</h2>
+      <div class="cols">
+        <div class="caja alerta">
+          <span class="et">Overfitting (sobreajuste)</span>
+          El modelo <strong>memoriza</strong> los ejemplos en vez de aprender el patrón. Va muy bien en el examen que ya vio, pero mal en preguntas nuevas.
+        </div>
+        <div class="caja alerta">
+          <span class="et">Underfitting (subajuste)</span>
+          El modelo es <strong>demasiado simple</strong> y no capta el patrón. Se equivoca hasta con los datos que ya conoce.
+        </div>
+      </div>
+      <div class="caja ojo"><span class="et">El equilibrio</span>Un buen modelo <strong>generaliza</strong>: aprende el patrón, no las respuestas de memoria.</div>
+    </section>
+
+    <!-- 10 -->
+    <section class="slide centro">
+      <h2>Los 5 tipos de aprendizaje</h2>
+      <p class="grande">🧠</p>
+      <p style="max-width:22em">Supervisado · No supervisado · Por refuerzo · Semi-supervisado · Autosupervisado</p>
+      <p style="max-width:24em">La diferencia clave: <strong>¿los datos traen la respuesta correcta?</strong></p>
+    </section>
+
+    <!-- 11 -->
+    <section class="slide">
+      <h2>1. Aprendizaje SUPERVISADO 🏷️</h2>
+      <p>Aprende con <strong>datos etiquetados</strong>: cada ejemplo trae su respuesta. Como un estudiante con un profesor que le corrige.</p>
+      <div class="cols">
+        <div>
+          <h3>Se usa para:</h3>
+          <ul>
+            <li><strong>Clasificación</strong> → predecir una categoría (spam / no spam).</li>
+            <li><strong>Regresión</strong> → predecir un número (precio, temperatura).</li>
+          </ul>
+        </div>
+        <div class="caja idea"><span class="et">Ejemplos reales</span>Detección de spam, diagnóstico por imágenes médicas, predicción de ventas, reconocimiento facial.</div>
+      </div>
+      <div class="caja ojo"><span class="et">Costo</span>Requiere muchos datos etiquetados a mano. Etiquetar es caro y lento.</div>
+    </section>
+
+    <!-- 12 -->
+    <section class="slide">
+      <h2>2. Aprendizaje NO SUPERVISADO 🔍</h2>
+      <p>Aprende con datos <strong>SIN etiquetas</strong>. Nadie le da la respuesta: el modelo <strong>descubre estructura oculta</strong> solo.</p>
+      <div class="cols">
+        <div>
+          <h3>Se usa para:</h3>
+          <ul>
+            <li><strong>Clustering</strong> → juntar cosas parecidas (segmentar clientes).</li>
+            <li><strong>Reducción de dimensionalidad</strong> → simplificar datos.</li>
+            <li><strong>Detección de anomalías</strong> → hallar lo raro (fraude).</li>
+          </ul>
+        </div>
+        <div class="caja idea"><span class="et">Analogía</span>Te dan fichas de LEGO revueltas y las organizas por color y forma <strong>sin que nadie te diga las categorías</strong>.</div>
+      </div>
+    </section>
+
+    <!-- 13 -->
+    <section class="slide">
+      <h2>3. Aprendizaje POR REFUERZO 🎮</h2>
+      <p>Un <strong>agente</strong> aprende <strong>actuando</strong> en un entorno y recibiendo <strong>recompensas o castigos</strong>. Aprende de las <strong>consecuencias</strong>.</p>
+      <div class="cols">
+        <div>
+          <p><strong>Ciclo:</strong> observa el estado → toma una acción → recibe recompensa y un nuevo estado → repite, buscando <strong>maximizar la recompensa total</strong>.</p>
+          <p><strong>Piezas:</strong> agente, entorno, acción, estado, recompensa.</p>
+        </div>
+        <div class="caja idea"><span class="et">Analogía</span>Enseñar a un perro: premias lo bueno (galleta) y no lo malo. Con el tiempo aprende la conducta que maximiza galletas.</div>
+      </div>
+      <div class="caja ojo"><span class="et">Dato</span>El <strong>RLHF</strong> (refuerzo con retroalimentación humana) se usa para "educar" a los LLMs como ChatGPT y Gemini.</div>
+    </section>
+
+    <!-- 14 -->
+    <section class="slide">
+      <h2>4. Aprendizaje SEMI-SUPERVISADO 🏷️+🔍</h2>
+      <p>Una mezcla: <strong>pocos datos etiquetados + muchos sin etiquetar</strong>. Muy útil porque etiquetar es caro.</p>
+      <div class="caja idea"><span class="et">Ejemplo</span>Tienes 1.000.000 de fotos, pero solo etiquetaste 1.000. El modelo usa esas 1.000 para orientarse y las 999.000 restantes para afinar el patrón.</div>
+      <h3>Ejemplos reales</h3>
+      <ul>
+        <li>Clasificación de páginas web.</li>
+        <li>Análisis de imágenes médicas donde etiquetar exige un especialista.</li>
+      </ul>
+    </section>
+
+    <!-- 15 -->
+    <section class="slide">
+      <h2>5. Aprendizaje AUTOSUPERVISADO 🧩</h2>
+      <p>El modelo <strong>crea sus propias etiquetas a partir de los datos</strong>. No necesita humanos etiquetando. <strong>Es la base de los LLMs.</strong></p>
+      <div class="caja idea"><span class="et">Cómo funciona en texto</span>Se le tapa una palabra y debe predecirla:<br>"El gato se subió al ___" → aprende que probablemente es "techo" o "árbol".</div>
+      <p>Como la respuesta ya está en el propio texto, se usan <strong>millones de documentos</strong> sin etiquetar. Por eso los LLMs pudieron entrenarse con casi todo internet.</p>
+      <div class="caja ojo"><span class="et">Ejemplos</span>GPT, Gemini, Cohere, BERT — todos se pre-entrenan así.</div>
+    </section>
+
+    <!-- 16 -->
+    <section class="slide">
+      <h2>Tabla comparativa</h2>
+      <table class="t">
+        <tr><th>Tipo</th><th>¿Etiquetas?</th><th>Aprende de…</th><th>Ejemplo estrella</th></tr>
+        <tr><td>Supervisado</td><td>Sí, todos</td><td>Respuestas dadas</td><td>Detección de spam</td></tr>
+        <tr><td>No supervisado</td><td>No</td><td>Estructura oculta</td><td>Segmentar clientes</td></tr>
+        <tr><td>Por refuerzo</td><td>No (recompensas)</td><td>Consecuencias</td><td>IA que juega ajedrez</td></tr>
+        <tr><td>Semi-supervisado</td><td>Pocas</td><td>Mezcla</td><td>Clasificar millones de imágenes</td></tr>
+        <tr><td>Autosupervisado</td><td>Se autogenera</td><td>El propio dato</td><td>LLMs (GPT, Gemini)</td></tr>
+      </table>
+    </section>
+
+    <!-- 17 -->
+    <section class="slide">
+      <h2>La neurona artificial</h2>
+      <div class="cols">
+        <div>
+          <p>Inspirada (muy libremente) en el cerebro. Una neurona:</p>
+          <ol>
+            <li>Recibe varias <strong>entradas</strong> (números).</li>
+            <li>Cada entrada tiene un <strong>peso</strong> (su importancia).</li>
+            <li>Suma todo y aplica una <strong>función de activación</strong>.</li>
+            <li>Produce una <strong>salida</strong>.</li>
+          </ol>
+        </div>
+        <pre><code>entradas   pesos
+ x1 ──w1──┐
+ x2 ──w2──┼─► (Σ) ─► [activación] ─► salida
+ x3 ──w3──┘</code></pre>
+      </div>
+      <div class="caja idea"><span class="et">Aprender</span>= ajustar los <strong>pesos</strong> para que la salida se parezca a la respuesta correcta.</div>
+    </section>
+
+    <!-- 18 -->
+    <section class="slide">
+      <h2>De una neurona a una red profunda</h2>
+      <div class="cols">
+        <pre><code>Entrada   Oculta 1   Oculta 2  Salida
+  O ────── O ─────── O ─────── O
+  O ────── O ─────── O ───────
+  O ────── O ─────── O
+   (cada línea = un peso que se ajusta)</code></pre>
+        <div>
+          <p>Muchas neuronas en <strong>capas</strong> forman una <strong>red neuronal</strong>. Con <strong>muchas capas</strong> → <strong>Deep Learning</strong>.</p>
+          <ul>
+            <li><strong>Primeras capas:</strong> cosas simples (bordes, letras).</li>
+            <li><strong>Capas profundas:</strong> conceptos complejos (una cara, el sentido de una frase).</li>
+          </ul>
+        </div>
+      </div>
+      <div class="caja ojo"><span class="et">🧠 Los LLMs</span>Son redes profundas gigantes (miles de millones de <strong>parámetros</strong>) con una arquitectura llamada <strong>Transformer</strong>. La Clase 2 abre esa caja negra.</div>
+    </section>
+
+    <!-- 19 -->
+    <section class="slide">
+      <h2>Demo y práctica</h2>
+      <div class="cols">
+        <div>
+          <h3>A · Demo visual</h3>
+          <p>Abrir <code>playground.tensorflow.org</code>: un simulador de red neuronal. Vemos cómo, al darle puntos azules y naranjas, la red <strong>aprende a separarlos</strong> época tras época.</p>
+        </div>
+        <div>
+          <h3>B · Pídele a la IA</h3>
+          <pre><code>Dame un ejemplo cotidiano y
+distinto para cada uno de los 5
+tipos de aprendizaje, en una
+frase cada uno.</code></pre>
+        </div>
+      </div>
+      <div class="caja ojo"><span class="et">Ojo crítico</span>Compara la respuesta de la IA con lo visto en clase. ¿Acertó? Los LLMs a veces "alucinan".</div>
+    </section>
+
+    <!-- 20 -->
+    <section class="slide">
+      <h2>Ejercicio: "Clasifica el problema"</h2>
+      <p>Para cada situación, ¿qué tipo de aprendizaje usarías?</p>
+      <ol>
+        <li>Predecir cuántos clientes vendrán mañana a un local.</li>
+        <li>Agrupar canciones parecidas sin conocer sus géneros.</li>
+        <li>Un robot que aprende a estacionar un carro.</li>
+        <li>Un modelo que aprende idioma tapando palabras de libros.</li>
+        <li>Detectar transacciones fraudulentas nunca antes vistas.</li>
+      </ol>
+      <div class="caja"><span class="et">Discutir en grupo</span>Justifica tu elección. A veces hay más de una respuesta válida.</div>
+    </section>
+
+    <!-- 21 -->
+    <section class="slide centro">
+      <h2>Mapa mental de cierre</h2>
+      <pre style="text-align:left"><code>        INTELIGENCIA ARTIFICIAL
+                  │
+           MACHINE LEARNING
+     ┌──────┬───────┬────────┐
+   Superv. NoSuperv Refuerzo Auto/Semi
+                  │
+            DEEP LEARNING
+          (redes neuronales)
+                  │
+        TRANSFORMERS → LLMs → (Clase 2)</code></pre>
+    </section>
+
+    <!-- Laboratorio interactivo -->
+    <section class="slide">
+      <h2>🔬 Laboratorio interactivo</h2>
+      <p>Veámoslo en vivo. Abran estas demos en el navegador y experimenten en grupo:</p>
+      <ul>
+        <li><strong>Red neuronal en vivo</strong> — <a href="https://playground.tensorflow.org/" target="_blank" rel="noopener">playground.tensorflow.org</a></li>
+        <li><strong>Aprendizaje supervisado y overfitting</strong> — <a href="https://r2d3.us/visual-intro-to-machine-learning-part-1/" target="_blank" rel="noopener">r2d3.us</a></li>
+        <li><strong>Aprendizaje por refuerzo</strong> — <a href="https://cs.stanford.edu/people/karpathy/reinforcejs/gridworld_td.html" target="_blank" rel="noopener">REINFORCEjs Gridworld</a></li>
+        <li><strong>Clasificación en vivo</strong> — <a href="https://quickdraw.withgoogle.com/" target="_blank" rel="noopener">Quick, Draw!</a></li>
+        <li><strong>Entrenar sin código</strong> — <a href="https://teachablemachine.withgoogle.com/" target="_blank" rel="noopener">Teachable Machine</a></li>
+      </ul>
+      <div class="caja idea"><span class="et">Todas juntas</span>Hub de demos del curso: <a href="../recursos/demos-interactivos.html" target="_blank" rel="noopener">recursos/demos-interactivos.html</a></div>
+    </section>
+
+    <!-- 22 -->
+    <section class="slide centro">
+      <h2>Tarea para la Clase 2</h2>
+      <p style="max-width:26em">1. Escribe con tus palabras la diferencia entre aprendizaje <strong>supervisado</strong> y <strong>autosupervisado</strong> (5–6 líneas).</p>
+      <p style="max-width:26em">2. Pregúntale a Gemini/Cohere: <em>"¿Qué es un token y qué es un embedding?"</em> y trae la respuesta. <strong>No hay que entenderla aún.</strong></p>
+      <div class="caja idea" style="max-width:26em"><span class="et">Próxima clase</span>Abrimos la caja negra: tokens, embeddings y Transformers.</div>
+    </section>
+
+  </div>
+
+  <div class="progreso"></div>
+  <div class="contador"></div>
+  <button class="nav-btn" id="prev" title="Anterior">‹</button>
+  <button class="nav-btn" id="next" title="Siguiente">›</button>
+  <script src="../recursos/presentacion.js"></script>
+</body>
+</html>
