@@ -57,6 +57,13 @@ Las presentaciones de la Clase 0 y 1 ya enlazan los recursos correspondientes.
 de **1–2 horas** sobre regresión lineal: los aprendices ajustan la línea a mano, ven el **error en vivo**,
 pulsan "calcular la mejor línea" y hacen predicciones. Genera todas las gráficas en el navegador, sin instalar nada.
 
+### 📝 Tarea para entregar (Colab)
+
+[`tareas/tarea-01_clasificacion_vinos.ipynb`](tareas/tarea-01_clasificacion_vinos.ipynb) — tarea que los
+aprendices completan **por su cuenta** (celdas con `# TODO` y pistas): clasificar vinos aplicando lo de las
+Clases 0 y 1 (train/test, entrenar, evaluar con matriz de confusión, predecir). Incluye **rúbrica (100 pts)**
+e instrucciones de entrega. La solución fue verificada (árbol ≈ 94% de exactitud).
+
 ## 🧑‍🏫 Material para dictar las clases
 
 - **`presentaciones/`** — diapositivas para proyectar (Clase 0 y Clase 1).
