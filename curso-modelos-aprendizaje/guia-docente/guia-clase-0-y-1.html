@@ -41,6 +41,51 @@
     en vivo → deja que <strong>ellos la ejecuten</strong> → siguiente concepto. Nunca más de 5 minutos hablando sin tocar código.
   </div>
 
+  <!-- PANORAMA -->
+  <h2 class="nueva-pagina">🗺️ Panorama: qué veremos y dónde encaja la IA</h2>
+  <p>Esto es lo primero que conviene contarle a la clase el primer día: <strong>a dónde vamos</strong> y
+  <strong>qué tan lejos llega hoy la inteligencia artificial</strong>.</p>
+
+  <h3>¿Qué vamos a ver en todo el curso?</h3>
+  <p>El curso son 6 notebooks que van de lo básico a lo avanzado. Las Clases 0 y 1 son la base:</p>
+  <table>
+    <tr><th>#</th><th>Notebook</th><th>En una frase</th></tr>
+    <tr><td>0</td><td>Introducción y setup</td><td>Qué es ML, Colab y explorar datos <em>(esta clase)</em></td></tr>
+    <tr><td>1</td><td>Supervisado básico</td><td>Predecir números y categorías, y medir el modelo <em>(esta clase)</em></td></tr>
+    <tr><td>2</td><td>Supervisado avanzado</td><td>Pipelines, modelos potentes, validación y ajuste</td></tr>
+    <tr><td>3</td><td>No supervisado</td><td>Agrupar (clustering) y reducir dimensiones sin etiquetas</td></tr>
+    <tr><td>4</td><td>Mixto (semi-supervisado)</td><td>Aprender con pocas etiquetas</td></tr>
+    <tr><td>5</td><td>Proyecto final</td><td>Juntar todo en un proyecto propio</td></tr>
+  </table>
+  <div class="caja idea"><span class="et">Cómo lo explicas</span>
+    "Hoy sembramos la base: entender qué es aprender de datos y hacer nuestros primeros modelos.
+    Clase a clase vamos subiendo el nivel hasta un proyecto completo."
+  </div>
+
+  <h3>Los niveles de la IA (y en cuál estamos)</h3>
+  <p>Hay dos formas útiles de "ordenar" la IA. La primera es como <strong>muñecas rusas</strong> (una dentro de otra):</p>
+  <pre>  INTELIGENCIA ARTIFICIAL  (que una máquina imite comportamiento "inteligente")
+    └─ MACHINE LEARNING    (aprende de datos, sin reglas escritas a mano)   ← AQUÍ estamos
+         └─ DEEP LEARNING  (ML con redes neuronales; potencia a los LLM como ChatGPT)</pre>
+  <p>Todo lo del curso vive en el nivel <strong>Machine Learning</strong>.</p>
+
+  <p>La segunda forma ordena la IA por <strong>qué tan capaz es</strong>:</p>
+  <table>
+    <tr><th>Nivel</th><th>Qué es</th><th>¿Existe hoy?</th></tr>
+    <tr><td><strong>IA estrecha (ANI)</strong></td><td>Experta en <strong>UNA</strong> tarea concreta (recomendar videos, reconocer voz, traducir, jugar ajedrez, ChatGPT).</td><td><strong>Sí — es toda la IA que existe hoy</strong></td></tr>
+    <tr><td><strong>IA general (AGI)</strong></td><td>Igualaría a un humano en <strong>cualquier</strong> tarea intelectual.</td><td>No, todavía es una meta</td></tr>
+    <tr><td><strong>Superinteligencia (ASI)</strong></td><td>Superaría al humano en <strong>todo</strong>.</td><td>No, es hipotética</td></tr>
+  </table>
+  <div class="caja alerta"><span class="et">El punto clave para la clase</span>
+    <strong>Estamos en la IA estrecha (ANI).</strong> Cada modelo que construiremos (predecir una propina,
+    clasificar una flor, agrupar clientes) resuelve <strong>una sola tarea</strong>. No "piensa" ni "entiende":
+    encuentra patrones en datos.
+  </div>
+  <div class="caja ojo"><span class="et">Pregunta que seguro te harán</span>
+    <strong>"¿Y ChatGPT no es una IA general?"</strong> → No. Es IA <strong>estrecha muy avanzada</strong>: es
+    buenísima en tareas de lenguaje, pero no tiene consciencia ni entiende como un humano. Sigue siendo ANI.
+  </div>
+
   <!-- CHECKLIST PREVIO -->
   <h2>✅ Antes de la clase (10 min de preparación)</h2>
   <ul class="checklist">
@@ -212,6 +257,232 @@
     <strong>"¿Cuál modelo es mejor, kNN o árbol?"</strong> → Depende de los datos; por eso probamos varios y comparamos. ·
     <strong>"¿100% de exactitud no es sospechoso?"</strong> → En Iris es normal porque es un problema fácil y pequeño; en datos reales casi nunca pasa. ·
     <strong>"¿Qué es un buen R²?"</strong> → Depende del problema; más cerca de 1 es mejor, pero 0.5 puede ser útil según el caso.
+  </div>
+
+  <!-- CÓDIGO CELDA POR CELDA -->
+  <h2 class="nueva-pagina">🔬 Parte 4 — Entendiendo el código, celda por celda</h2>
+  <p>Aquí explicamos <strong>qué hace cada celda de código</strong> de los dos notebooks, en lenguaje simple,
+  para que puedas <strong>leer el código, entenderlo y explicarlo</strong>. No necesitas memorizar nada: con
+  captar la <em>idea</em> de cada línea es suficiente.</p>
+
+  <div class="caja idea"><span class="et">4 palabras que se repiten en TODO scikit-learn</span>
+    <strong><code>import</code></strong> = traer una herramienta para poder usarla ·
+    <strong><code>.fit(X, y)</code></strong> = <em>entrenar</em> (el modelo aprende de los datos) ·
+    <strong><code>.predict(X)</code></strong> = <em>predecir</em> con el modelo ya entrenado ·
+    <strong><code>.score(...)</code></strong> = <em>calificar</em> qué tan bien lo hace.
+    Cuando entiendes estas 4, entiendes casi todo el curso.
+  </div>
+
+  <h3 class="nueva-pagina">📘 Notebook 0 — celda por celda</h3>
+
+  <h4>Celda 1 — Comprobar que Python funciona</h4>
+  <pre><code>print("¡Hola! Colab está funcionando ✅")
+print("2 + 2 =", 2 + 2)</code></pre>
+  <ul>
+    <li><code>print(...)</code> <strong>muestra en pantalla</strong> lo que le pongas entre paréntesis.</li>
+    <li>La segunda línea muestra un texto y, separado por una coma, el <strong>resultado de una operación</strong> (4).</li>
+    <li><strong>Objetivo real:</strong> que el estudiante ejecute su primera celda y pierda el miedo.</li>
+  </ul>
+
+  <h4>Celda 2 — Importar las librerías</h4>
+  <pre><code>import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import sklearn
+sns.set_theme()          # estilo bonito para las gráficas
+print(np.__version__)    # ... imprime las versiones</code></pre>
+  <ul>
+    <li><code>import pandas as pd</code> = "trae pandas y de ahora en adelante lo llamo <code>pd</code>" (un apodo/alias).</li>
+    <li>Cada librería tiene su trabajo: <strong>numpy</strong> (números), <strong>pandas</strong> (tablas),
+    <strong>matplotlib/seaborn</strong> (gráficas), <strong>sklearn</strong> (los modelos).</li>
+    <li><code>sns.set_theme()</code> solo hace que las gráficas se vean mejor.</li>
+    <li><code>np.__version__</code> muestra el número de versión (solo para confirmar que todo cargó).</li>
+  </ul>
+
+  <h4>Celda 3 — Cargar el dataset Iris</h4>
+  <pre><code>from sklearn.datasets import load_iris
+iris = load_iris(as_frame=True)
+df = iris.frame
+df["especie"] = iris.target_names[iris.target]
+df.head()</code></pre>
+  <ul>
+    <li><code>load_iris(as_frame=True)</code> trae el dataset ya como <strong>tabla de pandas</strong>.</li>
+    <li><code>df = iris.frame</code> guarda esa tabla en una variable llamada <code>df</code> (de <em>dataframe</em>, "tabla").</li>
+    <li>La línea de <code>especie</code> <strong>crea una columna nueva</strong> con el nombre de la flor
+    (setosa/versicolor/virginica) en vez de un número 0/1/2, para que se lea fácil.</li>
+    <li><code>df.head()</code> muestra las <strong>primeras 5 filas</strong> para echar un vistazo.</li>
+  </ul>
+  <div class="caja ojo"><span class="et">Qué decir</span>"Cada fila es una flor; cada columna, una medida. La última columna es la respuesta: su especie."</div>
+
+  <h4>Celda 4 — Explorar la tabla</h4>
+  <pre><code>print("Forma:", df.shape)
+print(df["especie"].value_counts())
+df.describe()</code></pre>
+  <ul>
+    <li><code>df.shape</code> dice <strong>(cuántas filas, cuántas columnas)</strong> → (150, 6).</li>
+    <li><code>df["especie"].value_counts()</code> <strong>cuenta cuántas hay de cada especie</strong> (50 y 50 y 50).</li>
+    <li><code>df.describe()</code> da <strong>estadísticas</strong> de cada columna numérica: promedio, mínimo, máximo, etc.</li>
+    <li><strong>Mensaje:</strong> siempre miramos los datos <em>antes</em> de modelar.</li>
+  </ul>
+
+  <h4>Celda 5 — Primera gráfica (scatter)</h4>
+  <pre><code>sns.scatterplot(data=df, x="petal length (cm)", y="petal width (cm)", hue="especie")
+plt.show()</code></pre>
+  <ul>
+    <li><code>scatterplot</code> dibuja un <strong>punto por flor</strong>: posición según largo (x) y ancho (y) del pétalo.</li>
+    <li><code>hue="especie"</code> pinta cada especie de un <strong>color distinto</strong>.</li>
+    <li><code>plt.show()</code> muestra la gráfica.</li>
+    <li><strong>Lo importante:</strong> se ven <strong>3 grupos separados</strong> → por eso un modelo podrá distinguirlas (eso es la Clase 1).</li>
+  </ul>
+
+  <h4>Celda 6 — Bonus: pairplot</h4>
+  <pre><code>sns.pairplot(df, hue="especie")
+plt.show()</code></pre>
+  <ul>
+    <li>Dibuja <strong>todas las combinaciones</strong> de medidas a la vez, en una cuadrícula de gráficas.</li>
+    <li>Sirve para ver rápido qué medidas separan mejor las especies. (La 7ª celda es el ejercicio, va vacía.)</li>
+  </ul>
+
+  <h3 class="nueva-pagina">📗 Notebook 1 — celda por celda</h3>
+  <p>Este notebook tiene dos mitades: <strong>Parte A (regresión)</strong> y <strong>Parte B (clasificación)</strong>,
+  más una <strong>Parte C (overfitting)</strong>. El patrón siempre es el mismo:
+  <em>separar datos → dividir train/test → entrenar (<code>fit</code>) → evaluar</em>.</p>
+
+  <h4>Celda 1 — Importar librerías</h4>
+  <pre><code>import numpy as np, pandas as pd
+import matplotlib.pyplot as plt, seaborn as sns
+sns.set_theme()</code></pre>
+  <ul><li>Lo mismo que en el Notebook 0: trae las herramientas que usaremos.</li></ul>
+
+  <h4>Celdas 2–3 — Cargar propinas y graficarlas (Parte A)</h4>
+  <pre><code>tips = sns.load_dataset("tips")
+tips.head()
+# ...
+sns.scatterplot(data=tips, x="total_bill", y="tip")
+plt.show()</code></pre>
+  <ul>
+    <li><code>load_dataset("tips")</code> descarga una tabla de propinas de restaurante (necesita internet, Colab lo tiene).</li>
+    <li>El scatter muestra <strong>total de la cuenta (x)</strong> vs <strong>propina (y)</strong>. Se ve que suben juntas.</li>
+    <li><strong>Qué preguntar:</strong> "¿la propina crece con la cuenta?" → sí → una línea puede describir esa relación.</li>
+  </ul>
+
+  <h4>Celda 4 — Separar X e y</h4>
+  <pre><code>X = tips[["total_bill"]]   # lo que ENTRA (dobles corchetes = tabla)
+y = tips["tip"]            # lo que queremos PREDECIR</code></pre>
+  <ul>
+    <li><strong>X</strong> = las <em>features</em> (entradas). Aquí, solo el total de la cuenta.</li>
+    <li><strong>y</strong> = el <em>objetivo</em> (la respuesta). Aquí, la propina.</li>
+    <li>El detalle de los <strong>dobles corchetes</strong> en X es porque scikit-learn espera una tabla (2D) como entrada.</li>
+  </ul>
+
+  <h4>Celda 5 — Dividir en entrenamiento y prueba</h4>
+  <pre><code>from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)</code></pre>
+  <ul>
+    <li><code>train_test_split</code> parte los datos en dos: <strong>80% para aprender</strong> y <strong>20% para examinar</strong>.</li>
+    <li><code>test_size=0.2</code> = 20% para prueba. <code>random_state=42</code> = fija el azar para que siempre salga igual (reproducible).</li>
+    <li>Devuelve <strong>4 piezas</strong>: entradas y respuestas, de train y de test.</li>
+    <li><strong>Este es EL concepto clave</strong> (usa la analogía del examen).</li>
+  </ul>
+
+  <h4>Celda 6 — Entrenar la regresión lineal</h4>
+  <pre><code>from sklearn.linear_model import LinearRegression
+modelo = LinearRegression()
+modelo.fit(X_train, y_train)     # AQUÍ aprende la línea</code></pre>
+  <ul>
+    <li><code>LinearRegression()</code> crea el modelo (aún "vacío", no sabe nada).</li>
+    <li><code>.fit(X_train, y_train)</code> = <strong>entrenar</strong>: encuentra la mejor línea que relaciona cuenta → propina.</li>
+    <li>Luego imprime la <strong>fórmula aprendida</strong> (una pendiente y un punto de partida): "por cada dólar de cuenta, la propina sube tanto".</li>
+  </ul>
+
+  <h4>Celda 7 — Evaluar (MAE y R²)</h4>
+  <pre><code>from sklearn.metrics import mean_absolute_error, r2_score
+pred = modelo.predict(X_test)
+mean_absolute_error(y_test, pred)   # error promedio en dólares
+r2_score(y_test, pred)              # qué tan bien explica (0 a 1)</code></pre>
+  <ul>
+    <li><code>.predict(X_test)</code> = el modelo <strong>predice</strong> la propina de las cuentas que <em>no</em> vio.</li>
+    <li><code>mean_absolute_error</code> compara predicción vs realidad → "en promedio nos equivocamos por $X".</li>
+    <li><code>r2_score</code> → cercano a 1 es bueno.</li>
+  </ul>
+
+  <h4>Celdas 8–9 — Dibujar la línea y predecir un caso nuevo</h4>
+  <pre><code>plt.plot(x_linea, modelo.predict(x_linea), color="red")   # la línea aprendida
+# ...
+cuenta = pd.DataFrame({"total_bill": [50]})
+modelo.predict(cuenta)      # propina estimada para una cuenta de $50</code></pre>
+  <ul>
+    <li>La primera dibuja en <strong>rojo</strong> lo que el modelo aprendió, encima de los puntos reales.</li>
+    <li>La segunda <strong>usa el modelo</strong> con un dato inventado ($50) para ver su predicción. Así se usa un modelo en la vida real.</li>
+  </ul>
+
+  <h4>Celda 10 — Empieza la Parte B: cargar Iris y dividir</h4>
+  <pre><code>iris = load_iris(as_frame=True)
+X = iris.data      # las 4 medidas
+y = iris.target    # 0,1,2 = especie
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)</code></pre>
+  <ul>
+    <li>Ahora <strong>X son las 4 medidas</strong> de la flor e <strong>y es la especie</strong> (como número).</li>
+    <li>Mismo <code>train_test_split</code> de antes: el patrón se repite.</li>
+  </ul>
+
+  <h4>Celda 11 — Modelo 1: kNN</h4>
+  <pre><code>from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train, y_train)
+accuracy_score(y_test, knn.predict(X_test))   # % de aciertos</code></pre>
+  <ul>
+    <li><strong>kNN</strong> clasifica una flor nueva mirando sus <strong>5 vecinas más parecidas</strong> y votando.</li>
+    <li>Mismo trío de siempre: crear → <code>fit</code> (entrenar) → <code>predict</code> + <code>accuracy_score</code> (evaluar).</li>
+    <li><code>accuracy_score</code> = <strong>exactitud</strong>: porcentaje de flores del test que acertó.</li>
+  </ul>
+
+  <h4>Celda 12 — Modelo 2: árbol de decisión</h4>
+  <pre><code>from sklearn.tree import DecisionTreeClassifier
+arbol = DecisionTreeClassifier(max_depth=3, random_state=42)
+arbol.fit(X_train, y_train)
+accuracy_score(y_test, arbol.predict(X_test))</code></pre>
+  <ul>
+    <li>El <strong>árbol</strong> aprende reglas sí/no ("¿el pétalo mide más de X?"). <code>max_depth=3</code> limita cuántas preguntas encadena (para no memorizar).</li>
+    <li>Se entrena y evalúa igual que el kNN, y se comparan las exactitudes.</li>
+  </ul>
+
+  <h4>Celda 13 — Matriz de confusión</h4>
+  <pre><code>from sklearn.metrics import confusion_matrix, classification_report, ConfusionMatrixDisplay
+cm = confusion_matrix(y_test, pred)
+ConfusionMatrixDisplay(cm, display_labels=nombres).plot()
+classification_report(y_test, pred, target_names=nombres)</code></pre>
+  <ul>
+    <li>La <strong>matriz</strong> es una tabla: filas = especie real, columnas = lo que predijo. La <strong>diagonal son los aciertos</strong>.</li>
+    <li><code>classification_report</code> da precision/recall/F1 por especie (métricas más finas; con mencionarlas basta en este nivel).</li>
+  </ul>
+
+  <h4>Celda 14 — Predecir una flor nueva</h4>
+  <pre><code>flor = pd.DataFrame([[5.1, 3.5, 1.4, 0.2]], columns=iris.feature_names)
+nombres[arbol.predict(flor)[0]]     # devuelve el nombre de la especie</code></pre>
+  <ul>
+    <li>Creamos una flor con 4 medidas inventadas y el árbol dice qué especie es. Igual que el caso de la propina, pero con categorías.</li>
+  </ul>
+
+  <h4>Celda 15 — Overfitting (Parte C)</h4>
+  <pre><code>for d in range(1, 11):
+    m = DecisionTreeClassifier(max_depth=d, random_state=42).fit(X_train, y_train)
+    train_scores.append(m.score(X_train, y_train))
+    test_scores.append(m.score(X_test, y_test))
+# ... luego grafica train vs test</code></pre>
+  <ul>
+    <li>Es un <strong>bucle</strong> (<code>for</code>): entrena un árbol con profundidad 1, 2, 3… hasta 10.</li>
+    <li><code>m.score(...)</code> = exactitud; guardamos la de <strong>train</strong> y la de <strong>test</strong> en cada vuelta.</li>
+    <li>La gráfica muestra que el train sube a 100% pero el test se estanca → <strong>overfitting</strong> (memoriza, no aprende).</li>
+    <li>(La última celda es el ejercicio, va vacía.)</li>
+  </ul>
+
+  <div class="caja idea"><span class="et">La gran conclusión</span>
+    Todos los modelos de scikit-learn se usan igual: <strong>crear → <code>fit</code> → <code>predict</code> → evaluar</strong>.
+    Cambia el modelo (kNN, árbol, regresión…), pero <strong>el patrón es siempre el mismo</strong>. Eso es lo que
+    tus estudiantes deben interiorizar.
   </div>
 
   <!-- ERRORES COMUNES -->
