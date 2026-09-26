@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratorio: Regresión lineal paso a paso</title>
+<style>
+  :root{
+    --verde:#39a900; --verde-osc:#2b7d00; --azul:#00304d; --tinta:#1b2733;
+    --gris:#5b6b7b; --gris-cl:#eef2f5; --blanco:#fff; --amarillo:#ffcf3f; --rojo:#e5484d;
+    --sombra:0 8px 30px rgba(0,48,77,.12); --fuente:"Segoe UI",Roboto,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--fuente);background:#f4f7fa;color:var(--tinta);line-height:1.55}
+  header{background:linear-gradient(135deg,var(--azul),#024b6e 60%,var(--verde-osc));color:#fff;padding:34px 22px 26px;text-align:center}
+  header .marca{color:#bfe6ff;font-weight:800;letter-spacing:2px;font-size:12.5px}
+  header h1{font-size:clamp(24px,4vw,38px);margin:6px 0}
+  header p{color:#d7f3c8;max-width:60ch;margin:0 auto;font-size:clamp(14px,2vw,17px)}
+  .wrap{max-width:1000px;margin:0 auto;padding:22px 16px 60px}
+
+  .lab{background:#fff;border-radius:16px;box-shadow:var(--sombra);padding:18px;margin:18px 0;border-top:6px solid var(--verde)}
+  .lab-grid{display:grid;grid-template-columns:1fr;gap:16px}
+  @media(min-width:820px){.lab-grid{grid-template-columns:1.15fr .85fr}}
+  canvas{width:100%;height:auto;background:#fff;border:1px solid #dfe7ee;border-radius:10px}
+
+  .controls label{display:block;font-weight:700;color:var(--azul);margin:12px 0 3px;font-size:14px}
+  .controls .val{color:var(--verde-osc);font-weight:800}
+  input[type=range]{width:100%;accent-color:var(--verde)}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+  button{background:var(--verde);color:#fff;border:none;border-radius:9px;padding:10px 14px;font-weight:700;font-size:14px;cursor:pointer;transition:.15s}
+  button:hover{background:var(--verde-osc)}
+  button.sec{background:#fff;color:var(--azul);border:2px solid var(--azul)}
+  button.sec:hover{background:var(--gris-cl)}
+  input[type=number]{width:90px;padding:8px;border:1px solid #cdd8e1;border-radius:8px;font-size:14px}
+  .chk{display:flex;align-items:center;gap:7px;margin-top:12px;font-size:14px;font-weight:600;color:var(--tinta)}
+
+  .marcador{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+  .metrica{background:var(--gris-cl);border-radius:10px;padding:10px 12px;text-align:center}
+  .metrica .n{font-size:26px;font-weight:800;color:var(--azul);line-height:1}
+  .metrica .t{font-size:11.5px;color:var(--gris);text-transform:uppercase;letter-spacing:.03em;margin-top:4px}
+  #estado{margin-top:10px;padding:10px 12px;border-radius:10px;font-weight:700;text-align:center;background:#fdecec;color:#a5262a}
+  #estado.medio{background:#fff8e2;color:#8a6100}
+  #estado.bien{background:#eef8e6;color:#1f7a1f}
+
+  .paso{background:#fff;border-radius:14px;box-shadow:var(--sombra);padding:16px 20px;margin:16px 0;border-left:6px solid var(--verde)}
+  .paso h2{color:var(--azul);font-size:20px;display:flex;align-items:center;gap:10px}
+  .paso .num{background:var(--verde);color:#fff;border-radius:50%;width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;flex:0 0 auto}
+  .paso p, .paso li{font-size:15px;margin:6px 0}
+  .paso ul,.paso ol{padding-left:22px}
+  code{background:var(--gris-cl);color:#b5179e;padding:1px 6px;border-radius:5px;font-family:Consolas,monospace;font-size:.92em}
+  .caja{background:#eef8e6;border-left:5px solid var(--verde);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14.5px}
+  .caja.ojo{background:#fff8e2;border-color:var(--amarillo)}
+  details{background:var(--gris-cl);border-radius:8px;padding:8px 14px;margin:8px 0}
+  summary{cursor:pointer;font-weight:700;color:var(--azul)}
+  details p{margin-top:6px}
+  .check{list-style:none;padding-left:0}
+  .check li{padding-left:30px;position:relative;margin:8px 0}
+  .check li::before{content:"";position:absolute;left:0;top:2px;width:18px;height:18px;border:2px solid var(--verde-osc);border-radius:4px}
+  footer{text-align:center;color:var(--gris);font-size:13px;padding:18px}
+  .pill{display:inline-block;background:var(--verde);color:#fff;border-radius:999px;padding:3px 12px;font-weight:700;font-size:12.5px}
+</style>
+</head>
+<body>
+<header>
+  <div class="marca">CURSO DE MODELOS DE APRENDIZAJE · SENA PIEDECUESTA</div>
+  <h1>🧪 Laboratorio: Regresión lineal paso a paso</h1>
+  <p>Vas a "entrenar" tú mismo un modelo: ajusta una línea, mira cómo cambia el error y descubre la mejor predicción. Todo con gráficas en vivo.</p>
+</header>
+
+<div class="wrap">
+
+  <div class="caja ojo"><span class="pill">Duración: 1–2 horas</span> &nbsp; Trabaja de arriba hacia abajo. Cada <strong>Paso</strong> te dice qué hacer con el laboratorio de abajo. ¡Experimenta sin miedo!</div>
+
+  <!-- LABORATORIO INTERACTIVO -->
+  <div class="lab">
+    <div class="lab-grid">
+      <div>
+        <canvas id="plot" width="640" height="440"></canvas>
+      </div>
+      <div class="controls">
+        <div style="font-weight:800;color:var(--azul);font-size:15px">🎛️ Tu modelo:&nbsp; nota = <span class="val" id="mTxt">0.10</span> × horas + <span class="val" id="bTxt">2.00</span></div>
+
+        <label>Pendiente (m): cuánto sube la nota por hora — <span class="val" id="mVal">0.10</span></label>
+        <input type="range" id="m" min="-0.2" max="1" step="0.01" value="0.10">
+
+        <label>Intercepto (b): la nota cuando horas = 0 — <span class="val" id="bVal">2.00</span></label>
+        <input type="range" id="b" min="-1" max="4" step="0.05" value="2.00">
+
+        <label class="chk"><input type="checkbox" id="showRes"> Mostrar los errores (líneas rojas)</label>
+
+        <div class="marcador">
+          <div class="metrica"><div class="n" id="mae">–</div><div class="t">Error medio (MAE)</div></div>
+          <div class="metrica"><div class="n" id="mse">–</div><div class="t">Error² medio (MSE)</div></div>
+        </div>
+        <div id="estado">Ajusta la línea para reducir el error…</div>
+
+        <div class="row">
+          <button id="best">✨ Calcular la mejor línea</button>
+          <button class="sec" id="reset">↺ Reiniciar</button>
+        </div>
+
+        <label style="margin-top:16px">🔮 Predecir: ¿qué nota para cuántas horas?</label>
+        <div class="row">
+          <input type="number" id="px" min="0" max="12" step="0.5" value="5">
+          <button id="predBtn">Predecir</button>
+          <span id="predOut" style="font-weight:800;color:var(--verde-osc)"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASOS -->
+  <div class="paso">
+    <h2><span class="num">1</span> Mira los datos</h2>
+    <p>Cada punto azul es un estudiante: en el eje <strong>horizontal</strong> están las <strong>horas que estudió</strong>
+    y en el <strong>vertical</strong> la <strong>nota</strong> que sacó (de 0 a 5).</p>
+    <p><strong>Tarea:</strong> observa la nube de puntos. ¿Ves una tendencia? Responde antes de seguir:</p>
+    <details><summary>💬 ¿Qué relación ves entre horas y nota?</summary>
+      <p>A <strong>más horas de estudio, mayor nota</strong> (una relación creciente). No es perfecta —hay algo de dispersión—
+      pero la tendencia es clara. Justo eso es lo que un modelo de regresión va a "aprender".</p>
+    </details>
+  </div>
+
+  <div class="paso">
+    <h2><span class="num">2</span> Dibuja tu propia línea</h2>
+    <p>Una <strong>regresión lineal</strong> resume esa tendencia con una <strong>línea recta</strong>:
+    <code>nota = m × horas + b</code>.</p>
+    <ul>
+      <li><strong>m</strong> (pendiente): qué tanto sube la nota por cada hora extra.</li>
+      <li><strong>b</strong> (intercepto): dónde arranca la línea (la nota con 0 horas).</li>
+    </ul>
+    <p><strong>Tarea:</strong> mueve los deslizadores <code>m</code> y <code>b</code> del laboratorio hasta que la línea verde
+    pase <em>lo más cerca posible</em> de todos los puntos.</p>
+    <div class="caja">La línea se actualiza al instante. No busques que toque todos los puntos (imposible): busca que quede "en el medio" de la nube.</div>
+  </div>
+
+  <div class="paso">
+    <h2><span class="num">3</span> Mide el error</h2>
+    <p>¿Cómo sabemos si una línea es buena? Midiendo qué tan lejos queda de los puntos. Esa distancia es el <strong>error</strong>.</p>
+    <p><strong>Tarea:</strong> activa la casilla <strong>"Mostrar los errores"</strong>. Verás una línea roja por cada punto:
+    es lo que tu modelo se equivoca en ese estudiante.</p>
+    <ul>
+      <li><strong>MAE</strong> = el error promedio (en puntos de nota). Más pequeño = mejor.</li>
+      <li><strong>MSE</strong> = parecido, pero castiga más los errores grandes.</li>
+    </ul>
+    <p><strong>Reto:</strong> ajusta <code>m</code> y <code>b</code> para dejar el <strong>MAE lo más bajo</strong> que puedas. ¿Cuánto lograste?</p>
+    <details><summary>💬 ¿Por qué no puedo dejar el error en 0?</summary>
+      <p>Porque los datos reales tienen "ruido": dos personas que estudian lo mismo no sacan exactamente la misma nota.
+      El modelo captura la <strong>tendencia general</strong>, no cada caso perfecto.</p>
+    </details>
+  </div>
+
+  <div class="paso">
+    <h2><span class="num">4</span> Deja que la máquina encuentre la mejor línea</h2>
+    <p>Ajustar a mano es difícil. El computador puede encontrar la línea con el <strong>menor error posible</strong> con una fórmula
+    (el método de "mínimos cuadrados"). Eso es, literalmente, <strong>entrenar el modelo</strong>.</p>
+    <p><strong>Tarea:</strong> pulsa <strong>"✨ Calcular la mejor línea"</strong> y observa cómo se acomoda sola.</p>
+    <ul>
+      <li>Compara el MAE de <em>tu</em> línea con el de la línea óptima. ¿Te acercaste?</li>
+      <li>Anota los valores finales de <code>m</code> y <code>b</code> que encontró la máquina.</li>
+    </ul>
+    <div class="caja">Esto es exactamente lo que hace <code>LinearRegression().fit(X, y)</code> en Python (Notebook 01): busca la mejor línea por ti.</div>
+  </div>
+
+  <div class="paso">
+    <h2><span class="num">5</span> Usa el modelo para predecir</h2>
+    <p>Un modelo entrenado sirve para <strong>predecir casos nuevos</strong>.</p>
+    <p><strong>Tarea:</strong> en el laboratorio, escribe un número de horas (por ejemplo <strong>7</strong>) y pulsa <strong>"Predecir"</strong>.
+    Aparecerá una estrella en la línea con la nota estimada.</p>
+    <ol>
+      <li>¿Qué nota predice para <strong>7 horas</strong>?</li>
+      <li>¿Y para <strong>0 horas</strong>? (fíjate que coincide con <code>b</code>).</li>
+      <li>Prueba <strong>12 horas</strong>. ¿La predicción tiene sentido? ¿Puede una nota pasar de 5? 🤔</li>
+    </ol>
+    <details><summary>💬 ¿Por qué 12 horas puede dar una nota rara?</summary>
+      <p>Porque estaríamos <strong>extrapolando</strong>: prediciendo fuera del rango de datos que el modelo vio (0–9 horas).
+      Los modelos son confiables <em>dentro</em> del rango con el que aprendieron.</p>
+    </details>
+  </div>
+
+  <div class="paso">
+    <h2><span class="num">6</span> Reto final</h2>
+    <p>Responde en tu cuaderno (o coméntalo con el grupo):</p>
+    <ol>
+      <li>Con la mejor línea, ¿cuál es el MAE? ¿Qué significa ese número en "puntos de nota"?</li>
+      <li>Si un compañero estudia <strong>2 horas más</strong>, ¿cuánto sube su nota estimada? (pista: es la pendiente <code>m</code>).</li>
+      <li>Escribe con tus palabras la diferencia entre <strong>entrenar</strong> (encontrar la línea) y <strong>predecir</strong> (usarla).</li>
+    </ol>
+    <h2 style="font-size:17px;margin-top:14px;color:var(--azul)">✅ Lo lograste si…</h2>
+    <ul class="check">
+      <li>Ajustaste la línea a mano y bajaste el error mirando las líneas rojas.</li>
+      <li>Usaste "Calcular la mejor línea" y comparaste con tu intento.</li>
+      <li>Hiciste al menos 3 predicciones y entendiste qué es extrapolar.</li>
+      <li>Puedes explicar qué son <code>m</code> y <code>b</code>.</li>
+    </ul>
+    <div class="caja">🎉 <strong>¡Felicidades!</strong> Acabas de entrenar y usar tu primer modelo de Machine Learning. En el Notebook 01 harás esto mismo con código Python.</div>
+  </div>
+
+</div>
+
+<footer>Curso de Modelos de Aprendizaje · SENA Piedecuesta · Laboratorio de regresión · Pablo Andrés Carvajal — pablocarvajal.dev</footer>
+
+<script>
+// ---------- Datos: horas de estudio (x) vs nota 0-5 (y) ----------
+const datos = [
+  [1,1.2],[2,1.8],[2,2.3],[3,2.6],[4,2.9],[4,3.4],
+  [5,3.1],[6,3.8],[6,4.2],[7,4.1],[8,4.6],[9,4.8]
+];
+const XMAX=10, YMAX=5;
+
+const cv = document.getElementById("plot");
+const ctx = cv.getContext("2d");
+const PAD = {l:52, r:18, t:18, b:44};
+
+// escalas datos -> pixeles
+function px(x){ return PAD.l + (x/XMAX)*(cv.width-PAD.l-PAD.r); }
+function py(y){ return cv.height-PAD.b - (y/YMAX)*(cv.height-PAD.t-PAD.b); }
+
+let mSlider=document.getElementById("m"), bSlider=document.getElementById("b");
+let showRes=document.getElementById("showRes");
+let predX=null, predY=null;
+
+function m(){ return parseFloat(mSlider.value); }
+function b(){ return parseFloat(bSlider.value); }
+
+function metricas(){
+  let sa=0, sc=0;
+  for(const [x,y] of datos){ const e=y-(m()*x+b()); sa+=Math.abs(e); sc+=e*e; }
+  return {mae:sa/datos.length, mse:sc/datos.length};
+}
+
+function dibujar(){
+  ctx.clearRect(0,0,cv.width,cv.height);
+  // grid + ejes
+  ctx.strokeStyle="#e6edf3"; ctx.fillStyle="#5b6b7b"; ctx.lineWidth=1;
+  ctx.font="12px Segoe UI, Arial"; ctx.textAlign="center"; ctx.textBaseline="top";
+  for(let x=0;x<=XMAX;x++){ ctx.beginPath(); ctx.moveTo(px(x),py(0)); ctx.lineTo(px(x),py(YMAX)); ctx.stroke(); ctx.fillText(x, px(x), py(0)+6); }
+  ctx.textAlign="right"; ctx.textBaseline="middle";
+  for(let y=0;y<=YMAX;y++){ ctx.beginPath(); ctx.moveTo(px(0),py(y)); ctx.lineTo(px(XMAX),py(y)); ctx.stroke(); ctx.fillText(y.toFixed(0), px(0)-8, py(y)); }
+  // etiquetas ejes
+  ctx.fillStyle="#00304d"; ctx.font="bold 13px Segoe UI, Arial";
+  ctx.textAlign="center"; ctx.textBaseline="top"; ctx.fillText("Horas de estudio", (px(0)+px(XMAX))/2, cv.height-20);
+  ctx.save(); ctx.translate(14,(py(0)+py(YMAX))/2); ctx.rotate(-Math.PI/2); ctx.fillText("Nota (0–5)",0,0); ctx.restore();
+
+  // residuales
+  if(showRes.checked){
+    ctx.strokeStyle="#e5484d"; ctx.lineWidth=2;
+    for(const [x,y] of datos){ ctx.beginPath(); ctx.moveTo(px(x),py(y)); ctx.lineTo(px(x),py(m()*x+b())); ctx.stroke(); }
+  }
+  // línea del modelo
+  ctx.strokeStyle="#2b7d00"; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.moveTo(px(0),py(b())); ctx.lineTo(px(XMAX),py(m()*XMAX+b())); ctx.stroke();
+  // puntos
+  ctx.fillStyle="#00304d";
+  for(const [x,y] of datos){ ctx.beginPath(); ctx.arc(px(x),py(y),5,0,7); ctx.fill(); }
+  // predicción
+  if(predX!==null){
+    const yy=m()*predX+b();
+    ctx.strokeStyle="#1d4ed8"; ctx.setLineDash([5,4]); ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(px(predX),py(0)); ctx.lineTo(px(predX),py(yy)); ctx.lineTo(px(0),py(yy)); ctx.stroke();
+    ctx.setLineDash([]);
+    // estrella
+    ctx.fillStyle="#1d4ed8"; ctx.beginPath(); ctx.arc(px(predX),py(yy),7,0,7); ctx.fill();
+  }
+  // texto métricas
+  const {mae,mse}=metricas();
+  document.getElementById("mae").textContent=mae.toFixed(3);
+  document.getElementById("mse").textContent=mse.toFixed(3);
+  document.getElementById("mVal").textContent=m().toFixed(2);
+  document.getElementById("bVal").textContent=b().toFixed(2);
+  document.getElementById("mTxt").textContent=m().toFixed(2);
+  document.getElementById("bTxt").textContent=b().toFixed(2);
+  const est=document.getElementById("estado");
+  if(mae<0.30){ est.className="bien"; est.textContent="¡Excelente! Tu línea está muy cerca de la mejor posible 🎯"; }
+  else if(mae<0.55){ est.className="medio"; est.textContent="Vas bien… intenta bajar un poco más el error."; }
+  else { est.className=""; est.textContent="Ajusta la línea para reducir el error…"; }
+}
+
+// mínimos cuadrados
+function mejorLinea(){
+  const n=datos.length;
+  let sx=0,sy=0,sxy=0,sxx=0;
+  for(const [x,y] of datos){ sx+=x; sy+=y; sxy+=x*y; sxx+=x*x; }
+  const mm=(n*sxy - sx*sy)/(n*sxx - sx*sx);
+  const bb=(sy - mm*sx)/n;
+  return {mm,bb};
+}
+
+// animación hacia la mejor línea
+function animarA(mm,bb){
+  const m0=m(), b0=b(); let t=0; const pasos=30;
+  const id=setInterval(()=>{
+    t++; const k=t/pasos;
+    mSlider.value=(m0+(mm-m0)*k).toFixed(3);
+    bSlider.value=(b0+(bb-b0)*k).toFixed(3);
+    dibujar();
+    if(t>=pasos){ clearInterval(id); }
+  },20);
+}
+
+mSlider.addEventListener("input",dibujar);
+bSlider.addEventListener("input",dibujar);
+showRes.addEventListener("change",dibujar);
+document.getElementById("best").addEventListener("click",()=>{ const {mm,bb}=mejorLinea(); animarA(mm,bb); });
+document.getElementById("reset").addEventListener("click",()=>{ mSlider.value="0.10"; bSlider.value="2.00"; predX=null; document.getElementById("predOut").textContent=""; dibujar(); });
+document.getElementById("predBtn").addEventListener("click",()=>{
+  const v=parseFloat(document.getElementById("px").value);
+  if(isNaN(v)) return;
+  predX=v; predY=m()*v+b();
+  document.getElementById("predOut").textContent="→ nota ≈ "+predY.toFixed(2);
+  dibujar();
+});
+
+dibujar();
+</script>
+</body>
+</html>
