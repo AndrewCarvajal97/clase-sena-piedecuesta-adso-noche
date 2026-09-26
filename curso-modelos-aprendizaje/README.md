@@ -51,6 +51,12 @@ Reúne herramientas para **ver y experimentar** cada tema:
 
 Las presentaciones de la Clase 0 y 1 ya enlazan los recursos correspondientes.
 
+### 🧪 Ejercicio interactivo (para los aprendices)
+
+[`ejercicios/laboratorio-regresion.html`](ejercicios/laboratorio-regresion.html) — un laboratorio guiado
+de **1–2 horas** sobre regresión lineal: los aprendices ajustan la línea a mano, ven el **error en vivo**,
+pulsan "calcular la mejor línea" y hacen predicciones. Genera todas las gráficas en el navegador, sin instalar nada.
+
 ## 🧑‍🏫 Material para dictar las clases
 
 - **`presentaciones/`** — diapositivas para proyectar (Clase 0 y Clase 1).
