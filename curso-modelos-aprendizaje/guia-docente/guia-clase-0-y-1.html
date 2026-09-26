@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Guía del docente — Clases 0 y 1</title>
+  <link rel="stylesheet" href="guia.css">
+</head>
+<body>
+
+  <!-- PORTADA -->
+  <div class="portada">
+    <div class="marca">CURSO DE MODELOS DE APRENDIZAJE · GOOGLE COLAB</div>
+    <h1>Guía del docente<br>Clases 0 y 1</h1>
+    <p class="sub">Cómo entender la clase y cómo explicarla (guion paso a paso)</p>
+    <div class="banda"></div>
+    <div class="datos">
+      Para el docente · úsala junto con los notebooks 00 y 01<br>
+      Pablo Andrés Carvajal — Desarrollador Full Stack<br>
+      <a href="https://pablocarvajal.dev">pablocarvajal.dev</a>
+    </div>
+  </div>
+
+  <!-- CÓMO USAR -->
+  <div class="objetivos">
+    <h3>🎯 Para qué sirve esta guía</h3>
+    <p>Este documento es <strong>solo para ti (el docente)</strong>. No es para proyectar. Te explica
+    <strong>cada concepto con palabras sencillas</strong>, te da un <strong>guion</strong> de qué decir y qué mostrar,
+    las <strong>preguntas frecuentes</strong> de los estudiantes con su respuesta, y los <strong>errores comunes</strong>.
+    La idea: que puedas entender el tema aunque no seas experto y dictarlo con seguridad.</p>
+  </div>
+
+  <p><strong>Tres materiales por clase y cómo se usan juntos:</strong></p>
+  <table>
+    <tr><th>Material</th><th>Quién lo ve</th><th>Cuándo</th></tr>
+    <tr><td><strong>Presentación</strong> (<code>presentaciones/</code>)</td><td>Se proyecta a todos</td><td>Para introducir cada tema antes de tocar código</td></tr>
+    <tr><td><strong>Notebook</strong> (<code>notebooks/</code>)</td><td>Tú lo ejecutas y ellos siguen</td><td>La parte práctica: correr celdas en vivo</td></tr>
+    <tr><td><strong>Esta guía</strong></td><td>Solo tú</td><td>Para prepararte y consultar mientras enseñas</td></tr>
+  </table>
+  <div class="caja idea"><span class="et">El ritmo ideal</span>
+    Explica un concepto con <strong>1–2 diapositivas</strong> → cámbiate al <strong>notebook</strong> y ejecuta esa parte
+    en vivo → deja que <strong>ellos la ejecuten</strong> → siguiente concepto. Nunca más de 5 minutos hablando sin tocar código.
+  </div>
+
+  <!-- CHECKLIST PREVIO -->
+  <h2>✅ Antes de la clase (10 min de preparación)</h2>
+  <ul class="checklist">
+    <li>Abre <strong>Google Colab</strong> (colab.research.google.com) con tu cuenta de Google.</li>
+    <li>Sube el notebook de la clase (<strong>Archivo → Subir notebook</strong>) y <strong>ejecútalo completo una vez</strong> tú solo, para que no haya sorpresas.</li>
+    <li>Ten la <strong>presentación</strong> abierta en el navegador (doble clic al archivo <code>.html</code>).</li>
+    <li>Ten <strong>esta guía</strong> a un lado (impresa o en otra pantalla).</li>
+    <li>Comprueba el internet del salón (Colab necesita conexión).</li>
+  </ul>
+  <div class="caja ojo"><span class="et">Consejo de oro</span>
+    <strong>Ejecuta tú el notebook antes de la clase.</strong> Es la mejor forma de que te sientas seguro:
+    si ya lo viste correr una vez, sabrás exactamente qué va a pasar en cada celda.
+  </div>
+
+  <!-- FORMACIÓN DOCENTE -->
+  <h2 class="nueva-pagina">📚 Parte 1 — Lo que TÚ debes dominar</h2>
+  <p>Antes del guion, aquí tienes los conceptos explicados <em>para ti</em>, con la analogía que puedes
+  reutilizar en clase. Si entiendes bien estos 6 puntos, dominas las clases 0 y 1.</p>
+
+  <h3>1. ¿Qué es Machine Learning (ML)?</h3>
+  <p><strong>Idea central:</strong> en la programación normal, tú escribes las reglas. En ML, la máquina
+  <strong>descubre las reglas sola</strong> mirando muchos ejemplos.</p>
+  <ul>
+    <li><strong>Programación tradicional:</strong> reglas + datos → resultados. (Tú dices "si el correo dice GRATIS, es spam".)</li>
+    <li><strong>Machine Learning:</strong> datos + resultados → reglas (el "modelo"). (Le muestras 10.000 correos ya marcados y él descubre qué es spam.)</li>
+  </ul>
+  <div class="caja idea"><span class="et">Cómo lo explicas</span>
+    "Imaginen que quiero enseñarle a un niño qué es un gato. No le doy una definición; le muestro
+    muchas fotos de gatos. Con el tiempo, aprende solo. El Machine Learning es igual: aprende de ejemplos."
+  </div>
+
+  <h3>2. Los 3 tipos de aprendizaje</h3>
+  <table>
+    <tr><th>Tipo</th><th>¿Los datos traen la respuesta?</th><th>Para qué</th><th>Ejemplo</th></tr>
+    <tr><td><strong>Supervisado</strong></td><td>Sí (etiquetas)</td><td>Predecir</td><td>Predecir el precio de una casa</td></tr>
+    <tr><td><strong>No supervisado</strong></td><td>No</td><td>Descubrir grupos</td><td>Agrupar clientes parecidos</td></tr>
+    <tr><td><strong>Mixto (semi-supervisado)</strong></td><td>Pocas</td><td>Aprovechar pocas etiquetas</td><td>Clasificar con pocos datos etiquetados</td></tr>
+  </table>
+  <p>En la <strong>Clase 1</strong> nos centramos en el <strong>supervisado</strong>, que es el más común y el más fácil de entender.</p>
+
+  <h3>3. Regresión vs. Clasificación (dentro del supervisado)</h3>
+  <ul>
+    <li><strong>Regresión</strong> = predecir un <strong>número</strong> (un precio, una temperatura, una propina).</li>
+    <li><strong>Clasificación</strong> = predecir una <strong>categoría</strong> (spam/no spam, especie de flor).</li>
+  </ul>
+  <div class="caja idea"><span class="et">Truco para recordarlo</span>
+    Si la respuesta se puede poner en una regla (<strong>"¿cuánto?"</strong>) es regresión.
+    Si la respuesta es una etiqueta (<strong>"¿cuál?"</strong>) es clasificación.
+  </div>
+
+  <h3>4. Entrenamiento y prueba (train / test) — ¡el concepto más importante!</h3>
+  <p>Dividimos los datos en dos partes: con una el modelo <strong>aprende</strong> (train, ~80%) y con la otra
+  lo <strong>examinamos</strong> (test, ~20%). Nunca lo evaluamos con los mismos datos que ya vio.</p>
+  <div class="caja alerta"><span class="et">La analogía que SIEMPRE funciona</span>
+    "Sería trampa evaluar a un estudiante con el mismo examen que ya tenía las respuestas.
+    Por eso guardamos datos que el modelo nunca vio: para saber si <strong>de verdad aprendió</strong> o solo <strong>memorizó</strong>."
+  </div>
+
+  <h3>5. ¿Cómo sabemos si el modelo es bueno? (métricas)</h3>
+  <table>
+    <tr><th>Métrica</th><th>Para</th><th>Qué significa (en simple)</th></tr>
+    <tr><td><strong>MAE</strong></td><td>Regresión</td><td>En promedio, ¿por cuánto se equivoca? (ej.: "por $0.90 de propina")</td></tr>
+    <tr><td><strong>R²</strong></td><td>Regresión</td><td>Qué tan bien explica los datos: 1 = perfecto, 0 = malo</td></tr>
+    <tr><td><strong>Exactitud (accuracy)</strong></td><td>Clasificación</td><td>% de aciertos</td></tr>
+    <tr><td><strong>Matriz de confusión</strong></td><td>Clasificación</td><td>Tabla que muestra en qué acierta y en qué se confunde</td></tr>
+  </table>
+
+  <h3>6. Overfitting (sobreajuste)</h3>
+  <p>Un modelo <strong>demasiado complejo</strong> memoriza los datos de entrenamiento y falla con datos nuevos.
+  Le va perfecto en el "examen que ya vio" y mal en preguntas nuevas.</p>
+  <div class="caja idea"><span class="et">Cómo lo explicas</span>
+    "Es como el estudiante que memoriza las respuestas de memoria pero no entiende el tema:
+    si le cambias la pregunta, falla. Queremos modelos que <strong>entiendan</strong>, no que <strong>memoricen</strong>."
+  </div>
+
+  <!-- CLASE 0 -->
+  <h2 class="nueva-pagina">🟢 Parte 2 — Guion de la CLASE 0 (Introducción y setup)</h2>
+  <p><strong>Meta de la clase:</strong> que todos entiendan qué es ML, se sientan cómodos en Colab y
+  exploren su primer dataset. Notebook: <code>00_introduccion_y_setup.ipynb</code>.</p>
+  <p><strong>Duración sugerida:</strong> 1.5–2 horas (con calma, es la primera toma de contacto).</p>
+
+  <h3>Apertura (5 min) — qué decir</h3>
+  <p>"Hoy no vamos a memorizar teoría: vamos a <strong>usar</strong> inteligencia artificial escribiendo unas
+  pocas líneas y viendo resultados al instante. No necesitan instalar nada, todo corre en la nube de Google."</p>
+
+  <h3>Sección por sección</h3>
+
+  <h4>① ¿Qué es Machine Learning? (diapositivas + hablar)</h4>
+  <p>Usa la analogía del niño y los gatos (punto 1 de la Parte 1). Presenta los <strong>3 tipos</strong> con la tabla.
+  <em>No profundices</em>: solo que capten la idea. Diles que hoy es la base y que la práctica fuerte empieza en la Clase 1.</p>
+
+  <h4>② Google Colab en 1 minuto (mostrar en pantalla)</h4>
+  <p>Abre Colab y muestra en vivo:</p>
+  <ul>
+    <li>Qué es una <strong>celda de código</strong> y una de <strong>texto</strong>.</li>
+    <li>Cómo se ejecuta: <strong>Shift + Enter</strong> (hazlo con la primera celda: <code>print("¡Hola!...")</code>).</li>
+    <li>Que el número <code>[1]</code> a la izquierda indica el orden en que se ejecutó.</li>
+  </ul>
+  <div class="caja ojo"><span class="et">Pídeles que lo hagan</span>Que cada uno abra el notebook y ejecute la primera celda. No sigas hasta que todos vean el mensaje. Este momento vence el miedo inicial.</div>
+
+  <h4>③ Las librerías (celda de imports)</h4>
+  <p>Explica el <em>alias</em>: "escribimos <code>import pandas as pd</code> para no repetir 'pandas' todo el tiempo; <code>pd</code> es su apodo".
+  Menciona qué hace cada una en una frase (pandas = tablas, matplotlib/seaborn = gráficas, scikit-learn = los modelos).</p>
+
+  <h4>④ Primer dataset: Iris (celdas de carga y exploración)</h4>
+  <p>Ejecuta la carga y muestra <code>df.head()</code>. Explica que cada fila es una flor y cada columna una medida.
+  Luego <code>df.describe()</code> y <code>value_counts()</code>: "así miramos los datos antes de modelar; siempre se empieza mirando".</p>
+
+  <h4>⑤ Primera gráfica (scatter de pétalos)</h4>
+  <p>Ejecuta el <code>scatterplot</code>. Pregunta a la clase: <em>"¿ven cómo los colores forman grupos separados?"</em>.
+  Remata: "por eso una máquina podrá aprender a diferenciarlas; eso lo haremos en la próxima clase".</p>
+
+  <h4>⑥ Ejercicio + cierre</h4>
+  <p>Déjalos intentar el ejercicio del notebook (últimas filas, promedio por especie, otro scatter).
+  Cierra recordando los 3 tipos de aprendizaje y anuncia la Clase 1.</p>
+
+  <div class="caja idea"><span class="et">Preguntas frecuentes — Clase 0</span>
+    <strong>"¿Necesito saber matemáticas?"</strong> → No para este curso; usaremos librerías que hacen las cuentas. ·
+    <strong>"¿Se me borra el trabajo?"</strong> → Colab guarda en tu Google Drive si eliges "Guardar una copia en Drive". ·
+    <strong>"¿Por qué sale un número entre corchetes?"</strong> → Es el orden de ejecución de la celda. ·
+    <strong>"¿Y si una celda da error?"</strong> → Casi siempre es porque no ejecutaron una celda anterior; ejecutar desde arriba lo arregla.
+  </div>
+
+  <!-- CLASE 1 -->
+  <h2 class="nueva-pagina">🎯 Parte 3 — Guion de la CLASE 1 (Aprendizaje supervisado básico)</h2>
+  <p><strong>Meta:</strong> entrenar sus primeros modelos (regresión y clasificación), evaluarlos y entender el overfitting.
+  Notebook: <code>01_supervisado_basico.ipynb</code>. <strong>Duración:</strong> 3–4 horas.</p>
+
+  <h3>Apertura (5 min)</h3>
+  <p>"En la Clase 0 miramos datos. Hoy vamos a <strong>predecir</strong>: primero un número (cuánta propina) y luego una
+  categoría (qué especie de flor). Y aprenderemos a medir si nuestro modelo es bueno."</p>
+
+  <h3>PARTE A — Regresión: predecir un número</h3>
+  <h4>① El problema (propinas)</h4>
+  <p>Muestra el dataset <code>tips</code> y el scatter propina vs cuenta. Pregunta: <em>"¿la propina sube con la cuenta?"</em>
+  Sí → "un modelo puede aprender esa relación con una línea".</p>
+  <h4>② X, y, y train/test</h4>
+  <p>Explica: <strong>X</strong> es lo que entra (la cuenta), <strong>y</strong> es lo que queremos predecir (la propina).
+  Aplica aquí la analogía del examen (punto 4 de la Parte 1). Es EL momento clave de la clase, tómate tu tiempo.</p>
+  <h4>③ Entrenar y ver la fórmula</h4>
+  <p>Ejecuta <code>LinearRegression().fit(...)</code>. Muestra la fórmula aprendida (pendiente e intercepto):
+  "el modelo encontró la mejor línea; por cada dólar de cuenta, la propina sube tanto".</p>
+  <h4>④ Evaluar (MAE y R²) y graficar la línea</h4>
+  <p>Interpreta el <strong>MAE</strong> en dólares ("en promedio nos equivocamos por ~X") y el <strong>R²</strong> ("explica el Y% de la variación").
+  Muestra la línea roja sobre los puntos: es lo que el modelo "aprendió".</p>
+
+  <h3>PARTE B — Clasificación: predecir una categoría</h3>
+  <h4>⑤ kNN (vecinos)</h4>
+  <p>Analogía: "para saber la especie de una flor nueva, miramos las 5 flores más parecidas y votamos".
+  Ejecuta y muestra la exactitud.</p>
+  <h4>⑥ Árbol de decisión</h4>
+  <p>Analogía: "es como un juego de preguntas sí/no: ¿el pétalo mide más de X? → por aquí; ¿y de Y? → por allá".
+  Ejecuta y compara la exactitud con kNN.</p>
+  <h4>⑦ Matriz de confusión</h4>
+  <p>Ejecuta la matriz. Explícala: "la diagonal son los aciertos; fuera de la diagonal, las confusiones".
+  Señala una celda concreta: "aquí confundió 1 flor de esta especie con esta otra".</p>
+
+  <h3>PARTE C — Overfitting</h3>
+  <h4>⑧ La gráfica train vs test</h4>
+  <p>Ejecuta la celda que varía la profundidad del árbol. Señala: "miren cómo el entrenamiento sube hacia 100%,
+  pero la prueba se estanca o baja: eso es <strong>overfitting</strong>". Usa la analogía del estudiante que memoriza (punto 6).</p>
+
+  <h4>⑨ Ejercicios + cierre</h4>
+  <p>Déjalos con los ejercicios (cambiar el número de vecinos, probar otro modelo, un árbol de profundidad 1).
+  Cierra: "ya saben entrenar, evaluar y detectar overfitting; en la Clase 2 haremos modelos más potentes".</p>
+
+  <div class="caja idea"><span class="et">Preguntas frecuentes — Clase 1</span>
+    <strong>"¿Por qué el resultado da un poco distinto cada vez?"</strong> → Por el azar en la división de datos; por eso usamos <code>random_state=42</code>, para que sea reproducible. ·
+    <strong>"¿Cuál modelo es mejor, kNN o árbol?"</strong> → Depende de los datos; por eso probamos varios y comparamos. ·
+    <strong>"¿100% de exactitud no es sospechoso?"</strong> → En Iris es normal porque es un problema fácil y pequeño; en datos reales casi nunca pasa. ·
+    <strong>"¿Qué es un buen R²?"</strong> → Depende del problema; más cerca de 1 es mejor, pero 0.5 puede ser útil según el caso.
+  </div>
+
+  <!-- ERRORES COMUNES -->
+  <h2 class="nueva-pagina">🛠️ Errores comunes en Colab y cómo resolverlos</h2>
+  <table>
+    <tr><th>Síntoma</th><th>Causa probable</th><th>Solución</th></tr>
+    <tr><td><code>NameError: 'X' is not defined</code></td><td>No ejecutaron una celda anterior</td><td>Ejecutar desde arriba (Entorno de ejecución → Ejecutar todas)</td></tr>
+    <tr><td>La gráfica no aparece</td><td>Falta ejecutar la celda o falta <code>plt.show()</code></td><td>Volver a ejecutar la celda</td></tr>
+    <tr><td>Un dataset (tips/penguins) no carga</td><td>Sin internet</td><td>Revisar conexión; reintentar la celda</td></tr>
+    <tr><td>"Sesión caducada" o se reinició</td><td>Colab cerró el entorno por inactividad</td><td>Reconectar y Ejecutar todas de nuevo (los datos se recargan solos)</td></tr>
+    <tr><td>Cambié algo y ahora da error raro</td><td>Estado desordenado de celdas</td><td>Entorno de ejecución → Reiniciar y ejecutar todo</td></tr>
+  </table>
+  <div class="caja idea"><span class="et">Tu comodín universal</span>
+    Si algo se rompe en clase y no sabes por qué: <strong>Entorno de ejecución → Reiniciar y ejecutar todo</strong>.
+    Resuelve el 90% de los problemas.
+  </div>
+
+  <!-- GLOSARIO -->
+  <h2>📖 Glosario rápido</h2>
+  <table>
+    <tr><th>Término</th><th>En una frase</th></tr>
+    <tr><td><strong>Dataset</strong></td><td>La tabla de datos con la que trabajamos.</td></tr>
+    <tr><td><strong>Feature</strong></td><td>Una columna de entrada (una característica). Se guardan en <code>X</code>.</td></tr>
+    <tr><td><strong>Etiqueta / target</strong></td><td>La respuesta que queremos predecir. Se guarda en <code>y</code>.</td></tr>
+    <tr><td><strong>Modelo</strong></td><td>La "fórmula" que el algoritmo aprende de los datos.</td></tr>
+    <tr><td><strong>Entrenar (fit)</strong></td><td>El proceso en que el modelo aprende de los datos de train.</td></tr>
+    <tr><td><strong>Predecir (predict)</strong></td><td>Usar el modelo ya entrenado sobre datos nuevos.</td></tr>
+    <tr><td><strong>train / test</strong></td><td>Datos para aprender / datos para examinar.</td></tr>
+    <tr><td><strong>Overfitting</strong></td><td>Cuando el modelo memoriza en vez de aprender.</td></tr>
+    <tr><td><strong>random_state</strong></td><td>Una "semilla" para que el azar dé siempre el mismo resultado (reproducibilidad).</td></tr>
+  </table>
+
+  <div class="caja idea"><span class="et">Mentalidad para enseñar</span>
+    No tienes que saberlo todo. Si un estudiante pregunta algo que no sabes, di:
+    <strong>"Buena pregunta, vamos a averiguarlo"</strong> y pruébenlo en el notebook. En ML, experimentar ES el método.
+  </div>
+
+  <p class="pie">Curso de Modelos de Aprendizaje · Guía del docente · Clases 0 y 1 · Pablo Andrés Carvajal — pablocarvajal.dev</p>
+
+</body>
+</html>

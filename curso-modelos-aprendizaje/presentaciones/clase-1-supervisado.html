@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clase 1 — Aprendizaje supervisado (básico) | Curso de Machine Learning</title>
+  <link rel="stylesheet" href="presentacion.css">
+</head>
+<body>
+  <div class="barra-sup">
+    <span class="logo">Curso ML <span>·</span> Modelos de Aprendizaje</span>
+    <span>Clase 1 — Aprendizaje supervisado (básico)</span>
+  </div>
+  <div class="ayuda">← → para navegar · F pantalla completa</div>
+
+  <div class="deck">
+
+    <!-- 1 · PORTADA -->
+    <section class="slide portada">
+      <span class="pill">CLASE 1 · Curso de Machine Learning</span>
+      <h1>Aprendizaje supervisado (básico)</h1>
+      <p class="subtitulo">Regresión y clasificación paso a paso</p>
+      <p class="meta">Curso de Modelos de Aprendizaje<br><strong style="color:#fff">Pablo Andrés Carvajal</strong> · Desarrollador Full Stack · <a href="https://pablocarvajal.dev" target="_blank" rel="noopener" style="color:#8fe1ff;font-weight:700;text-decoration:underline">pablocarvajal.dev</a></p>
+    </section>
+
+    <!-- 2 · ¿QUÉ ES SUPERVISADO? -->
+    <section class="slide">
+      <h2>¿Qué es el aprendizaje supervisado?</h2>
+      <p>Usamos datos que ya vienen <strong>con la respuesta correcta</strong> (la etiqueta). El modelo aprende a partir de ejemplos resueltos.</p>
+      <div class="caja idea"><span class="et">Idea clave</span>Le mostramos al modelo muchas entradas <strong>junto con su respuesta</strong>; él busca el patrón para responder ante datos nuevos.</div>
+      <p>Hay <strong>dos grandes tareas</strong>, según qué queremos predecir:</p>
+      <ul>
+        <li><strong>Regresión</strong> → predecir un <strong>número</strong>.</li>
+        <li><strong>Clasificación</strong> → predecir una <strong>categoría</strong>.</li>
+      </ul>
+    </section>
+
+    <!-- 3 · REGRESIÓN VS CLASIFICACIÓN -->
+    <section class="slide centro">
+      <h2>Regresión vs. clasificación</h2>
+      <table class="t" style="max-width:44em">
+        <tr><th>Tarea</th><th>¿Qué predice?</th><th>Ejemplos</th></tr>
+        <tr><td><strong>Regresión</strong></td><td>Un número continuo</td><td>Precio de una casa, propina, temperatura</td></tr>
+        <tr><td><strong>Clasificación</strong></td><td>Una categoría</td><td>Spam / no spam, especie de flor</td></tr>
+      </table>
+      <div class="caja idea" style="max-width:34em"><span class="et">Hoy haremos las dos</span>Empezamos con regresión (propinas) y luego clasificación (flores Iris), midiendo siempre qué tan bien acierta el modelo.</div>
+    </section>
+
+    <!-- 4 · PARTE A · EL PROBLEMA -->
+    <section class="slide">
+      <span class="pill">PARTE A · Regresión (predecir un número)</span>
+      <h2>El problema: propinas de un restaurante</h2>
+      <p>Usamos el dataset <strong><code>tips</code></strong>. Queremos predecir la <strong>propina</strong> (<code>tip</code>) a partir del <strong>total de la cuenta</strong> (<code>total_bill</code>).</p>
+      <div class="caja"><span class="et">Intuición</span>Al graficar los datos se ve una tendencia clara: <strong>más cuenta → más propina</strong>. Un modelo de regresión aprende la mejor "línea" que describe esa relación.</div>
+      <pre><code>tips = sns.load_dataset("tips")
+sns.scatterplot(data=tips, x="total_bill", y="tip")</code></pre>
+    </section>
+
+    <!-- 6 · PASO 1: X e y -->
+    <section class="slide">
+      <h2>Paso 1 — Separar X (entrada) e y (objetivo)</h2>
+      <div class="cols">
+        <div>
+          <p><strong>X</strong> son las características (<em>features</em>): lo que el modelo <strong>ve</strong>.</p>
+          <p><strong>y</strong> es el objetivo: lo que queremos <strong>predecir</strong>.</p>
+        </div>
+        <div>
+          <pre><code>X = tips[["total_bill"]]   # entrada (tabla)
+y = tips["tip"]            # objetivo</code></pre>
+        </div>
+      </div>
+      <div class="caja ojo"><span class="et">Detalle</span>Usamos dobles corchetes <code>[["total_bill"]]</code> porque X debe entrar como <strong>tabla</strong> (2D), no como una sola columna.</div>
+    </section>
+
+    <!-- 7 · PASO 2: TRAIN/TEST -->
+    <section class="slide">
+      <h2>Paso 2 — Dividir en entrenamiento y prueba</h2>
+      <p>Reservamos un <strong>20%</strong> de los datos como "examen" y aprendemos con el <strong>80%</strong> restante.</p>
+      <pre><code>from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42)</code></pre>
+      <div class="caja alerta"><span class="et">Regla de oro</span>Nunca evaluamos con los <strong>mismos datos</strong> con los que el modelo aprendió: sería como dar el examen con las respuestas ya vistas. Solo con datos nuevos sabemos si de verdad aprendió.</div>
+    </section>
+
+    <!-- 8 · PASO 3: ENTRENAR -->
+    <section class="slide">
+      <h2>Paso 3 — Entrenar: aprender la "línea"</h2>
+      <p><code>LinearRegression</code> busca la recta que mejor se ajusta a los datos de entrenamiento.</p>
+      <pre><code>from sklearn.linear_model import LinearRegression
+
+modelo = LinearRegression()
+modelo.fit(X_train, y_train)   # &lt;- aquí APRENDE la línea
+
+# propina = coef * total + intercepto</code></pre>
+      <div class="caja idea"><span class="et">¿Qué es <code>.fit()</code>?</span>Es el momento en que el modelo <strong>aprende</strong>: ajusta la pendiente y el punto de corte de la recta para acercarse a los datos.</div>
+    </section>
+
+    <!-- 9 · PASO 4: EVALUAR MÉTRICAS -->
+    <section class="slide">
+      <h2>Paso 4 — Evaluar: ¿qué tan bien predice?</h2>
+      <p>Para regresión usamos dos métricas sobre los datos de <strong>prueba</strong>:</p>
+      <div class="cols">
+        <div class="caja"><span class="et">MAE</span>Error absoluto medio: en promedio, <strong>¿por cuántos dólares nos equivocamos?</strong> Menor es mejor.</div>
+        <div class="caja"><span class="et">R²</span>Qué tan bien <strong>explica</strong> el modelo los datos: <strong>1 = perfecto, 0 = malo</strong>.</div>
+      </div>
+      <pre><code>from sklearn.metrics import mean_absolute_error, r2_score
+
+pred = modelo.predict(X_test)
+mean_absolute_error(y_test, pred)   # en dólares
+r2_score(y_test, pred)              # entre 0 y 1</code></pre>
+    </section>
+
+    <!-- 10 · LA LÍNEA APRENDIDA -->
+    <section class="slide">
+      <h2>La línea aprendida sobre los datos</h2>
+      <p>Dibujamos la recta del modelo encima de la nube de puntos: así vemos visualmente el ajuste.</p>
+      <pre><code>x_linea = np.linspace(tips["total_bill"].min(),
+                      tips["total_bill"].max(), 100).reshape(-1, 1)
+plt.plot(x_linea, modelo.predict(x_linea), color="red")</code></pre>
+      <div class="caja idea"><span class="et">Usar el modelo</span>Ya entrenado, podemos preguntarle por casos nuevos: por ejemplo, la propina estimada para una cuenta de <strong>$50</strong>.</div>
+    </section>
+
+    <!-- 11 · PARTE B · EL PROBLEMA IRIS -->
+    <section class="slide">
+      <span class="pill">PARTE B · Clasificación (predecir una categoría)</span>
+      <h2>El problema: la flor Iris</h2>
+      <p>A partir de <strong>4 medidas</strong> de una flor (largo y ancho de pétalo y sépalo) queremos predecir su <strong>especie</strong> (una de tres).</p>
+      <pre><code>from sklearn.datasets import load_iris
+
+iris = load_iris(as_frame=True)
+X = iris.data       # 4 medidas
+y = iris.target     # 0, 1, 2 = especie</code></pre>
+      <div class="caja"><span class="et">Igual que antes</span>Volvemos a dividir en <strong>train / test</strong> (80/20) para poder medir de forma honesta.</div>
+    </section>
+
+    <!-- 13 · kNN -->
+    <section class="slide">
+      <h2>Modelo 1 — k vecinos más cercanos (kNN)</h2>
+      <div class="caja idea"><span class="et">La idea</span>Una flor nueva se clasifica <strong>mirando a las flores más parecidas</strong> a ella (sus "vecinas"). Si sus 5 vecinas más cercanas son de la especie A, se predice A.</div>
+      <pre><code>from sklearn.neighbors import KNeighborsClassifier
+
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train, y_train)
+pred = knn.predict(X_test)</code></pre>
+      <p>El número <code>n_neighbors=5</code> dice cuántas vecinas mirar para decidir.</p>
+    </section>
+
+    <!-- 14 · ÁRBOL -->
+    <section class="slide">
+      <h2>Modelo 2 — Árbol de decisión</h2>
+      <div class="caja idea"><span class="et">La idea</span>Aprende <strong>reglas de tipo si / entonces</strong>: por ejemplo "si el pétalo mide más de X → especie Y". Es muy fácil de interpretar.</div>
+      <pre><code>from sklearn.tree import DecisionTreeClassifier
+
+arbol = DecisionTreeClassifier(max_depth=3, random_state=42)
+arbol.fit(X_train, y_train)
+pred = arbol.predict(X_test)</code></pre>
+      <p><code>max_depth=3</code> limita cuántas preguntas encadenadas puede hacer el árbol.</p>
+    </section>
+
+    <!-- 15 · MÉTRICAS CLASIFICACIÓN -->
+    <section class="slide">
+      <h2>Métricas: exactitud y matriz de confusión</h2>
+      <div class="cols">
+        <div class="caja"><span class="et">Exactitud</span>Porcentaje de aciertos: de todas las flores de prueba, <strong>¿cuántas clasificó bien?</strong></div>
+        <div class="caja"><span class="et">Matriz de confusión</span>Tabla que muestra en qué <strong>acierta</strong> y en qué <strong>se confunde</strong> el modelo, especie por especie.</div>
+      </div>
+      <pre><code>from sklearn.metrics import accuracy_score, confusion_matrix
+
+accuracy_score(y_test, pred)      # % de aciertos
+confusion_matrix(y_test, pred)    # aciertos vs. confusiones</code></pre>
+    </section>
+
+    <!-- 16 · LEER LA MATRIZ -->
+    <section class="slide">
+      <h2>Cómo leer la matriz de confusión</h2>
+      <table class="t" style="max-width:40em">
+        <tr><th>&nbsp;</th><th>Predijo A</th><th>Predijo B</th><th>Predijo C</th></tr>
+        <tr><td><strong>Real A</strong></td><td>✅ 10</td><td>0</td><td>0</td></tr>
+        <tr><td><strong>Real B</strong></td><td>0</td><td>✅ 9</td><td>1</td></tr>
+        <tr><td><strong>Real C</strong></td><td>0</td><td>0</td><td>✅ 10</td></tr>
+      </table>
+      <div class="caja idea"><span class="et">La diagonal manda</span>Los números de la <strong>diagonal</strong> son los aciertos. Todo lo que queda <strong>fuera</strong> de la diagonal son errores (confusiones entre especies).</div>
+    </section>
+
+    <!-- 17 · PARTE C · QUÉ ES OVERFITTING -->
+    <section class="slide">
+      <span class="pill">PARTE C · Overfitting</span>
+      <h2>¿Qué es el overfitting?</h2>
+      <div class="caja alerta"><span class="et">El problema</span>Un modelo demasiado complejo <strong>memoriza</strong> los datos de entrenamiento en vez de <strong>aprender el patrón</strong>. Le va perfecto en el examen que ya vio, pero falla con datos nuevos.</div>
+      <p>Lo comprobamos variando la <strong>profundidad</strong> del árbol y comparando la exactitud en <strong>train</strong> vs. <strong>test</strong>:</p>
+      <pre><code>for d in range(1, 11):
+    m = DecisionTreeClassifier(max_depth=d).fit(X_train, y_train)
+    train_scores.append(m.score(X_train, y_train))
+    test_scores.append(m.score(X_test, y_test))</code></pre>
+    </section>
+
+    <!-- 19 · LA GRÁFICA Y LA CURA -->
+    <section class="slide">
+      <h2>Train sube, test se estanca</h2>
+      <div class="caja ojo"><span class="et">Lo que se ve en la gráfica</span>Al aumentar la profundidad, la exactitud en <strong>train sube hacia el 100%</strong>, pero la de <strong>test se estanca o incluso baja</strong>. Esa brecha es el overfitting.</div>
+      <h3>¿Cómo se corrige?</h3>
+      <ul>
+        <li>Usar modelos más <strong>simples</strong> (menos profundidad).</li>
+        <li>Conseguir <strong>más datos</strong> de entrenamiento.</li>
+        <li>Aplicar <strong>regularización</strong>.</li>
+      </ul>
+    </section>
+
+    <!-- 20 · MANOS A LA OBRA -->
+    <section class="slide">
+      <h2>Manos a la obra</h2>
+      <p>Vamos a ejecutar todo el notebook paso a paso:</p>
+      <ol>
+        <li>Abre <code>01_supervisado_basico.ipynb</code> en <strong>Google Colab</strong>.</li>
+        <li>Ejecuta cada celda en orden (Shift + Enter).</li>
+        <li>Observa las gráficas y los números que van saliendo.</li>
+      </ol>
+      <div class="caja idea"><span class="et">Consejo</span>No corras todo de golpe: lee cada celda, ejecútala y <strong>mira qué imprime</strong> antes de pasar a la siguiente.</div>
+    </section>
+
+    <!-- 21 · EJERCICIOS -->
+    <section class="slide">
+      <h2>Ejercicios propuestos</h2>
+      <ul>
+        <li>En la regresión de propinas, cambia el modelo por <code>KNeighborsRegressor</code> (de <code>sklearn.neighbors</code>) y compara el MAE con la regresión lineal.</li>
+        <li>En la clasificación, prueba <code>KNeighborsClassifier</code> con <code>n_neighbors=1</code> y con <code>n_neighbors=15</code>. ¿Cambia la exactitud?</li>
+        <li>Entrena un árbol con <code>max_depth=1</code>. ¿Por qué le va peor? Míralo en la matriz de confusión.</li>
+      </ul>
+      <div class="caja"><span class="et">Objetivo</span>Experimentar cambiando modelos y parámetros para ver con tus propios ojos cómo cambian las métricas.</div>
+    </section>
+
+    <!-- 22 · REPASO -->
+    <section class="slide">
+      <h2>Repaso de la clase</h2>
+      <ul>
+        <li><strong>Regresión</strong> predice números → se mide con <strong>MAE</strong> y <strong>R²</strong>.</li>
+        <li><strong>Clasificación</strong> predice categorías → se mide con <strong>exactitud</strong> y <strong>matriz de confusión</strong>.</li>
+        <li>Siempre dividimos en <strong>train / test</strong> para medir de forma honesta.</li>
+        <li>Vimos <strong>regresión lineal</strong>, <strong>kNN</strong> y <strong>árbol de decisión</strong>.</li>
+        <li>Cuidado con el <strong>overfitting</strong>: más complejo no siempre es mejor.</li>
+      </ul>
+    </section>
+
+    <!-- 23 · CIERRE -->
+    <section class="slide centro">
+      <h2>¡Buen trabajo!</h2>
+      <p style="max-width:26em">Ya sabes entrenar, evaluar y elegir entre modelos supervisados básicos, y reconocer cuándo un modelo está memorizando.</p>
+      <div class="caja idea" style="max-width:30em"><span class="et">Siguiente</span>Clase 2 — Supervisado intermedio-avanzado: pipelines, modelos más potentes, validación cruzada y ajuste de hiperparámetros.</div>
+    </section>
+
+  </div>
+
+  <div class="progreso"></div>
+  <div class="contador"></div>
+  <button class="nav-btn" id="prev" title="Anterior">‹</button>
+  <button class="nav-btn" id="next" title="Siguiente">›</button>
+  <script src="presentacion.js"></script>
+</body>
+</html>

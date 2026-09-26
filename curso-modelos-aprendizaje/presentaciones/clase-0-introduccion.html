@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clase 0 — Introducción y preparación | Curso ML</title>
+  <link rel="stylesheet" href="presentacion.css">
+</head>
+<body>
+  <div class="barra-sup">
+    <span class="logo">Curso ML <span>·</span> Modelos de Aprendizaje</span>
+    <span>Clase 0 — Introducción y preparación</span>
+  </div>
+  <div class="ayuda">← → para navegar · F pantalla completa</div>
+
+  <div class="deck">
+
+    <!-- 1 · PORTADA -->
+    <section class="slide portada">
+      <span class="pill">CLASE 0 · Curso de Machine Learning</span>
+      <h1>Introducción y preparación</h1>
+      <p class="subtitulo">Machine Learning práctico en Google Colab</p>
+      <p class="meta">Curso de Modelos de Aprendizaje<br><strong style="color:#fff">Pablo Andrés Carvajal</strong> · Desarrollador Full Stack · <a href="https://pablocarvajal.dev" target="_blank" rel="noopener" style="color:#8fe1ff;font-weight:700;text-decoration:underline">pablocarvajal.dev</a></p>
+    </section>
+
+    <!-- 2 · OBJETIVOS -->
+    <section class="slide">
+      <h2>¿Qué lograremos hoy?</h2>
+      <div class="caja idea"><span class="et">Meta de la clase</span>Este es el primer notebook del curso. Dejamos las bases y las herramientas listas para empezar a construir modelos.</div>
+      <h3>En esta sesión vamos a:</h3>
+      <ul>
+        <li>Entender <strong>qué es el Machine Learning</strong> y sus <strong>3 grandes tipos</strong>.</li>
+        <li>Aprender a movernos en <strong>Google Colab</strong>.</li>
+        <li>Conocer las <strong>librerías</strong> que usaremos todo el curso.</li>
+        <li><strong>Cargar, explorar y graficar</strong> nuestro primer conjunto de datos.</li>
+      </ul>
+    </section>
+
+    <!-- 3 · QUÉ ES ML -->
+    <section class="slide">
+      <h2>¿Qué es el Machine Learning?</h2>
+      <div class="cols">
+        <div>
+          <h3>💻 Programación tradicional</h3>
+          <p>Le damos a la máquina <strong>reglas + datos</strong> y ella nos devuelve <strong>respuestas</strong>.</p>
+          <pre><code>reglas + datos  →  respuestas</code></pre>
+        </div>
+        <div>
+          <h3>🤖 Machine Learning</h3>
+          <p>Le damos <strong>datos + respuestas</strong> y la máquina <strong>descubre las reglas</strong> (el <em>modelo</em>).</p>
+          <pre><code>datos + respuestas  →  reglas (modelo)</code></pre>
+        </div>
+      </div>
+      <div class="caja idea"><span class="et">Idea clave</span>En ML no programamos las reglas a mano: <strong>el modelo las aprende a partir de los datos</strong>.</div>
+    </section>
+
+    <!-- 4 · LOS 3 TIPOS -->
+    <section class="slide">
+      <h2>Los 3 tipos de aprendizaje del curso</h2>
+      <table class="t">
+        <tr><th>Tipo</th><th>¿Tiene etiquetas?</th><th>Para qué sirve</th><th>Ejemplo</th></tr>
+        <tr><td><strong>Supervisado</strong></td><td>Sí</td><td>Predecir una categoría o un número</td><td>Detectar spam, predecir precios</td></tr>
+        <tr><td><strong>No supervisado</strong></td><td>No</td><td>Descubrir grupos o estructura oculta</td><td>Segmentar clientes</td></tr>
+        <tr><td><strong>Mixto (semi&#8209;supervisado)</strong></td><td>Pocas</td><td>Aprovechar muchos datos sin etiquetar</td><td>Clasificar con pocas etiquetas</td></tr>
+      </table>
+      <div class="caja"><span class="et">El curso, notebook a notebook</span><strong>01</strong> Supervisado básico · <strong>02</strong> Supervisado intermedio-avanzado · <strong>03</strong> No supervisado · <strong>04</strong> Mixto · <strong>05</strong> Proyecto final</div>
+    </section>
+
+    <!-- 5 · COLAB -->
+    <section class="slide">
+      <h2>Google Colab en 1 minuto</h2>
+      <ul>
+        <li>Un <strong>notebook</strong> son celdas de <strong>texto</strong> y de <strong>código</strong> (las grises).</li>
+        <li>Ejecuta una celda con <strong>Shift + Enter</strong> (o el botón ▶️ a su izquierda).</li>
+        <li>En <strong>Entorno de ejecución → Cambiar tipo de entorno</strong> eliges CPU/GPU (para este curso basta <strong>CPU</strong>).</li>
+        <li>Todo corre en la <strong>nube de Google</strong>: no instalas nada en tu computador.</li>
+      </ul>
+      <div class="caja idea"><span class="et">Recuerda</span>Ejecuta las celdas <strong>en orden</strong>, de arriba hacia abajo, con <strong>Shift + Enter</strong>.</div>
+    </section>
+
+    <!-- 6 · PRIMERA CELDA -->
+    <section class="slide">
+      <h2>Comprobemos que Python funciona</h2>
+      <p>La celda más simple: una operación y un mensaje.</p>
+      <pre><code>print("¡Hola! Colab está funcionando ✅")
+print("2 + 2 =", 2 + 2)</code></pre>
+      <div class="caja ojo"><span class="et">Qué observar</span>Al ejecutar con <strong>Shift + Enter</strong>, la respuesta aparece <strong>justo debajo</strong> de la celda. Así confirmamos que el entorno está vivo.</div>
+    </section>
+
+    <!-- 7 · LIBRERÍAS -->
+    <section class="slide">
+      <h2>Las librerías del curso</h2>
+      <p>Ya vienen instaladas en Colab. Las importamos con un "apodo" (<strong>alias</strong>) estándar:</p>
+      <table class="t">
+        <tr><th>Librería</th><th>Alias</th><th>Para qué</th></tr>
+        <tr><td><strong>numpy</strong></td><td><code>np</code></td><td>Cálculo numérico y arreglos</td></tr>
+        <tr><td><strong>pandas</strong></td><td><code>pd</code></td><td>Tablas de datos (como un Excel programable)</td></tr>
+        <tr><td><strong>matplotlib</strong></td><td><code>plt</code></td><td>Gráficas</td></tr>
+        <tr><td><strong>seaborn</strong></td><td><code>sns</code></td><td>Gráficas bonitas y estadísticas</td></tr>
+        <tr><td><strong>scikit-learn</strong></td><td><code>sklearn</code></td><td>Los modelos de ML</td></tr>
+      </table>
+      <pre><code>import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import sklearn
+
+sns.set_theme()  # estilo bonito para las gráficas</code></pre>
+    </section>
+
+    <!-- 8 · IRIS -->
+    <section class="slide">
+      <h2>Nuestro primer dataset: Iris 🌸</h2>
+      <div class="cols">
+        <div>
+          <p><strong>Iris</strong> es un conjunto de datos clásico:</p>
+          <ul>
+            <li>Medidas de <strong>150 flores</strong>.</li>
+            <li>De <strong>3 especies</strong> distintas.</li>
+            <li>Viene incluido en scikit-learn: <strong>no hay que descargar nada</strong>.</li>
+          </ul>
+        </div>
+        <div class="caja idea">
+          <span class="et">Cómo se carga</span>
+          <code>load_iris(as_frame=True)</code> lo entrega directamente como una <strong>tabla de pandas</strong>, lista para explorar.
+        </div>
+      </div>
+      <pre><code>from sklearn.datasets import load_iris
+
+iris = load_iris(as_frame=True)   # lo entrega como tabla de pandas
+df = iris.frame                   # la tabla completa (features + objetivo)
+
+# Renombramos la columna objetivo a algo legible
+df["especie"] = iris.target_names[iris.target]
+
+df.head()   # muestra las primeras 5 filas</code></pre>
+    </section>
+
+    <!-- 9 · EXPLORAR CON PANDAS -->
+    <section class="slide">
+      <h2>Explorar los datos con pandas</h2>
+      <p>Antes de modelar, <strong>siempre</strong> miramos los datos. Comandos útiles:</p>
+      <table class="t">
+        <tr><th>Comando</th><th>Qué muestra</th></tr>
+        <tr><td><code>df.shape</code></td><td>(filas, columnas)</td></tr>
+        <tr><td><code>df.info()</code></td><td>Tipos de datos y valores faltantes</td></tr>
+        <tr><td><code>df.describe()</code></td><td>Estadísticas: media, mínimo, máximo…</td></tr>
+        <tr><td><code>df["columna"].value_counts()</code></td><td>Cuántos hay de cada categoría</td></tr>
+      </table>
+      <pre><code>print("Forma (filas, columnas):", df.shape)
+print(df["especie"].value_counts())
+df.describe()</code></pre>
+    </section>
+
+    <!-- 10 · PRIMERA VISUALIZACIÓN -->
+    <section class="slide">
+      <h2>Primera visualización</h2>
+      <p>Una imagen dice más que mil filas. Con <strong>seaborn</strong> vemos cómo se separan las especies según el <strong>largo y ancho del pétalo</strong>.</p>
+      <pre><code>plt.figure(figsize=(7, 5))
+sns.scatterplot(
+    data=df,
+    x="petal length (cm)",
+    y="petal width (cm)",
+    hue="especie",     # color por especie
+    s=70,
+)
+plt.title("Iris: las especies se separan por el tamaño del pétalo")
+plt.show()</code></pre>
+      <div class="caja ojo"><span class="et">👀 Observa</span>Las tres especies forman <strong>grupos bastante separados</strong>. Por eso un modelo podrá aprender a distinguirlas.</div>
+    </section>
+
+    <!-- 11 · PAIRPLOT BONUS -->
+    <section class="slide">
+      <h2>Bonus: ver todas las combinaciones</h2>
+      <p>Con una sola línea, seaborn compara <strong>todas las variables entre sí</strong> y colorea por especie.</p>
+      <pre><code>sns.pairplot(df, hue="especie", height=1.8)
+plt.show()</code></pre>
+      <div class="caja idea"><span class="et">Para qué sirve</span>El <code>pairplot</code> nos deja ver de un vistazo <strong>qué pares de medidas separan mejor</strong> las especies. Es una gran herramienta de exploración.</div>
+    </section>
+
+    <!-- 12 · MANOS A LA OBRA -->
+    <section class="slide centro">
+      <h2>Manos a la obra 🚀</h2>
+      <p style="max-width:28em">Abre el notebook <code>00_introduccion_y_setup.ipynb</code> en <strong>Google Colab</strong> y ejecuta cada celda en orden.</p>
+      <div class="caja idea" style="max-width:26em"><span class="et">Cómo ejecutar</span>Selecciona una celda y pulsa <strong>Shift + Enter</strong>. Ve leyendo las celdas de texto y corriendo las de código, una por una.</div>
+    </section>
+
+    <!-- 13 · EJERCICIO -->
+    <section class="slide">
+      <h2>🏋️ Ejercicio propuesto</h2>
+      <ol>
+        <li>Muestra las <strong>últimas 5 filas</strong> de <code>df</code>. <em>Pista:</em> <code>df.tail()</code>.</li>
+        <li>Calcula el <strong>promedio</strong> del <code>sepal length (cm)</code> para cada especie.<br><em>Pista:</em> <code>df.groupby("especie")["sepal length (cm)"].mean()</code></li>
+        <li>Haz un <code>scatterplot</code> usando ahora <code>sepal length (cm)</code> y <code>sepal width (cm)</code>. ¿Se separan igual de bien las especies?</li>
+      </ol>
+      <div class="caja"><span class="et">Dónde escribirlo</span>En la celda de código que dice <code># ✍️ Tu código aquí</code>, al final del notebook.</div>
+    </section>
+
+    <!-- 14 · REPASO -->
+    <section class="slide">
+      <h2>✅ Repaso</h2>
+      <ul>
+        <li>El ML aprende <strong>reglas a partir de datos</strong>; hay 3 tipos: <strong>supervisado, no supervisado y mixto</strong>.</li>
+        <li>En Colab se ejecuta con <strong>Shift + Enter</strong> y no se instala nada.</li>
+        <li>Usamos <strong>pandas</strong> para explorar y <strong>seaborn</strong> para graficar.</li>
+        <li>Siempre <strong>miramos y graficamos</strong> los datos antes de modelar.</li>
+      </ul>
+      <div class="caja idea"><span class="et">La regla que no olvidamos</span>Mirar y graficar los datos <strong>antes</strong> de entrenar cualquier modelo.</div>
+    </section>
+
+    <!-- 15 · SIGUIENTE -->
+    <section class="slide centro">
+      <h2>Siguiente clase</h2>
+      <p style="max-width:26em"><strong>Clase 1 — Aprendizaje supervisado</strong></p>
+      <p style="max-width:26em">Entrenaremos nuestros primeros modelos para <strong>predecir</strong> (regresión) y <strong>clasificar</strong>.</p>
+      <div class="caja idea" style="max-width:26em"><span class="et">Notebook</span><code>01_supervisado_basico.ipynb</code></div>
+    </section>
+
+  </div>
+
+  <div class="progreso"></div>
+  <div class="contador"></div>
+  <button class="nav-btn" id="prev" title="Anterior">‹</button>
+  <button class="nav-btn" id="next" title="Siguiente">›</button>
+  <script src="presentacion.js"></script>
+</body>
+</html>
