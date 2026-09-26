@@ -1,0 +1,93 @@
+/* ============================================================
+   App.css — Estilos básicos del chat RAG
+   Curso IA SENA Piedecuesta · Clase alternativa
+   Coloca este archivo en: frontend/src/App.css
+   ============================================================ */
+
+.chat {
+  max-width: 640px;
+  margin: 24px auto;
+  padding: 0 16px;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  color: #1b2733;
+}
+
+.chat h1 {
+  color: #00304d;
+  border-bottom: 4px solid #39a900; /* verde SENA */
+  padding-bottom: 6px;
+  font-size: 1.4rem;
+}
+
+/* Zona de mensajes */
+.mensajes {
+  min-height: 320px;
+  max-height: 60vh;
+  overflow-y: auto;
+  border: 1px solid #cdd8e1;
+  border-radius: 10px;
+  padding: 14px;
+  background: #f7fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vacio {
+  color: #5b6b7b;
+  text-align: center;
+  margin-top: 120px;
+}
+
+/* Burbujas de mensaje */
+.msg {
+  padding: 10px 14px;
+  border-radius: 14px;
+  max-width: 80%;
+  line-height: 1.45;
+  white-space: pre-wrap; /* respeta los saltos de línea */
+}
+
+.msg.yo {
+  align-self: flex-end;
+  background: #39a900; /* verde SENA */
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.msg.bot {
+  align-self: flex-start;
+  background: #fff;
+  border: 1px solid #cdd8e1;
+  border-bottom-left-radius: 4px;
+}
+
+/* Fila de entrada */
+.fila {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.fila input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #cdd8e1;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.fila button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #00304d; /* azul SENA */
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.fila button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recursos visuales — Curso de Modelos de Aprendizaje</title>
+  <style>
+    :root{
+      --verde:#39a900; --verde-osc:#2b7d00; --azul:#00304d; --tinta:#1b2733;
+      --gris:#5b6b7b; --gris-cl:#eef2f5; --blanco:#fff;
+      --sombra:0 8px 30px rgba(0,48,77,.12); --fuente:"Segoe UI",Roboto,Arial,sans-serif;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--fuente);background:#f4f7fa;color:var(--tinta);line-height:1.5}
+    header{background:linear-gradient(135deg,var(--azul),#024b6e 60%,var(--verde-osc));color:#fff;padding:38px 24px 30px;text-align:center}
+    header .marca{color:#bfe6ff;font-weight:800;letter-spacing:2px;font-size:13px}
+    header h1{font-size:clamp(26px,4vw,40px);margin:6px 0}
+    header p{color:#d7f3c8;max-width:64ch;margin:0 auto;font-size:clamp(14px,2vw,18px)}
+    .wrap{max-width:1120px;margin:0 auto;padding:24px 18px 60px}
+    .filtros{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:26px 0 6px}
+    .filtro{border:2px solid var(--azul);background:#fff;color:var(--azul);cursor:pointer;padding:7px 15px;border-radius:999px;font-weight:700;font-size:13.5px;transition:.15s}
+    .filtro:hover{background:var(--gris-cl)}
+    .filtro.activo{background:var(--verde);border-color:var(--verde);color:#fff}
+    .grupo-titulo{margin:34px 0 6px;color:var(--azul);font-size:22px;border-bottom:3px solid var(--verde);padding-bottom:5px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;margin-top:16px}
+    .card{background:#fff;border-radius:14px;box-shadow:var(--sombra);padding:18px 18px 16px;display:flex;flex-direction:column;border-top:5px solid var(--verde);transition:.15s}
+    .card:hover{transform:translateY(-4px);box-shadow:0 14px 40px rgba(0,48,77,.18)}
+    .card .ic{font-size:28px;margin-bottom:6px}
+    .card h3{color:var(--azul);font-size:17.5px;margin-bottom:4px}
+    .card .tema{display:inline-block;background:var(--gris-cl);color:var(--gris);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 9px;border-radius:999px;margin-bottom:8px;width:fit-content}
+    .card p{font-size:13.5px;color:var(--tinta);flex:1;margin-bottom:12px}
+    .card a{text-decoration:none;background:var(--verde);color:#fff;text-align:center;padding:9px 12px;border-radius:8px;font-weight:700;font-size:14px;transition:.15s}
+    .card a:hover{background:var(--verde-osc)}
+    .cb{display:inline-block;font-size:11px;font-weight:800;color:#fff;background:var(--azul);border-radius:6px;padding:1px 7px;margin-right:4px}
+    .clase-badges{margin-top:4px}
+    .nota{background:#fff8e2;border-left:5px solid #ffcf3f;border-radius:8px;padding:12px 16px;margin:22px 0;font-size:14px}
+    footer{text-align:center;color:var(--gris);font-size:13px;padding:20px}
+    .hidden{display:none!important}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="marca">CURSO DE MODELOS DE APRENDIZAJE · SENA PIEDECUESTA</div>
+    <h1>🎨 Recursos visuales e interactivos</h1>
+    <p>Herramientas para <strong>ver y experimentar</strong> cómo funcionan los modelos de aprendizaje:
+    regresión, árboles, clustering, PCA, redes neuronales y más. Ábrelas en clase y deja que los estudiantes jueguen.</p>
+  </header>
+
+  <div class="wrap">
+    <div class="filtros" id="filtros">
+      <button class="filtro activo" data-f="todos">Todos</button>
+      <button class="filtro" data-f="fund">Fundamentos</button>
+      <button class="filtro" data-f="sup">Supervisado</button>
+      <button class="filtro" data-f="nosup">No supervisado</button>
+      <button class="filtro" data-f="red">Redes / Deep Learning</button>
+      <button class="filtro" data-f="prac">Practicar</button>
+      <button class="filtro" data-f="esp">En español</button>
+    </div>
+
+    <div class="nota"><strong>💡 Cómo usarlos en clase:</strong> proyecta el recurso, deja que un aprendiz mueva los datos o los controles, y comenten qué cambia. Casi todos funcionan en el navegador y son gratuitos.</div>
+
+    <!-- FUNDAMENTOS -->
+    <h2 class="grupo-titulo">🧭 Fundamentos y panorama</h2>
+    <div class="grid">
+      <div class="card" data-clase="fund">
+        <div class="ic">📚</div><span class="tema">Explicaciones visuales · varios temas</span>
+        <h3>MLU-Explain (Amazon)</h3>
+        <p>La joya del curso: artículos <strong>interactivos</strong> de Amazon sobre casi todos nuestros temas
+        (regresión, árboles, random forest, train/test, bias-variance, ROC…). Entras y mueves los datos.</p>
+        <div class="clase-badges"><span class="cb">Todo el curso</span></div>
+        <a href="https://mlu-explain.github.io/" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+      <div class="card" data-clase="fund">
+        <div class="ic">🌳</div><span class="tema">Introducción visual al ML</span>
+        <h3>R2D3 — Parte 1 y 2</h3>
+        <p>Historia visual preciosa de cómo funciona un <strong>árbol de decisión</strong>, el <strong>sobreajuste</strong>
+        y la división train/test. Ideal para la primera explicación de "¿cómo aprende una máquina?".</p>
+        <div class="clase-badges"><span class="cb">Clases 1 y 3</span></div>
+        <a href="https://r2d3.us/visual-intro-to-machine-learning-part-1/" target="_blank" rel="noopener">Abrir (con versión en español) ↗</a>
+      </div>
+      <div class="card" data-clase="fund">
+        <div class="ic">📈</div><span class="tema">Estadística visual (base)</span>
+        <h3>Seeing Theory</h3>
+        <p>Probabilidad y estadística <strong>interactivas</strong> (incluye un módulo de <strong>regresión lineal</strong>).
+        Útil para los cimientos antes de modelar.</p>
+        <div class="clase-badges"><span class="cb">Base</span></div>
+        <a href="https://seeing-theory.brown.edu/" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+      <div class="card" data-clase="fund">
+        <div class="ic">🗺️</div><span class="tema">Elegir el modelo correcto</span>
+        <h3>scikit-learn: mapa de estimadores</h3>
+        <p>El "mapa" oficial de scikit-learn que ayuda a decidir <strong>qué modelo usar</strong> según el problema.
+        Genial para cerrar el curso y para consulta.</p>
+        <div class="clase-badges"><span class="cb">Referencia</span></div>
+        <a href="https://scikit-learn.org/stable/machine_learning_map.html" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+    </div>
+
+    <!-- SUPERVISADO -->
+    <h2 class="grupo-titulo">🎯 Aprendizaje supervisado (regresión y clasificación)</h2>
+    <div class="grid">
+      <div class="card" data-clase="sup">
+        <div class="ic">📉</div><span class="tema">Regresión lineal</span>
+        <h3>MLU-Explain · Linear Regression</h3>
+        <p>Ve cómo la <strong>línea</strong> se ajusta a los datos y qué significan el error y la pendiente. Perfecto para la Parte A de la Clase 1.</p>
+        <div class="clase-badges"><span class="cb">Clase 1</span></div>
+        <a href="https://mlu-explain.github.io/linear-regression/" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+      <div class="card" data-clase="sup">
+        <div class="ic">🔀</div><span class="tema">Clasificación (frontera)</span>
+        <h3>MLU-Explain · Logistic Regression</h3>
+        <p>Clasificación binaria con una <strong>frontera de decisión</strong> que puedes mover. Complementa kNN y árbol.</p>
+        <div class="clase-badges"><span class="cb">Clases 1 y 2</span></div>
+        <a href="https://mlu-explain.github.io/logistic-regression/" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+      <div class="card" data-clase="sup">
+        <div class="ic">🌲</div><span class="tema">Árboles de decisión</span>
+        <h3>MLU-Explain · Decision Trees</h3>
+        <p>Cómo el árbol hace sus "cortes", qué es la entropía y por qué ir <strong>muy profundo</strong> es malo (overfitting). Directo al modelo de la Clase 1.</p>
+        <div class="clase-badges"><span class="cb">Clase 1</span></div>
+        <a href="https://mlu-explain.github.io/decision-tree/" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+      <div class="card" data-clase="sup">
+        <div class="ic">🌳🌳</div><span class="tema">Ensembles</span>
+        <h3>MLU-Explain · Random Forest</h3>
+        <p>Cómo muchos árboles juntos deciden mejor que uno. Prepara la Clase 2 (modelos más potentes).</p>
+        <div class="clase-badges"><span class="cb">Clase 2</span></div>
+        <a href="https://mlu-explain.github.io/random-forest/" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+      <div class="card" data-clase="sup">
+        <div class="ic">⚖️</div><span class="tema">Overfitting</span>
+        <h3>MLU-Explain · Bias-Variance</h3>
+        <p>La explicación visual definitiva del <strong>sobreajuste vs subajuste</strong> (el equilibrio sesgo-varianza). Justo la Parte C de la Clase 1.</p>
+        <div class="clase-badges"><span class="cb">Clase 1</span></div>
+        <a href="https://mlu-explain.github.io/bias-variance/" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+      <div class="card" data-clase="sup">
+        <div class="ic">✂️</div><span class="tema">Train / Test</span>
+        <h3>MLU-Explain · Train, Test & Validation</h3>
+        <p>Por qué separamos los datos y qué es el conjunto de validación. Refuerza EL concepto clave del curso.</p>
+        <div class="clase-badges"><span class="cb">Clases 1 y 2</span></div>
+        <a href="https://mlu-explain.github.io/train-test-validation/" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+      <div class="card" data-clase="sup">
+        <div class="ic">🔁</div><span class="tema">Validación cruzada</span>
+        <h3>MLU-Explain · Cross-Validation</h3>
+        <p>Cómo evaluar de forma más confiable rotando los datos. Tema central de la Clase 2.</p>
+        <div class="clase-badges"><span class="cb">Clase 2</span></div>
+        <a href="https://mlu-explain.github.io/cross-validation/" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+      <div class="card" data-clase="sup">
+        <div class="ic">📐</div><span class="tema">Métricas</span>
+        <h3>MLU-Explain · ROC & AUC + Precision/Recall</h3>
+        <p>Dos artículos para entender las <strong>métricas</strong> de clasificación con ejemplos interactivos. Para la Clase 2.</p>
+        <div class="clase-badges"><span class="cb">Clase 2</span></div>
+        <a href="https://mlu-explain.github.io/roc-auc/" target="_blank" rel="noopener">Abrir ROC-AUC ↗</a>
+      </div>
+    </div>
+
+    <!-- NO SUPERVISADO -->
+    <h2 class="grupo-titulo">🔍 Aprendizaje no supervisado (clustering y PCA)</h2>
+    <div class="grid">
+      <div class="card" data-clase="nosup">
+        <div class="ic">🎯</div><span class="tema">K-Means paso a paso</span>
+        <h3>Visualizing K-Means (Naftali Harris)</h3>
+        <p>Ejecuta K-Means <strong>paso a paso</strong>, eliges los centros iniciales y ves cómo se forman los grupos. Imperdible para la Clase 3.</p>
+        <div class="clase-badges"><span class="cb">Clase 3</span></div>
+        <a href="https://www.naftaliharris.com/blog/visualizing-k-means-clustering/" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+      <div class="card" data-clase="nosup">
+        <div class="ic">🌌</div><span class="tema">DBSCAN paso a paso</span>
+        <h3>Visualizing DBSCAN (Naftali Harris)</h3>
+        <p>Compara con K-Means: DBSCAN encuentra grupos de <strong>formas raras</strong> por densidad. Mismo estilo interactivo.</p>
+        <div class="clase-badges"><span class="cb">Clase 3</span></div>
+        <a href="https://www.naftaliharris.com/blog/visualizing-dbscan-clustering/" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+      <div class="card" data-clase="nosup">
+        <div class="ic">📊</div><span class="tema">PCA (reducir dimensiones)</span>
+        <h3>PCA explicado visualmente (setosa.io)</h3>
+        <p>Mueve los datos y ve cómo PCA encuentra los <strong>ejes de mayor variación</strong>. Hace tangible la reducción de dimensiones.</p>
+        <div class="clase-badges"><span class="cb">Clase 3</span></div>
+        <a href="https://setosa.io/ev/principal-component-analysis/" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+      <div class="card" data-clase="nosup">
+        <div class="ic">🧭</div><span class="tema">Embeddings en 3D</span>
+        <h3>TensorFlow Embedding Projector</h3>
+        <p>Visualiza datos de muchas dimensiones en un <strong>mapa 3D</strong> y observa cómo se agrupan. Bonus para PCA/t-SNE.</p>
+        <div class="clase-badges"><span class="cb">Clase 3</span></div>
+        <a href="https://projector.tensorflow.org/" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+    </div>
+
+    <!-- REDES / DL -->
+    <h2 class="grupo-titulo">🕸️ Redes neuronales y Deep Learning</h2>
+    <div class="grid">
+      <div class="card" data-clase="red">
+        <div class="ic">🎛️</div><span class="tema">Red neuronal en vivo</span>
+        <h3>TensorFlow Playground</h3>
+        <p>Entrena una <strong>red neuronal</strong> en el navegador: agrega capas y neuronas y mira el error bajar época a época.</p>
+        <div class="clase-badges"><span class="cb">Contexto</span></div>
+        <a href="https://playground.tensorflow.org/" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+      <div class="card" data-clase="red">
+        <div class="ic">🧠</div><span class="tema">Qué es una red neuronal</span>
+        <h3>MLU-Explain · Neural Networks</h3>
+        <p>Explicación visual e interactiva de cómo una red neuronal aprende. Para entender la capa "Deep Learning".</p>
+        <div class="clase-badges"><span class="cb">Contexto</span></div>
+        <a href="https://mlu-explain.github.io/neural-networks/" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+      <div class="card" data-clase="red">
+        <div class="ic">🖼️</div><span class="tema">Visión por computador</span>
+        <h3>CNN Explainer</h3>
+        <p>Recorre una <strong>red convolucional</strong> que clasifica imágenes, operación por operación. Impresiona en clase.</p>
+        <div class="clase-badges"><span class="cb">Bonus</span></div>
+        <a href="https://poloclub.github.io/cnn-explainer/" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+      <div class="card" data-clase="red">
+        <div class="ic">🎮</div><span class="tema">Aprendizaje por refuerzo</span>
+        <h3>MLU-Explain · Reinforcement Learning</h3>
+        <p>El tercer gran tipo de aprendizaje explicado visualmente (agente, recompensas). Amplía el panorama del curso.</p>
+        <div class="clase-badges"><span class="cb">Contexto</span></div>
+        <a href="https://mlu-explain.github.io/reinforcement-learning/" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+    </div>
+
+    <!-- PRACTICAR -->
+    <h2 class="grupo-titulo">🛠️ Practicar y jugar</h2>
+    <div class="grid">
+      <div class="card" data-clase="prac">
+        <div class="ic">📸</div><span class="tema">Entrenar sin código</span>
+        <h3>Teachable Machine (Google)</h3>
+        <p>Entrena un modelo con tu <strong>cámara o micrófono</strong> en minutos. Vivan el ciclo: datos → entrenar → probar.</p>
+        <div class="clase-badges"><span class="cb">Clases 1 y 3</span></div>
+        <a href="https://teachablemachine.withgoogle.com/" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+      <div class="card" data-clase="prac">
+        <div class="ic">✏️</div><span class="tema">Clasificación en vivo</span>
+        <h3>Quick, Draw! (Google)</h3>
+        <p>Dibuja y una red neuronal adivina qué es. Demuestra la clasificación de forma súper divertida.</p>
+        <div class="clase-badges"><span class="cb">Clase 1</span></div>
+        <a href="https://quickdraw.withgoogle.com/" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+      <div class="card" data-clase="prac">
+        <div class="ic">🗃️</div><span class="tema">Datasets y cursos</span>
+        <h3>Kaggle</h3>
+        <p>Miles de <strong>datasets gratuitos</strong> para practicar y mini-cursos de ML. Úsalo con el código del curso.</p>
+        <div class="clase-badges"><span class="cb">Práctica</span></div>
+        <a href="https://www.kaggle.com/datasets" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+    </div>
+
+    <!-- ESPAÑOL -->
+    <h2 class="grupo-titulo">📗 Material en español</h2>
+    <div class="grid">
+      <div class="card" data-clase="esp">
+        <div class="ic">▶️</div><span class="tema">Canal de YouTube</span>
+        <h3>DotCSV (Carlos Santana)</h3>
+        <p>El canal de IA en <strong>español</strong> más reconocido: redes neuronales, algoritmos y modelos explicados con claridad.</p>
+        <div class="clase-badges"><span class="cb">Todo el curso</span></div>
+        <a href="https://www.youtube.com/@DotCSV" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+      <div class="card" data-clase="esp">
+        <div class="ic">📗</div><span class="tema">Curso técnico</span>
+        <h3>Google · Curso intensivo de ML</h3>
+        <p>Curso gratuito de Google sobre machine learning en <strong>español</strong>, con teoría, ejercicios y visualizaciones.</p>
+        <div class="clase-badges"><span class="cb">Clases 1–3</span></div>
+        <a href="https://developers.google.com/machine-learning/crash-course?hl=es" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+      <div class="card" data-clase="esp">
+        <div class="ic">🎓</div><span class="tema">Curso desde cero</span>
+        <h3>Elementos de la IA</h3>
+        <p>Curso gratuito (Universidad de Helsinki) en <strong>español</strong> para entender la IA sin programar. Buen complemento inicial.</p>
+        <div class="clase-badges"><span class="cb">Base</span></div>
+        <a href="https://course.elementsofai.com/es/" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+      <div class="card" data-clase="esp">
+        <div class="ic">📺</div><span class="tema">Algoritmos explicados (inglés muy visual)</span>
+        <h3>StatQuest (Josh Starmer)</h3>
+        <p>Videos que explican <strong>cada algoritmo de ML</strong> paso a paso con dibujos. En inglés, pero tan visual que se entiende igual (activa subtítulos).</p>
+        <div class="clase-badges"><span class="cb">Todo el curso</span></div>
+        <a href="https://www.youtube.com/@statquest" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+    </div>
+
+    <div class="nota" style="margin-top:34px"><strong>Nota:</strong> son sitios externos que pueden cambiar de dirección con el tiempo. Si alguno no abre, búscalo por su nombre. Elige <strong>rechazar cookies no esenciales</strong> cuando el sitio lo pregunte.</div>
+  </div>
+
+  <footer>Curso de Modelos de Aprendizaje · SENA Piedecuesta · Recursos visuales · Pablo Andrés Carvajal — pablocarvajal.dev</footer>
+
+  <script>
+    const filtros=document.querySelectorAll(".filtro"),cards=document.querySelectorAll(".card"),grupos=document.querySelectorAll(".grupo-titulo");
+    filtros.forEach(b=>b.addEventListener("click",()=>{
+      filtros.forEach(x=>x.classList.remove("activo"));b.classList.add("activo");
+      const f=b.dataset.f;
+      cards.forEach(c=>c.classList.toggle("hidden",!(f==="todos"||c.dataset.clase===f)));
+      grupos.forEach(g=>{const grid=g.nextElementSibling;const vis=grid.querySelectorAll(".card:not(.hidden)").length;g.classList.toggle("hidden",vis===0);grid.classList.toggle("hidden",vis===0);});
+    }));
+  </script>
+</body>
+</html>

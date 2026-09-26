@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clase 2 — Cómo funciona un LLM | Curso IA SENA</title>
+  <link rel="stylesheet" href="../recursos/presentacion.css">
+</head>
+<body>
+  <div class="barra-sup">
+    <span class="logo">SENA <span>·</span> Curso IA</span>
+    <span>Clase 2 — Cómo funciona un LLM: tokens, embeddings y RAG</span>
+  </div>
+  <div class="ayuda">← → para navegar · F pantalla completa</div>
+
+  <div class="deck">
+
+    <!-- 1 -->
+    <section class="slide portada">
+      <span class="pill">CLASE 2 · 8:00 am – 12:00 m</span>
+      <h1>Cómo funciona un LLM por dentro</h1>
+      <p class="subtitulo">Abrimos la caja negra: tokens, embeddings, atención, generación y RAG</p>
+      <p class="meta">Curso: IA, Modelos de Aprendizaje y Agentes con LLMs · SENA Piedecuesta — Sábados<br><strong style="color:#fff">Pablo Andrés Carvajal</strong> · Desarrollador Full Stack · <a href="https://pablocarvajal.dev" target="_blank" rel="noopener" style="color:#8fe1ff;font-weight:700;text-decoration:underline">pablocarvajal.dev</a></p>
+    </section>
+
+    <!-- 2 -->
+    <section class="slide">
+      <h2>¿Qué haremos hoy?</h2>
+      <div class="caja idea"><span class="et">Objetivo</span>Entender cómo un LLM convierte <strong>texto en números</strong>, cómo "entiende" el contexto y cómo <strong>genera lenguaje natural</strong> palabra por palabra.</div>
+      <h3>El camino de hoy:</h3>
+      <ul>
+        <li><strong>Tokenización:</strong> de texto a tokens a números.</li>
+        <li><strong>Embeddings:</strong> el "mapa del significado".</li>
+        <li><strong>Transformers y atención:</strong> entender el contexto.</li>
+        <li><strong>Generación:</strong> predecir el siguiente token.</li>
+        <li><strong>Chunking + RAG:</strong> darle nuestros documentos al modelo.</li>
+      </ul>
+    </section>
+
+    <!-- 3 -->
+    <section class="slide">
+      <h2>Agenda de la clase</h2>
+      <table class="t">
+        <tr><th>Hora</th><th>Bloque</th><th>Contenido</th></tr>
+        <tr><td>8:00 – 8:15</td><td>Repaso</td><td>Tarea Clase 1: tokens y embeddings</td></tr>
+        <tr><td>8:15 – 9:00</td><td>Tokenización</td><td>De texto a tokens a números</td></tr>
+        <tr><td>9:00 – 9:45</td><td>Embeddings</td><td>El "mapa del significado". Práctica con Cohere</td></tr>
+        <tr><td>9:45 – 10:00</td><td>☕ Descanso</td><td></td></tr>
+        <tr><td>10:00 – 10:45</td><td>Transformers</td><td>Atención: cómo entiende el contexto</td></tr>
+        <tr><td>10:45 – 11:15</td><td>Generación</td><td>Siguiente token, temperatura, prompts</td></tr>
+        <tr><td>11:15 – 11:55</td><td>Chunking + RAG</td><td>Darle nuestros documentos. Práctica</td></tr>
+        <tr><td>11:55 – 12:00</td><td>Cierre</td><td>Diagrama completo del pipeline</td></tr>
+      </table>
+    </section>
+
+    <!-- 4 -->
+    <section class="slide centro">
+      <h2>La gran idea</h2>
+      <p class="grande">🔢</p>
+      <p style="max-width:22em">Un modelo de IA <strong>no entiende letras ni palabras</strong>.<br>Solo entiende <strong>números</strong>.</p>
+      <p style="max-width:24em">Todo lo que veremos hoy es, en el fondo, cómo se traduce el lenguaje a números y de vuelta.</p>
+    </section>
+
+    <!-- 5 -->
+    <section class="slide">
+      <h2>Tokenización · Paso 1: partir el texto</h2>
+      <p>Un <strong>token</strong> es un pedacito de texto: una palabra, parte de una palabra o un signo.</p>
+      <pre><code>Texto:   "Aprender IA es genial"
+Tokens:  ["Apr", "ender", " IA", " es", " genial"]
+         (ejemplo ilustrativo)</code></pre>
+      <div class="caja idea"><span class="et">Regla práctica</span>En promedio <strong>1 token ≈ 4 caracteres ≈ ¾ de palabra</strong> en inglés. En español suele ocupar un poco más.</div>
+    </section>
+
+    <!-- 6 -->
+    <section class="slide">
+      <h2>Tokenización · Paso 2: cada token es un número</h2>
+      <p>El modelo tiene un <strong>vocabulario</strong> (una tabla) donde cada token tiene un ID:</p>
+      <pre><code>"Apr"     → 15496
+"ender"   → 2938
+" IA"     → 8712
+" es"     → 318
+" genial" → 40021</code></pre>
+      <p>Así, <code>"Aprender IA es genial"</code> se convierte en <code>[15496, 2938, 8712, 318, 40021]</code>.</p>
+    </section>
+
+    <!-- 7 -->
+    <section class="slide">
+      <h2>¿Por qué importan los tokens?</h2>
+      <div class="cols">
+        <div>
+          <ul>
+            <li>Los LLMs <strong>cobran por token</strong> (entrada + salida): saberlo ayuda a controlar costos.</li>
+            <li>Tienen un <strong>límite de tokens</strong> (ventana de contexto), ej. 128.000 tokens.</li>
+            <li>No pueden "leer" un libro infinito de una sola vez.</li>
+          </ul>
+        </div>
+        <div class="caja ojo">
+          <span class="et">Por eso...</span>
+          A veces la IA "olvida" el inicio de una conversación muy larga: se salió de la ventana de contexto.
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 -->
+    <section class="slide">
+      <h2>Embeddings: el mapa del significado</h2>
+      <p>Un ID (como <code>8712</code>) no dice <strong>nada</strong> sobre el significado. Necesitamos que palabras parecidas tengan números parecidos.</p>
+      <div class="caja idea"><span class="et">Definición</span>Un <strong>embedding</strong> es una lista de números (un <strong>vector</strong>) que representa el <strong>significado</strong> de un texto. Cientos o miles de dimensiones.</div>
+      <pre><code>"perro" → [0.21, -0.98, 0.44, ..., 0.10]   (ej. 1024 números)
+"gato"  → [0.19, -0.95, 0.40, ..., 0.12]   ← ¡muy parecido!
+"avión" → [-0.80, 0.33, 0.91, ..., -0.55]  ← muy diferente</code></pre>
+    </section>
+
+    <!-- 9 -->
+    <section class="slide">
+      <h2>El significado como distancia</h2>
+      <div class="cols">
+        <div>
+          <p>Imagina un <strong>mapa gigante</strong> donde cada palabra es un punto. Lo parecido queda <strong>cerca</strong>; lo diferente, <strong>lejos</strong>.</p>
+          <p>La <strong>similitud coseno</strong> mide qué tan cerca están dos vectores: un número entre -1 y 1 (cerca de 1 = muy parecidos).</p>
+        </div>
+        <div>
+          <pre><code>      gato • • perro
+  conejo •        • lobo
+
+
+                      • avión
+                  • helicóptero</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 -->
+    <section class="slide centro">
+      <h2>Lo mágico de los embeddings</h2>
+      <p class="grande">👑 − 👨 + 👩 ≈ 👸</p>
+      <p style="max-width:24em"><code>rey − hombre + mujer ≈ reina</code></p>
+      <p style="max-width:26em">Los embeddings capturan <strong>relaciones</strong>. El modelo las aprende <strong>solo</strong>, a partir de los datos (aprendizaje autosupervisado de la Clase 1).</p>
+    </section>
+
+    <!-- 11 -->
+    <section class="slide">
+      <h2>Práctica: medir significado con Cohere</h2>
+      <p>Fragmento de <code>clase-2/codigo/embeddings_similitud.py</code>:</p>
+      <pre><code>textos = ["perro", "gato", "avión", "cachorro"]
+vectores = co.embed(
+    texts=textos, model="embed-multilingual-v3.0",
+    input_type="search_document").embeddings
+
+def similitud(a, b):
+    a, b = np.array(a), np.array(b)
+    return float(np.dot(a, b) / (np.linalg.norm(a)*np.linalg.norm(b)))
+
+print("perro vs gato:    ", round(similitud(vectores[0], vectores[1]), 3))
+print("perro vs cachorro:", round(similitud(vectores[0], vectores[3]), 3))
+print("perro vs avión:   ", round(similitud(vectores[0], vectores[2]), 3))</code></pre>
+      <div class="caja idea"><span class="et">Resultado</span>"perro vs cachorro" y "perro vs gato" dan alto; "perro vs avión" da bajo. <strong>¡El computador acaba de medir significado!</strong></div>
+    </section>
+
+    <!-- 12 -->
+    <section class="slide">
+      <h2>Transformers y atención</h2>
+      <p>Los LLMs usan la arquitectura <strong>Transformer</strong> (2017, paper <em>"Attention is All You Need"</em>). Su superpoder es la <strong>atención</strong>.</p>
+      <h3>El problema: el significado depende del contexto</h3>
+      <ul>
+        <li>"Fui al <strong>banco</strong> a sacar plata." → institución financiera.</li>
+        <li>"Me senté en el <strong>banco</strong> del parque." → asiento.</li>
+      </ul>
+      <p>La misma palabra, significados distintos. ¿Cómo lo sabe el modelo? <strong>Mirando las otras palabras de la frase.</strong></p>
+    </section>
+
+    <!-- 13 -->
+    <section class="slide">
+      <h2>¿Qué hace la atención?</h2>
+      <p>Para cada palabra, el modelo se pregunta: <em>"¿a cuáles otras palabras debo prestar atención para entender esta?"</em> y les asigna un <strong>peso</strong>.</p>
+      <pre><code>"Me senté en el banco del parque"
+                 ▲
+                 └── presta MUCHA atención a "senté" y "parque"
+                     → concluye: banco = asiento</code></pre>
+      <div class="caja idea"><span class="et">Idea a retener</span>El Transformer entiende cada palabra <strong>en función de todas las demás</strong>, ponderando cuáles son relevantes. Procesa todas a la vez, por eso es rápido.</div>
+    </section>
+
+    <!-- 14 -->
+    <section class="slide">
+      <h2>Generación: predecir el siguiente token</h2>
+      <p>Un LLM hace <strong>una sola cosa</strong> increíblemente bien: dado un texto, predice el token más probable que sigue. Luego lo agrega y <strong>repite</strong>.</p>
+      <pre><code>Entrada: "El cielo es de color"
+   "azul"  → 78%
+   "gris"  → 12%
+   "rojo"  →  4%
+   "verde" →  1%
+Elige "azul" → "El cielo es de color azul" → vuelve a predecir...</code></pre>
+      <div class="caja idea"><span class="et">Autorregresivo</span>Se alimenta de su propia salida. <strong>No hay base de datos de respuestas:</strong> todo se genera token a token.</div>
+    </section>
+
+    <!-- 15 -->
+    <section class="slide">
+      <h2>La temperatura: creatividad vs. precisión</h2>
+      <div class="cols">
+        <div class="caja idea">
+          <span class="et">Temperatura baja (0 – 0.3)</span>
+          Elige casi siempre el token más probable. Respuestas <strong>precisas y repetibles</strong>. Ideal para datos, código, hechos.
+        </div>
+        <div class="caja ojo">
+          <span class="et">Temperatura alta (0.8 – 1.5)</span>
+          Se arriesga con tokens menos probables. Respuestas <strong>creativas y variadas</strong>. Ideal para historias, lluvia de ideas.
+        </div>
+      </div>
+      <div class="caja alerta"><span class="et">¿Por qué "alucina"?</span>Como <strong>siempre</strong> predice algo plausible, a veces genera algo que suena bien pero es <strong>falso</strong>. No tiene un verificador de verdad. <strong>Siempre verificar datos críticos.</strong></div>
+    </section>
+
+    <!-- 16 -->
+    <section class="slide">
+      <h2>El prompt: cómo le hablamos</h2>
+      <p>El <strong>prompt</strong> es todo el texto de entrada que le damos. Un buen prompt = mejor respuesta.</p>
+      <h3>Ingeniería de prompts básica</h3>
+      <ol>
+        <li><strong>Da contexto y rol:</strong> "Eres un profesor de matemáticas de primaria…".</li>
+        <li><strong>Sé específico:</strong> qué quieres, formato y longitud.</li>
+        <li><strong>Da ejemplos</strong> (few-shot): muéstrale 1–2 ejemplos de lo que esperas.</li>
+        <li><strong>Pídele pasos:</strong> "explica paso a paso" mejora el razonamiento.</li>
+      </ol>
+    </section>
+
+    <!-- 17 -->
+    <section class="slide">
+      <h2>Chunking + RAG: darle nuestros documentos</h2>
+      <div class="caja ojo"><span class="et">Problema</span>El LLM no conoce tus documentos privados (manual de tu empresa, tus apuntes) y no cabe un libro entero por el límite de tokens.</div>
+      <p><strong>RAG = Retrieval-Augmented Generation</strong> (Generación Aumentada por Recuperación).</p>
+      <div class="caja idea"><span class="et">Idea</span>Primero <strong>buscamos los fragmentos relevantes</strong> de nuestros documentos y se los pasamos al LLM junto con la pregunta. El LLM responde <strong>basándose en ellos</strong>.</div>
+    </section>
+
+    <!-- 18 -->
+    <section class="slide">
+      <h2>El pipeline de RAG</h2>
+      <pre><code>PREPARACIÓN (una sola vez):
+  Documento grande
+    │ 1. CHUNKING: partir en trozos (chunks)
+    │ 2. EMBEDDINGS: vectorizar cada chunk
+    ▼
+  [vec1][vec2][vec3]... → BASE DE DATOS VECTORIAL
+
+CONSULTA (cada pregunta):
+  Pregunta → 3. vectorizar → 4. BUSCAR chunks más cercanos
+    ▼
+  chunks relevantes + pregunta → 5. PROMPT al LLM → respuesta</code></pre>
+      <div class="caja idea"><span class="et">BD vectorial</span>Guarda vectores y busca los más parecidos rapidísimo. Ej: Chroma, FAISS, Pinecone, Weaviate.</div>
+    </section>
+
+    <!-- 19 -->
+    <section class="slide">
+      <h2>¿Qué es el chunking?</h2>
+      <p><strong>Chunking</strong> = partir un documento grande en trozos manejables antes de vectorizarlos.</p>
+      <ul>
+        <li>Chunk <strong>muy grande</strong>: mezcla temas, el embedding se vuelve "borroso".</li>
+        <li>Chunk <strong>muy pequeño</strong>: pierde contexto.</li>
+        <li><strong>Solapamiento (overlap):</strong> los chunks comparten un poco de texto en los bordes para no cortar ideas.</li>
+      </ul>
+      <pre><code>"...la fotosíntesis convierte luz en energía. Las plantas usan clorofila..."
+ └──────── chunk 1 ────────┘
+                  └──────── chunk 2 ────────┘  (con solapamiento)</code></pre>
+    </section>
+
+    <!-- 20 -->
+    <section class="slide">
+      <h2>Práctica: mini-RAG casero</h2>
+      <p>Fragmento de <code>clase-2/codigo/mini_rag.py</code>:</p>
+      <pre><code>chunks = [
+    "El horario de atención del SENA es de lunes a viernes de 7am a 5pm.",
+    "El curso de IA se dicta los sábados de 8am a 12m en Piedecuesta.",
+    "Para certificarse se requiere el 80% de asistencia.",
+]
+emb_chunks = co.embed(texts=chunks, model="embed-multilingual-v3.0",
+                      input_type="search_document").embeddings
+
+pregunta = "¿A qué hora es la clase de inteligencia artificial?"
+emb_preg = co.embed(texts=[pregunta], model="embed-multilingual-v3.0",
+                    input_type="search_query").embeddings[0]
+
+puntajes = [similitud(emb_preg, e) for e in emb_chunks]
+mejor = int(np.argmax(puntajes))
+print("Chunk más relevante:", chunks[mejor])</code></pre>
+      <div class="caja idea"><span class="et">Resultado</span>Devuelve el chunk del <strong>horario de la clase</strong>. Esto es RAG en su forma más simple.</div>
+    </section>
+
+    <!-- 21 -->
+    <section class="slide">
+      <h2>El pipeline completo de un LLM</h2>
+      <pre><code>TEXTO
+  │ Tokenización         → [tokens] → [IDs numéricos]
+  │ Embeddings           → cada token/frase = vector de significado
+  │ Transformer+Atención → entiende cada token según el contexto
+  │ Generación           → predice el siguiente token, uno a uno (temperatura)
+  ▼
+LENGUAJE NATURAL de salida
+
+(+ RAG: chunking → embeddings → BD vectorial → búsqueda → contexto extra)</code></pre>
+    </section>
+
+    <!-- Laboratorio interactivo -->
+    <section class="slide">
+      <h2>🔬 Laboratorio interactivo</h2>
+      <p>Veamos "por dentro" un LLM. Abran estas demos y experimenten en grupo:</p>
+      <ul>
+        <li><strong>Cómo responde un LLM por probabilidad</strong> (cada palabra con su % de certeza + temperatura) — <a href="https://poloclub.github.io/transformer-explainer/" target="_blank" rel="noopener">Transformer Explainer</a> · más sencillas: <a href="https://louis-7.github.io/llm-sampling-visualizer/" target="_blank" rel="noopener">Sampling Visualizer</a>, <a href="https://banana-projects-transformer-autocomplete.hf.space/" target="_blank" rel="noopener">Write With Transformer</a></li>
+        <li><strong>Ver los tokens de una frase</strong> — <a href="https://platform.openai.com/tokenizer" target="_blank" rel="noopener">OpenAI Tokenizer</a></li>
+        <li><strong>Embeddings en un mapa 3D</strong> — <a href="https://projector.tensorflow.org/" target="_blank" rel="noopener">Embedding Projector</a></li>
+        <li><strong>Juego de similitud semántica</strong> — <a href="https://research.google.com/semantris/" target="_blank" rel="noopener">Semantris</a></li>
+        <li><strong>Transformer en 3D</strong> — <a href="https://bbycroft.net/llm" target="_blank" rel="noopener">LLM Visualization</a></li>
+      </ul>
+      <div class="caja idea"><span class="et">Todas juntas</span>Hub de demos del curso: <a href="../recursos/demos-interactivos.html" target="_blank" rel="noopener">recursos/demos-interactivos.html</a></div>
+    </section>
+
+    <!-- 22 -->
+    <section class="slide centro">
+      <h2>Tarea para la Clase 3</h2>
+      <p style="max-width:26em">1. Ejecuta <code>embeddings_similitud.py</code> con <strong>tus propias palabras</strong>. Trae <strong>3 pares</strong>: uno muy similar, uno medio y uno muy diferente, con sus puntajes.</p>
+      <p style="max-width:26em">2. Piensa: si quisieras un asistente que responda sobre el <strong>reglamento del SENA</strong>, ¿qué documentos "chunkearías"?</p>
+      <div class="caja idea" style="max-width:26em"><span class="et">Próxima clase</span>Seguimos construyendo hacia un agente de IA que "conoce" nuestros datos.</div>
+    </section>
+
+  </div>
+
+  <div class="progreso"></div>
+  <div class="contador"></div>
+  <button class="nav-btn" id="prev" title="Anterior">‹</button>
+  <button class="nav-btn" id="next" title="Siguiente">›</button>
+  <script src="../recursos/presentacion.js"></script>
+</body>
+</html>

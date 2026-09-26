@@ -38,6 +38,24 @@ Tienes tres formas:
 
 Una vez abierto, ejecuta cada celda con **Shift + Enter**, en orden de arriba hacia abajo.
 
+## 🎨 Recursos visuales e interactivos
+
+Para explicar de forma más visual y práctica, el curso incluye un **hub de recursos**:
+[`recursos-visuales.html`](recursos-visuales.html) (ábrelo en el navegador; se filtra por tema).
+
+Reúne herramientas para **ver y experimentar** cada tema:
+- **[MLU-Explain](https://mlu-explain.github.io/)** (Amazon) — explicaciones interactivas de casi todos los temas.
+- **[R2D3](https://r2d3.us/visual-intro-to-machine-learning-part-1/)** — cómo aprende una máquina (con versión en español).
+- **[Visualizing K-Means](https://www.naftaliharris.com/blog/visualizing-k-means-clustering/)** y **[DBSCAN](https://www.naftaliharris.com/blog/visualizing-dbscan-clustering/)** — clustering paso a paso.
+- **[PCA visual](https://setosa.io/ev/principal-component-analysis/)**, **[TensorFlow Playground](https://playground.tensorflow.org/)**, y más.
+
+Las presentaciones de la Clase 0 y 1 ya enlazan los recursos correspondientes.
+
+## 🧑‍🏫 Material para dictar las clases
+
+- **`presentaciones/`** — diapositivas para proyectar (Clase 0 y Clase 1).
+- **`guia-docente/`** — guía del docente en PDF (explica los conceptos, el código celda por celda y da el guion para enseñar).
+
 ## 🧰 Librerías
 
 Todas vienen preinstaladas en Colab: **numpy, pandas, matplotlib, seaborn** y
@@ -48,6 +66,9 @@ Todas vienen preinstaladas en Colab: **numpy, pandas, matplotlib, seaborn** y
 ```
 curso-modelos-aprendizaje/
 ├── README.md
+├── recursos-visuales.html   ← hub de recursos visuales (ábrelo en el navegador)
+├── presentaciones/          ← diapositivas Clase 0 y 1
+├── guia-docente/            ← guía del docente (PDF)
 ├── notebooks/          ← los notebooks para abrir en Colab
 │   ├── 00_introduccion_y_setup.ipynb
 │   ├── 01_supervisado_basico.ipynb

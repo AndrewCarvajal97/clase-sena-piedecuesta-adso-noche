@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clase 3 — Modelos de datos de aprendizaje | Curso IA SENA</title>
+  <link rel="stylesheet" href="../recursos/presentacion.css">
+</head>
+<body>
+  <div class="barra-sup">
+    <span class="logo">SENA <span>·</span> Curso IA</span>
+    <span>Clase 3 — Cómo crear modelos de datos de aprendizaje</span>
+  </div>
+  <div class="ayuda">← → para navegar · F pantalla completa</div>
+
+  <div class="deck">
+
+    <!-- 1 · PORTADA -->
+    <section class="slide portada">
+      <span class="pill">CLASE 3 · 8:00 am – 12:00 m</span>
+      <h1>Cómo crear modelos de datos de aprendizaje</h1>
+      <p class="subtitulo">De los datos crudos a un modelo que predice, evalúa y se guarda</p>
+      <p class="meta">Curso: IA, Modelos de Aprendizaje y Agentes con LLMs · SENA Piedecuesta — Sábados<br><strong style="color:#fff">Pablo Andrés Carvajal</strong> · Desarrollador Full Stack · <a href="https://pablocarvajal.dev" target="_blank" rel="noopener" style="color:#8fe1ff;font-weight:700;text-decoration:underline">pablocarvajal.dev</a></p>
+    </section>
+
+    <!-- 2 · AGENDA -->
+    <section class="slide">
+      <h2>Agenda de hoy (4 horas)</h2>
+      <table class="t">
+        <tr><th>Hora</th><th>Bloque</th><th>Contenido</th></tr>
+        <tr><td>8:00 – 8:15</td><td>Repaso</td><td>Tarea Clase 2 (embeddings)</td></tr>
+        <tr><td>8:15 – 9:00</td><td>El dato es el rey</td><td>Ciclo de vida, calidad, limpieza</td></tr>
+        <tr><td>9:00 – 9:45</td><td>Preparación</td><td>Features, train/test, normalización</td></tr>
+        <tr><td>9:45 – 10:00</td><td>☕ Descanso</td><td></td></tr>
+        <tr><td>10:00 – 11:00</td><td>Entrenar</td><td>Proyecto guiado con scikit-learn</td></tr>
+        <tr><td>11:00 – 11:35</td><td>Evaluar</td><td>Métricas, matriz de confusión, overfitting</td></tr>
+        <tr><td>11:35 – 11:55</td><td>Usar y guardar</td><td>Predecir y guardar el modelo</td></tr>
+        <tr><td>11:55 – 12:00</td><td>Cierre</td><td>Puente hacia agentes (Clase 4)</td></tr>
+      </table>
+    </section>
+
+    <!-- 3 · OBJETIVOS -->
+    <section class="slide">
+      <h2>¿Qué lograremos hoy?</h2>
+      <ul>
+        <li>Entender qué es un <strong>buen dataset</strong> y las etapas de preparación de datos.</li>
+        <li>Diferenciar datos de <strong>entrenamiento</strong> y de <strong>prueba</strong>.</li>
+        <li>Entrenar un modelo de clasificación con <strong>scikit-learn</strong>.</li>
+        <li><strong>Evaluar</strong> el modelo (exactitud, matriz de confusión) e interpretarlo.</li>
+        <li><strong>Guardar</strong> el modelo y usarlo para predecir datos nuevos.</li>
+      </ul>
+    </section>
+
+    <!-- 4 · EL DATO ES EL REY -->
+    <section class="slide centro">
+      <h2>El dato es el rey 👑</h2>
+      <p class="grande">80%</p>
+      <p style="max-width:26em">del trabajo real en IA es <strong>preparar los datos</strong>, no programar el modelo.</p>
+      <div class="caja alerta" style="max-width:28em"><span class="et">Garbage in, garbage out</span>Basura entra, basura sale. Un modelo <strong>nunca es mejor</strong> que los datos con los que aprende.</div>
+    </section>
+
+    <!-- 5 · CICLO DE VIDA -->
+    <section class="slide">
+      <h2>Ciclo de vida de los datos</h2>
+      <pre><code>1. RECOLECTAR  →  2. EXPLORAR  →  3. LIMPIAR
+        →  4. PREPARAR (features)  →  5. ENTRENAR
+        →  6. EVALUAR  →  7. DESPLEGAR / USAR  →  (volver a 1)</code></pre>
+      <div class="caja idea"><span class="et">Idea clave</span>Es un <strong>ciclo</strong>, no una línea recta: al usar el modelo aparecen datos nuevos que mejoran la siguiente versión.</div>
+    </section>
+
+    <!-- 6 · BUEN DATASET -->
+    <section class="slide">
+      <h2>¿Qué es un buen dataset?</h2>
+      <ul>
+        <li><strong>Suficiente cantidad:</strong> más ejemplos = generaliza mejor.</li>
+        <li><strong>Representativo:</strong> se parece a los casos reales donde se usará.</li>
+        <li><strong>Balanceado:</strong> si el 99% es de una clase, el modelo aprende a decir siempre esa.</li>
+        <li><strong>Sin sesgos dañinos:</strong> si los datos tienen prejuicios, el modelo los amplifica.</li>
+        <li><strong>Limpio:</strong> sin errores, duplicados ni valores faltantes descontrolados.</li>
+      </ul>
+    </section>
+
+    <!-- 7 · LIMPIEZA -->
+    <section class="slide">
+      <h2>Problemas comunes al limpiar datos</h2>
+      <table class="t">
+        <tr><th>Problema</th><th>Ejemplo</th><th>Qué hacer</th></tr>
+        <tr><td>Valores faltantes</td><td>Edad = (vacío)</td><td>Rellenar (media/mediana) o eliminar</td></tr>
+        <tr><td>Duplicados</td><td>La misma fila 2 veces</td><td>Eliminar</td></tr>
+        <tr><td>Formatos mezclados</td><td>"Sí", "si", "SI", "1"</td><td>Estandarizar</td></tr>
+        <tr><td>Valores atípicos</td><td>Edad = 999</td><td>Revisar / corregir</td></tr>
+        <tr><td>Texto en vez de número</td><td>"$1.200.000"</td><td>Convertir a número</td></tr>
+      </table>
+    </section>
+
+    <!-- 8 · FEATURES Y TARGET -->
+    <section class="slide">
+      <h2>Features y target</h2>
+      <div class="cols">
+        <div class="caja idea"><span class="et">Features (X)</span>Las columnas de <strong>entrada</strong> que describen cada ejemplo. Ej: largo y ancho del pétalo.</div>
+        <div class="caja ojo"><span class="et">Target (y)</span>Lo que <strong>queremos predecir</strong>. Ej: la especie de la flor.</div>
+      </div>
+      <p style="margin-top:.6em">El modelo aprende la relación <strong>X → y</strong> a partir de muchos ejemplos.</p>
+    </section>
+
+    <!-- 9 · INGENIERÍA DE FEATURES -->
+    <section class="slide">
+      <h2>Ingeniería de features</h2>
+      <p>Crear o transformar columnas para <strong>ayudar al modelo</strong>:</p>
+      <ul>
+        <li><strong>Categóricas → números (one-hot):</strong> "rojo/verde/azul" no se puede sumar; se crea una columna 0/1 por categoría.</li>
+        <li><strong>Escalado / normalización:</strong> poner todas las features en rangos parecidos (ej. 0 a 1) para que ninguna domine solo por tener números grandes.</li>
+        <li><strong>Fechas → partes útiles:</strong> de "2026-09-04" sacar día de la semana, mes, etc.</li>
+      </ul>
+    </section>
+
+    <!-- 10 · TRAIN/TEST -->
+    <section class="slide">
+      <h2>La división más importante: train vs. test</h2>
+      <pre><code>   DATASET COMPLETO (100%)
+   ┌──────────────────────────┬──────────────────┐
+   │  ENTRENAMIENTO (70-80%)  │  PRUEBA (20-30%)  │
+   │  el modelo aprende aquí  │  examen final     │
+   └──────────────────────────┴──────────────────┘</code></pre>
+      <div class="caja alerta"><span class="et">Regla de oro</span>Nunca evaluamos con los mismos datos con los que aprendió. ¡Sería como dar el examen con las respuestas!</div>
+    </section>
+
+    <!-- 11 · OVERFITTING (concepto) -->
+    <section class="slide">
+      <h2>¿Aprendió o memorizó?</h2>
+      <div class="cols">
+        <div class="caja idea"><span class="et">Aprender bien</span>Le va bien en <strong>train</strong> y también en <strong>test</strong>: generaliza a datos nuevos.</div>
+        <div class="caja alerta"><span class="et">Overfitting</span>Le va muy bien en <strong>train</strong> pero mal en <strong>test</strong>: memorizó, no aprendió.</div>
+      </div>
+      <p style="margin-top:.6em">Soluciones al overfitting: <strong>más datos</strong>, un modelo <strong>más simple</strong> o regularización.</p>
+    </section>
+
+    <!-- 12 · PROYECTO IRIS -->
+    <section class="slide centro">
+      <h2>Proyecto guiado: clasificar flores Iris 🌸</h2>
+      <p style="max-width:28em">Predeciremos la <strong>especie</strong> de una flor a partir de sus medidas. El dataset Iris es pequeño, limpio y perfecto para aprender el flujo completo.</p>
+      <pre style="max-width:32em"><code>pip install scikit-learn pandas joblib</code></pre>
+      <div class="caja idea" style="max-width:30em"><span class="et">Código fuente</span>Todo el flujo comentado está en <code>codigo/entrenar_modelo.py</code>.</div>
+    </section>
+
+    <!-- 13 · PASO 1 CARGAR -->
+    <section class="slide">
+      <h2>Paso 1 — Cargar y explorar</h2>
+      <pre><code>from sklearn.datasets import load_iris
+import pandas as pd
+
+iris = load_iris()
+X = pd.DataFrame(iris.data, columns=iris.feature_names)  # features
+y = iris.target                                          # target (0,1,2)
+
+print(X.head())
+print("Especies:", list(iris.target_names))
+print("Total de ejemplos:", len(X))</code></pre>
+      <div class="caja ojo"><span class="et">Explorar primero</span>Antes de entrenar, siempre mira tus datos: cuántas filas, qué columnas y qué queremos predecir.</div>
+    </section>
+
+    <!-- 14 · PASO 2 DIVIDIR -->
+    <section class="slide">
+      <h2>Paso 2 — Dividir train / test</h2>
+      <pre><code>from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42   # 20% para prueba
+)
+print("Entrenamiento:", len(X_train), " | Prueba:", len(X_test))</code></pre>
+      <div class="caja idea"><span class="et">random_state=42</span>Fija el "azar" para que la división sea <strong>siempre la misma</strong> y los resultados se puedan reproducir.</div>
+    </section>
+
+    <!-- 15 · PASO 3 ENTRENAR -->
+    <section class="slide">
+      <h2>Paso 3 — Entrenar el modelo</h2>
+      <p>Usamos un <strong>árbol de decisión</strong>: aprende reglas tipo "si el pétalo mide más de X → especie Y". Fácil de entender.</p>
+      <pre><code>from sklearn.tree import DecisionTreeClassifier
+
+modelo = DecisionTreeClassifier(max_depth=3, random_state=42)
+modelo.fit(X_train, y_train)   # ¡aquí APRENDE!</code></pre>
+      <div class="caja idea"><span class="et">.fit()</span>Es el momento del <strong>entrenamiento</strong>: el modelo mira los ejemplos y ajusta sus reglas internas.</div>
+    </section>
+
+    <!-- 16 · PASO 4 EVALUAR -->
+    <section class="slide">
+      <h2>Paso 4 — Evaluar</h2>
+      <pre><code>from sklearn.metrics import accuracy_score, confusion_matrix
+
+predicciones = modelo.predict(X_test)   # datos NUEVOS
+
+exactitud = accuracy_score(y_test, predicciones)
+print(f"Exactitud: {exactitud:.2%}")    # ej. 96.67%
+
+print(confusion_matrix(y_test, predicciones))</code></pre>
+      <div class="caja ojo"><span class="et">Exactitud</span>% de predicciones correctas. Es simple, pero <strong>engaña</strong> con datos desbalanceados.</div>
+    </section>
+
+    <!-- 17 · MATRIZ DE CONFUSIÓN -->
+    <section class="slide">
+      <h2>Leer la matriz de confusión</h2>
+      <pre><code>                 Predijo
+              setosa versi virgin
+   Real setosa  [ 10    0     0 ]   ← 10 aciertos
+        versi   [  0    9     1 ]   ← confundió 1 con virginica
+        virgin  [  0    0    10 ]</code></pre>
+      <div class="caja idea"><span class="et">Diagonal = aciertos</span>La <strong>diagonal</strong> son los aciertos; lo de <strong>fuera</strong> muestra en qué se confunde el modelo.</div>
+    </section>
+
+    <!-- 18 · OVERFITTING (código) -->
+    <section class="slide">
+      <h2>Detectar overfitting</h2>
+      <pre><code>print("Exactitud en TRAIN:", modelo.score(X_train, y_train))
+print("Exactitud en TEST: ", modelo.score(X_test, y_test))</code></pre>
+      <div class="caja alerta"><span class="et">¡Ojo!</span>Si TRAIN ≈ 100% pero TEST es mucho menor → <strong>overfitting</strong>. Prueba un <code>max_depth</code> menor o consigue más datos.</div>
+    </section>
+
+    <!-- 19 · PASO 5 PREDECIR -->
+    <section class="slide">
+      <h2>Paso 5 — Predecir una flor nueva</h2>
+      <pre><code>import pandas as pd
+
+flor_nueva = pd.DataFrame([[5.1, 3.5, 1.4, 0.2]],
+                          columns=iris.feature_names)
+pred = modelo.predict(flor_nueva)
+print("Especie predicha:", iris.target_names[pred[0]])</code></pre>
+      <div class="caja idea"><span class="et">¡El modelo ya trabaja!</span>Le damos medidas nuevas y responde con la especie más probable.</div>
+    </section>
+
+    <!-- 20 · PASO 6 GUARDAR -->
+    <section class="slide">
+      <h2>Paso 6 — Guardar el modelo</h2>
+      <pre><code>import joblib
+
+joblib.dump(modelo, "modelo_iris.pkl")            # guardar
+# ... en otro programa:
+modelo_cargado = joblib.load("modelo_iris.pkl")   # cargar y usar</code></pre>
+      <div class="caja idea"><span class="et">A producción</span>Se entrena <strong>una vez</strong>, se guarda, y una app lo carga para responder al instante.</div>
+    </section>
+
+    <!-- 21 · PUENTE CLASE 4 -->
+    <section class="slide">
+      <h2>Puente hacia la Clase 4</h2>
+      <p>Hoy creamos un modelo que <strong>aprende de datos numéricos</strong>. En la Clase 4 no entrenaremos desde cero (eso requiere GPUs y millones de datos): usaremos <strong>modelos ya entrenados</strong> vía API y los convertiremos en <strong>agentes</strong> que razonan, usan herramientas y recuerdan.</p>
+      <div class="caja idea"><span class="et">La base sigue siendo el dato</span>Un agente <strong>sin buenos datos ni contexto</strong> responde mal. Lo aprendido hoy es la base de todo.</div>
+    </section>
+
+    <!-- Laboratorio interactivo -->
+    <section class="slide">
+      <h2>🔬 Laboratorio interactivo</h2>
+      <p>Vivamos el ciclo de datos: recolectar → entrenar → evaluar. Abran estas demos:</p>
+      <ul>
+        <li><strong>Entrenar y evaluar un modelo sin código (con la cámara)</strong> — <a href="https://teachablemachine.withgoogle.com/" target="_blank" rel="noopener">Teachable Machine</a></li>
+        <li><strong>Sobreajuste y train/test (visual)</strong> — <a href="https://r2d3.us/visual-intro-to-machine-learning-part-1/" target="_blank" rel="noopener">R2D3 (parte 1</a> y <a href="https://r2d3.us/visual-intro-to-machine-learning-part-2/" target="_blank" rel="noopener">parte 2)</a></li>
+        <li><strong>Datasets reales para practicar</strong> — <a href="https://www.kaggle.com/datasets" target="_blank" rel="noopener">Kaggle Datasets</a></li>
+      </ul>
+      <div class="caja idea"><span class="et">Todas juntas</span>Hub de demos del curso: <a href="../recursos/demos-interactivos.html" target="_blank" rel="noopener">recursos/demos-interactivos.html</a></div>
+    </section>
+
+    <!-- 22 · TAREA -->
+    <section class="slide centro">
+      <h2>Tarea para la Clase 4</h2>
+      <p style="max-width:26em">1. Termina el <strong>reto en clase</strong> (cambiar <code>max_depth</code>, probar <code>RandomForestClassifier</code> o cargar un CSV propio) y trae el resultado.</p>
+      <p style="max-width:26em">2. Piensa en <strong>un asistente útil</strong> que te gustaría construir (ej: un tutor de matemáticas, un asistente del reglamento del SENA). Lo construiremos en la Clase 4.</p>
+      <div class="caja idea" style="max-width:28em"><span class="et">Próxima clase</span>De modelos a <strong>agentes con LLMs</strong>.</div>
+    </section>
+
+  </div>
+
+  <div class="progreso"></div>
+  <div class="contador"></div>
+  <button class="nav-btn" id="prev" title="Anterior">‹</button>
+  <button class="nav-btn" id="next" title="Siguiente">›</button>
+  <script src="../recursos/presentacion.js"></script>
+</body>
+</html>

@@ -78,13 +78,42 @@
       <div class="caja idea"><span class="et">Dónde encaja este curso</span>Estamos en <strong>IA estrecha</strong>. Cada modelo que haremos resuelve <strong>una sola tarea</strong>: no "piensa", encuentra <strong>patrones en datos</strong>.</div>
     </section>
 
-    <!-- 4c · IA > ML > DL -->
+    <!-- 4c · EL UNIVERSO DE LA IA (CAPAS) -->
     <section class="slide centro">
-      <h2>IA, Machine Learning y Deep Learning</h2>
-      <pre style="text-align:left">INTELIGENCIA ARTIFICIAL
-  └─ MACHINE LEARNING   ← aquí trabajamos todo el curso
-       └─ DEEP LEARNING  (redes neuronales; potencia a los LLM)</pre>
-      <div class="caja idea" style="max-width:30em"><span class="et">Idea</span>El <strong>Machine Learning</strong> aprende reglas a partir de datos. El <strong>Deep Learning</strong> es un ML más avanzado (redes neuronales).</div>
+      <h2>El universo de la IA: sus capas</h2>
+      <svg viewBox="0 0 900 610" style="width:100%;max-width:820px;height:auto;max-height:58vh" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Roboto, Arial, sans-serif">
+        <!-- Capa 1: IA -->
+        <rect x="20" y="18" width="860" height="580" rx="26" fill="#eaf2fe" stroke="#93c5fd" stroke-width="2"/>
+        <text x="450" y="46" text-anchor="middle" dominant-baseline="central" font-size="21" font-weight="800" fill="#1e3a8a">INTELIGENCIA ARTIFICIAL</text>
+        <text x="450" y="70" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#1e3a8a">Que una máquina imite lo que llamamos "inteligente"</text>
+
+        <!-- Capa 2: Machine Learning (AQUÍ) -->
+        <rect x="66" y="90" width="768" height="500" rx="22" fill="#e7f8e0" stroke="#39a900" stroke-width="4"/>
+        <text x="450" y="116" text-anchor="middle" dominant-baseline="central" font-size="20" font-weight="800" fill="#166534">MACHINE LEARNING</text>
+        <rect x="628" y="102" width="188" height="28" rx="14" fill="#39a900"/>
+        <text x="722" y="117" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="800" fill="#ffffff">📍 AQUÍ ESTAMOS</text>
+        <text x="450" y="138" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#166534">Aprende de datos · predecir, clasificar, agrupar</text>
+
+        <!-- Capa 3: Redes Neuronales -->
+        <rect x="112" y="160" width="676" height="410" rx="20" fill="#f1ecfe" stroke="#c4b5fd" stroke-width="2"/>
+        <text x="450" y="186" text-anchor="middle" dominant-baseline="central" font-size="19" font-weight="800" fill="#5b21b6">REDES NEURONALES</text>
+        <text x="450" y="208" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#5b21b6">Neuronas artificiales conectadas en capas</text>
+
+        <!-- Capa 4: Deep Learning -->
+        <rect x="158" y="230" width="584" height="320" rx="18" fill="#fef7d6" stroke="#fcd34d" stroke-width="2"/>
+        <text x="450" y="256" text-anchor="middle" dominant-baseline="central" font-size="18" font-weight="800" fill="#92600e">DEEP LEARNING</text>
+        <text x="450" y="278" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#92600e">Redes de muchas capas · visión, voz, lenguaje</text>
+
+        <!-- Capa 5: IA Generativa -->
+        <rect x="204" y="300" width="492" height="230" rx="16" fill="#d7f7f0" stroke="#5eead4" stroke-width="2"/>
+        <text x="450" y="332" text-anchor="middle" dominant-baseline="central" font-size="18" font-weight="800" fill="#115e59">IA GENERATIVA</text>
+        <text x="450" y="356" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#115e59">Crea contenido nuevo: texto e imágenes</text>
+        <text x="450" y="378" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#115e59">(ChatGPT, Gemini, generadores de imágenes)</text>
+
+        <!-- Flecha "nacen de combinar" -->
+        <text x="450" y="470" text-anchor="middle" dominant-baseline="central" font-size="14" font-style="italic" fill="#0f766e">cada capa nace de combinar la anterior con más datos y potencia ⬇</text>
+      </svg>
+      <div class="caja idea" style="max-width:40em"><span class="et">La idea que debes transmitir</span>Cada capa <strong>vive dentro</strong> de la anterior y <strong>nace de combinarla</strong>: el ML es un tipo de IA; las <strong>redes neuronales</strong> son un tipo de ML; muchas redes en capas dan el <strong>Deep Learning</strong>; y de ahí nace la <strong>IA Generativa</strong>. <strong>Hoy aprendemos la capa Machine Learning.</strong></div>
     </section>
 
     <!-- 5 · COLAB -->
@@ -215,6 +244,19 @@ plt.show()</code></pre>
         <li>Haz un <code>scatterplot</code> usando ahora <code>sepal length (cm)</code> y <code>sepal width (cm)</code>. ¿Se separan igual de bien las especies?</li>
       </ol>
       <div class="caja"><span class="et">Dónde escribirlo</span>En la celda de código que dice <code># ✍️ Tu código aquí</code>, al final del notebook.</div>
+    </section>
+
+    <!-- 13b · RECURSOS VISUALES -->
+    <section class="slide">
+      <h2>🎨 Recursos visuales del curso</h2>
+      <p>Para <strong>ver y experimentar</strong> los conceptos, tenemos un hub de recursos interactivos:</p>
+      <ul>
+        <li><strong>Explicaciones visuales</strong> de casi todos los temas — <a href="https://mlu-explain.github.io/" target="_blank" rel="noopener">MLU-Explain</a></li>
+        <li><strong>Cómo aprende una máquina</strong> (árboles, train/test) — <a href="https://r2d3.us/visual-intro-to-machine-learning-part-1/" target="_blank" rel="noopener">R2D3 (con versión en español)</a></li>
+        <li><strong>Red neuronal en vivo</strong> — <a href="https://playground.tensorflow.org/" target="_blank" rel="noopener">TensorFlow Playground</a></li>
+        <li><strong>Clustering paso a paso</strong> — <a href="https://www.naftaliharris.com/blog/visualizing-k-means-clustering/" target="_blank" rel="noopener">Visualizing K-Means</a></li>
+      </ul>
+      <div class="caja idea"><span class="et">Todos juntos</span>Hub del curso: <a href="../recursos-visuales.html" target="_blank" rel="noopener">recursos-visuales.html</a> (filtrable por tema)</div>
     </section>
 
     <!-- 14 · REPASO -->

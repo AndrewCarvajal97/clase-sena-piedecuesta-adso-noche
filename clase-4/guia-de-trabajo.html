@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Guía de trabajo — Clase 4</title>
+  <link rel="stylesheet" href="../recursos/guia.css">
+</head>
+<body>
+
+  <!-- PORTADA -->
+  <div class="portada">
+    <div class="marca">SENA · PIEDECUESTA — CURSO DE INTELIGENCIA ARTIFICIAL</div>
+    <h1>Clase 4<br>Crear agentes de IA con APIs gratuitas</h1>
+    <p class="sub">Guía de trabajo del aprendiz · Gemini y Cohere</p>
+    <div class="banda"></div>
+    <div class="datos">
+      Duración: 4 horas (8:00 am – 12:00 m)<br>
+      Pablo Andrés Carvajal — Desarrollador Full Stack<br>
+      <a href="https://pablocarvajal.dev">pablocarvajal.dev</a><br>
+      Nombre del aprendiz: _______________________________
+    </div>
+  </div>
+
+  <!-- OBJETIVOS -->
+  <div class="objetivos">
+    <h3>🎯 ¿Qué sabré hacer al terminar esta guía?</h3>
+    <ul>
+      <li>Explicar qué diferencia un <strong>agente</strong> de un simple chatbot.</li>
+      <li>Construir un chatbot con <strong>memoria de conversación</strong> (Gemini).</li>
+      <li>Darle <strong>herramientas</strong> a un agente (function calling / tool use).</li>
+      <li>Construir un <strong>agente RAG</strong> que responde con documentos propios (Cohere).</li>
+      <li>Manejar mis claves de forma segura y entender los límites y costos por token.</li>
+    </ul>
+  </div>
+
+  <div class="caja idea"><span class="et">La gran integración</span>Esta clase reúne todo el curso: los <strong>tokens</strong> y <strong>embeddings</strong> de la Clase 2, el <strong>RAG</strong>, y las <strong>APIs</strong> gratuitas de la Clase 0 se combinan para crear agentes que funcionan de verdad. Pasamos de "chatear con un modelo" a construir asistentes con memoria, herramientas y datos propios.</div>
+
+  <div class="caja idea"><span class="et">🔬 Demos interactivos de esta clase</span>
+    Prueba modelos y prompts en vivo antes de construir tu agente:
+    <ul>
+      <li><strong>Playground de Gemini (ajusta la temperatura)</strong>: <a href="https://aistudio.google.com/">Google AI Studio</a></li>
+      <li><strong>Playground y embeddings de Cohere</strong>: <a href="https://dashboard.cohere.com/">Cohere Dashboard</a></li>
+      <li><strong>Cómo la temperatura cambia la respuesta</strong>: <a href="https://poloclub.github.io/transformer-explainer/">Transformer Explainer</a></li>
+    </ul>
+    Todas juntas en el hub del curso: <a href="../recursos/demos-interactivos.html">recursos/demos-interactivos.html</a>
+  </div>
+
+  <h2>1. ¿Qué es un agente de IA?</h2>
+  <p>Un <strong>chatbot</strong> simple recibe un mensaje y responde: nada más. Un <strong>agente</strong> va
+  mucho más allá: <strong>razona, decide y actúa</strong> para cumplir un objetivo, apoyándose en
+  recursos externos. Es la diferencia entre alguien que solo conversa y alguien que resuelve tareas.</p>
+
+  <h3>Anatomía de un agente</h3>
+  <p>Un agente se compone de cuatro piezas:</p>
+  <ol>
+    <li><strong>LLM (el cerebro):</strong> decide qué hacer y genera lenguaje. En este curso usamos Gemini y Cohere.</li>
+    <li><strong>Memoria:</strong> recuerda la conversación y los hechos importantes (historial de chat + RAG).</li>
+    <li><strong>Herramientas (tools):</strong> funciones que el agente puede llamar: calcular, buscar en internet, consultar una base de datos, enviar un correo, ejecutar código…</li>
+    <li><strong>Bucle de razonamiento:</strong> el ciclo <em>pensar → actuar → observar el resultado → repetir</em> hasta resolver la tarea.</li>
+  </ol>
+
+  <div class="caja ojo"><span class="et">Ya conoces un agente</span><strong>OpenCode</strong> (Clase 0) es exactamente esto: un LLM + herramientas (leer/escribir archivos, ejecutar comandos) + memoria del proyecto. Hoy construimos nuestra propia versión, más sencilla.</div>
+
+  <h3>El patrón ReAct (Reason + Act)</h3>
+  <p>La mayoría de los agentes siguen un ciclo en el que <strong>alternan pensamiento y acción</strong>
+  hasta tener todo lo necesario para responder:</p>
+  <pre><code>Pensamiento: necesito saber el clima de hoy.
+Acción:      llamar herramienta buscar_clima("Piedecuesta")
+Observación: "24°C, soleado"
+Pensamiento: ya tengo la info, puedo responder.
+Respuesta:   "Hoy en Piedecuesta hay 24°C y está soleado."</code></pre>
+
+  <h2>2. Proyecto 1 — Chatbot con memoria (Gemini)</h2>
+  <p>Un modelo por defecto <strong>no recuerda</strong> el mensaje anterior: cada petición es
+  independiente. La "memoria" se logra <strong>enviándole el historial completo</strong> en cada turno.
+  La librería de Gemini nos facilita esto con <code>start_chat()</code>, que guarda el historial
+  automáticamente y se lo reenvía al modelo.</p>
+
+  <p>Primero instalamos las dependencias:</p>
+  <pre><code>pip install google-generativeai python-dotenv</code></pre>
+
+  <p>El programa completo (archivo <code>clase-4/codigo/1_chatbot_memoria.py</code>), comentado paso a paso:</p>
+  <pre><code>import os
+from dotenv import load_dotenv
+import google.generativeai as genai
+
+load_dotenv()                                      # carga las claves del .env
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+modelo = genai.GenerativeModel(
+    "gemini-1.5-flash",
+    # El system_instruction define la personalidad y las reglas del agente.
+    system_instruction=(
+        "Eres un tutor amable del SENA. Respondes de forma clara y breve, "
+        "con ejemplos sencillos y en español."
+    ),
+)
+
+# start_chat mantiene automáticamente el historial => MEMORIA.
+chat = modelo.start_chat(history=[])
+
+print("Tutor IA listo (escribe 'salir' para terminar)\n")
+while True:
+    mensaje = input("Tú: ").strip()
+    if mensaje.lower() == "salir":
+        break
+    respuesta = chat.send_message(mensaje)         # envía el turno + el historial
+    print("Tutor:", respuesta.text, "\n")</code></pre>
+
+  <h3>Cómo demostrar que hay memoria</h3>
+  <p>Escribe estos dos mensajes seguidos y observa la segunda respuesta:</p>
+  <table>
+    <tr><th>Tú escribes</th><th>El tutor responde</th></tr>
+    <tr><td>Me llamo Andrés.</td><td>Mucho gusto, Andrés.</td></tr>
+    <tr><td>¿Cómo me llamo?</td><td>Te llamas Andrés. ✅ (recuerda porque enviamos el historial)</td></tr>
+  </table>
+
+  <div class="caja idea"><span class="et">El truco más poderoso</span>El <code>system_instruction</code> define la <strong>personalidad y las reglas</strong> del agente. Es la herramienta más poderosa y barata para controlarlo: cambia esa frase y tendrás un agente completamente distinto (un chef, un abogado, un tutor de inglés…).</div>
+
+  <h2>3. Proyecto 2 — Agente con herramientas (function calling)</h2>
+  <p>Los LLMs son <strong>malos en matemáticas exactas</strong> y <strong>no conocen datos en tiempo
+  real</strong>. La solución es darles <strong>herramientas</strong>: funciones de Python que ellos
+  deciden cuándo llamar. Esto se conoce como <strong>function calling</strong> o <strong>tool use</strong>.</p>
+
+  <p>Lo clave: una herramienta puede ser <strong>cualquier función de Python</strong>. El
+  <code>docstring</code> (la descripción entre comillas triples) es fundamental, porque el modelo lo
+  <strong>lee</strong> para saber qué hace la función y cuándo conviene usarla.</p>
+
+  <p>El programa completo (archivo <code>clase-4/codigo/2_agente_herramientas.py</code>):</p>
+  <pre><code>import os
+from dotenv import load_dotenv
+import google.generativeai as genai
+
+load_dotenv()
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+# 1. Definimos las herramientas como funciones normales de Python.
+def calcular(operacion: str) -> str:
+    """Evalúa una operación matemática escrita como texto. Ej: '15 * 23 + 7'."""
+    try:
+        # eval() se usa aquí SOLO con fines educativos.
+        return str(eval(operacion, {"__builtins__": {}}, {}))
+    except Exception:
+        return "No pude calcular eso."
+
+def clima(ciudad: str) -> str:
+    """Devuelve el clima actual (simulado) de una ciudad dada."""
+    datos = {"piedecuesta": "24°C, soleado", "bogota": "14°C, lluvioso"}
+    return datos.get(ciudad.lower(), "No tengo datos de esa ciudad.")
+
+# 2. Le entregamos las herramientas al modelo.
+modelo = genai.GenerativeModel("gemini-1.5-flash", tools=[calcular, clima])
+chat = modelo.start_chat(enable_automatic_function_calling=True)
+
+# 3. El modelo DECIDE solo cuándo usar cada herramienta.
+print(chat.send_message("¿Cuánto es 1520 * 34 + 89?").text)
+print(chat.send_message("¿Qué clima hace en Piedecuesta?").text)</code></pre>
+
+  <p>Lo importante que verá el grupo cuando corra el programa:</p>
+  <ul>
+    <li>El aprendiz pregunta en <strong>lenguaje natural</strong>, sin decir qué función usar.</li>
+    <li>El modelo <strong>entiende</strong> por sí solo que debe usar <code>calcular</code> o <code>clima</code>.</li>
+    <li>Llama la función, recibe el resultado y <strong>responde con él</strong>.</li>
+  </ul>
+
+  <div class="caja idea"><span class="et">Así se conectan los LLMs al mundo real</span>Una herramienta puede consultar una base de datos, mandar correos o llamar la API de tu empresa. Con function calling, el LLM deja de ser solo un "hablador" y empieza a <strong>actuar</strong>.</div>
+
+  <div class="caja"><span class="et">Independiente del proveedor</span><strong>Cohere</strong> también soporta <em>tool use</em> con su API de chat (<code>co.chat</code> con el parámetro <code>tools</code>): se declaran las herramientas y el modelo pide ejecutarlas. La idea es idéntica, lo que muestra que <strong>el concepto de agente no depende del proveedor</strong>.</div>
+
+  <h2>4. Proyecto 3 — Agente RAG con datos propios (Cohere)</h2>
+  <p>Unimos el <strong>RAG</strong> (Retrieval-Augmented Generation) de la Clase 2 con un agente que
+  <strong>responde solo con nuestros documentos</strong>. Un caso real muy útil: un asistente del
+  reglamento del SENA que contesta dudas de los aprendices.</p>
+
+  <p>RAG funciona en tres pasos:</p>
+  <ol>
+    <li><strong>Vectorizar</strong> nuestros documentos una sola vez (embeddings).</li>
+    <li><strong>Buscar</strong> (retrieval) los fragmentos más parecidos a la pregunta.</li>
+    <li><strong>Generar</strong> (generation) la respuesta usando SOLO esos fragmentos.</li>
+  </ol>
+
+  <p>Instalamos las dependencias:</p>
+  <pre><code>pip install cohere numpy python-dotenv</code></pre>
+
+  <p>El programa completo (archivo <code>clase-4/codigo/3_agente_rag.py</code>), comentado:</p>
+  <pre><code>import os, cohere, numpy as np
+from dotenv import load_dotenv
+
+load_dotenv()
+co = cohere.Client(os.getenv("COHERE_API_KEY"))
+
+# 1. Base de conocimiento: chunks (fragmentos) de nuestros documentos.
+documentos = [
+    "El curso de IA del SENA Piedecuesta se dicta los sábados de 8am a 12m.",
+    "Se requiere el 80% de asistencia para poder certificarse en el curso.",
+    "El instructor del curso es Andrés Carvajal.",
+    "Las APIs usadas en el curso son Cohere y Gemini, ambas con planes gratuitos.",
+]
+
+# 2. Vectorizamos la base UNA sola vez.
+emb_docs = co.embed(texts=documentos, model="embed-multilingual-v3.0",
+                    input_type="search_document").embeddings
+
+def similitud(a, b):
+    """Similitud coseno entre dos vectores (1 = idénticos)."""
+    a, b = np.array(a), np.array(b)
+    return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b)))
+
+def responder(pregunta: str) -> str:
+    # 3. RETRIEVAL: buscar los 2 chunks más relevantes.
+    emb_p = co.embed(texts=[pregunta], model="embed-multilingual-v3.0",
+                     input_type="search_query").embeddings[0]
+    ranking = sorted(range(len(documentos)),
+                     key=lambda i: similitud(emb_p, emb_docs[i]), reverse=True)
+    contexto = "\n".join(f"- {documentos[i]}" for i in ranking[:2])
+
+    # 4. GENERATION: responder usando SOLO el contexto recuperado.
+    prompt = (f"Responde usando ÚNICAMENTE esta información.\n"
+              f"Si la respuesta no está ahí, di que no tienes ese dato.\n\n"
+              f"Información:\n{contexto}\n\nPregunta: {pregunta}")
+    return co.chat(message=prompt, model="command-r").text
+
+print(responder("¿A qué hora es el curso?"))
+print(responder("¿Quién es el instructor?"))
+print(responder("¿Cuánto cuesta un carro?"))   # → debe decir que no lo sabe</code></pre>
+
+  <p>Puntos para discutir con el grupo:</p>
+  <table>
+    <tr><th>Pregunta</th><th>Respuesta esperada</th></tr>
+    <tr><td>¿A qué hora es el curso?</td><td>Los sábados de 8am a 12m.</td></tr>
+    <tr><td>¿Quién es el instructor?</td><td>Andrés Carvajal.</td></tr>
+    <tr><td>¿Cuánto cuesta un carro?</td><td>No tengo ese dato. ✅</td></tr>
+  </table>
+
+  <div class="caja idea"><span class="et">El agente no inventa</span>Si la respuesta no está en los documentos, lo dice. Esto <strong>reduce las alucinaciones</strong> que vimos en la Clase 2. Cambia la lista <code>documentos</code> por tus apuntes reales del curso y tendrás un <strong>asistente personalizado</strong>.</div>
+
+  <h2>5. Seguridad de las claves, límites y despliegue</h2>
+  <h3>5.1 Manejo seguro de claves — ¡crítico!</h3>
+  <ol>
+    <li>Las claves van en un archivo <code>.env</code>, <strong>NUNCA</strong> escritas en el código.</li>
+    <li>Crea un archivo <code>.gitignore</code> para que <code>.env</code> nunca se suba a GitHub:</li>
+  </ol>
+  <pre><code># .gitignore
+.env
+__pycache__/
+*.pkl</code></pre>
+  <div class="caja alerta"><span class="et">Si una clave se filtra</span>Revócala de inmediato y genera una nueva desde el panel del proveedor. Una clave publicada por error puede ser usada por otras personas a tu nombre y agotar tu cupo.</div>
+
+  <h3>5.2 Entender límites y costos</h3>
+  <ul>
+    <li>Las APIs gratuitas tienen <strong>límites de peticiones por minuto</strong> y cupos.</li>
+    <li>Los LLMs cobran o limitan <strong>por token</strong> (Clase 2): prompts más cortos = más barato y rápido.</li>
+    <li>Buenas prácticas: elegir el modelo más pequeño que sirva (<code>gemini-1.5-flash</code>, <code>command-r</code>), cachear resultados y manejar los errores de "límite excedido".</li>
+  </ul>
+
+  <h3>5.3 ¿Cómo llega esto a usuarios reales?</h3>
+  <p>Le ponemos una <strong>interfaz web</strong> con <strong>Streamlit</strong> (una página en pocas
+  líneas de Python) y la subimos a un servidor gratuito como Streamlit Community Cloud o Hugging Face Spaces.</p>
+  <pre><code>pip install streamlit
+# app.py con la lógica del agente + st.chat_input()
+streamlit run app.py</code></pre>
+
+  <h2>6. Proyecto final y rúbrica</h2>
+  <p>Cada aprendiz (o pareja) construye <strong>su propio agente</strong>, eligiendo una de estas opciones:</p>
+  <ul>
+    <li>Un <strong>chatbot con personalidad</strong> (definida en el <code>system_instruction</code>) para un tema, o</li>
+    <li>Un <strong>agente con una herramienta</strong> propia (function calling), o</li>
+    <li>Un <strong>agente RAG</strong> con sus propios documentos.</li>
+  </ul>
+  <p>Rúbrica de evaluación:</p>
+  <table>
+    <tr><th>Criterio</th><th>Puntos</th></tr>
+    <tr><td>El agente funciona y responde</td><td>40</td></tr>
+    <tr><td>Usa memoria, herramienta o RAG</td><td>30</td></tr>
+    <tr><td>Maneja las claves de forma segura (.env + .gitignore)</td><td>15</td></tr>
+    <tr><td>Presentación y explicación clara de cómo funciona</td><td>15</td></tr>
+    <tr><td><strong>Total</strong></td><td><strong>100</strong></td></tr>
+  </table>
+
+  <!-- ACTIVIDADES DE REFUERZO -->
+  <h2 class="nueva-pagina">Actividades de refuerzo</h2>
+  <p>Realiza estas actividades para afianzar lo aprendido. Puedes escribir tus respuestas
+  en los espacios en blanco.</p>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">1</span> Chatbot vs. agente <span class="badge facil">Fácil</span></div>
+    <p>Explica con tus propias palabras dos diferencias entre un chatbot simple y un agente. Nombra las cuatro piezas de la anatomía de un agente.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">2</span> Dale personalidad a tu tutor <span class="badge facil">Fácil</span></div>
+    <p>Ejecuta <code>1_chatbot_memoria.py</code> y cambia el <code>system_instruction</code> por otra personalidad (por ejemplo, un chef o un guía turístico). Anota qué frase usaste y cómo cambió el comportamiento.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">3</span> Comprueba la memoria <span class="badge media">Media</span></div>
+    <p>Con el chatbot en marcha, dile tu nombre y una comida favorita en mensajes separados. Luego pregúntale por ambos datos. Anota si los recordó y explica por qué funciona la memoria.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">4</span> Tu propia herramienta <span class="badge media">Media</span></div>
+    <p>En <code>2_agente_herramientas.py</code> agrega una nueva función-herramienta (por ejemplo, <code>convertir_moneda(pesos)</code> o <code>hora_actual()</code>) con su docstring, inclúyela en la lista <code>tools=[...]</code> y haz que el modelo la use. Anota tu función.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">5</span> RAG con tus datos <span class="badge reto">Reto</span></div>
+    <p>En <code>3_agente_rag.py</code> reemplaza la lista <code>documentos</code> por 5 datos reales sobre ti, tu barrio o tu emprendimiento. Hazle 3 preguntas al agente (una cuya respuesta NO esté en los datos) y anota qué respondió.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">6</span> Proyecto final: tu propio agente <span class="badge reto">Reto</span></div>
+    <p>Construye <strong>tu propio agente</strong> eligiendo una opción: (a) un chatbot con personalidad, (b) un agente con una herramienta propia, o (c) un agente RAG con tus documentos. Recuerda guardar tus claves en <code>.env</code> y crear el <code>.gitignore</code>. Prepárate para explicar cómo funciona (rúbrica de la sección 6). Describe aquí tu idea:</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <h2>Lista de verificación</h2>
+  <ul class="checklist">
+    <li>Sé qué distingue a un agente de un chatbot.</li>
+    <li>Puedo darle memoria a un modelo con <code>start_chat()</code>.</li>
+    <li>Puedo darle herramientas (function calling) a un agente.</li>
+    <li>Puedo construir un agente RAG que responde con mis datos.</li>
+    <li>Guardo mis claves en <code>.env</code> y tengo un <code>.gitignore</code>.</li>
+    <li>Entiendo que las APIs gratuitas tienen límites y que se cobra por token.</li>
+    <li>Elegí y describí mi proyecto final.</li>
+  </ul>
+
+  <div class="caja"><span class="et">Para seguir aprendiendo</span>
+    <strong>Frameworks de agentes:</strong> LangChain, LlamaIndex, CrewAI. ·
+    <strong>Bases de datos vectoriales:</strong> Chroma, FAISS, Pinecone. ·
+    <strong>Modelos locales gratis:</strong> Ollama (corre LLMs en tu propio PC). ·
+    <strong>Documentación oficial:</strong> Google AI Studio y Cohere Docs.
+  </div>
+
+  <p class="pie">Curso de Inteligencia Artificial · SENA Piedecuesta · Clase 4</p>
+
+</body>
+</html>

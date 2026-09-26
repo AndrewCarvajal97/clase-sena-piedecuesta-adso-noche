@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Guía de trabajo — Clase alternativa: App React + Agente RAG</title>
+  <link rel="stylesheet" href="../recursos/guia.css">
+</head>
+<body>
+
+  <!-- PORTADA -->
+  <div class="portada">
+    <div class="marca">SENA · PIEDECUESTA — CURSO DE INTELIGENCIA ARTIFICIAL</div>
+    <h1>Clase alternativa (avanzada)<br>App React con un agente LLM y base de datos vectorial (RAG)</h1>
+    <p class="sub">Guía de trabajo del aprendiz · React + Express + Cohere + Supabase + Gemini</p>
+    <div class="banda"></div>
+    <div class="datos">
+      Duración: 4 horas (8:00 am – 12:00 m)<br>
+      Clase alternativa (avanzada)<br>
+      Pablo Andrés Carvajal — Desarrollador Full Stack<br>
+      <a href="https://pablocarvajal.dev">pablocarvajal.dev</a><br>
+      Nombre del aprendiz: _______________________________
+    </div>
+  </div>
+
+  <!-- OBJETIVOS -->
+  <div class="objetivos">
+    <h3>🎯 ¿Qué sabré hacer al terminar esta guía?</h3>
+    <ul>
+      <li>Explicar la <strong>arquitectura</strong> de una app RAG: React → backend → embeddings + base vectorial + LLM.</li>
+      <li>Justificar <strong>por qué se necesita un backend</strong> para proteger las claves de API.</li>
+      <li>Crear un proyecto <strong>React con Vite</strong> y un <strong>backend Express</strong>.</li>
+      <li>Configurar <strong>Supabase con pgvector</strong>: tabla de documentos y función de búsqueda por similitud.</li>
+      <li>Implementar la <strong>ingesta</strong> (chunking + embeddings con Cohere) y la <strong>consulta</strong> (retrieval + Gemini).</li>
+      <li>Conectar el <strong>chat de React</strong> con el backend y desplegar la app.</li>
+    </ul>
+  </div>
+
+  <div class="caja idea"><span class="et">La gran integración</span>Esta clase reúne todo el curso en un proyecto real: los <strong>embeddings</strong> y el <strong>RAG</strong> de la Clase 2, los <strong>agentes</strong> de la Clase 4 y las <strong>APIs gratuitas</strong> de la Clase 0, ahora dentro de una <strong>app web con React</strong> que puedes publicar en internet.</div>
+
+  <div class="caja ojo"><span class="et">Importante antes de empezar</span>Los <strong>nombres de modelos y SDK</strong> (por ejemplo <code>gemini-1.5-flash</code>, <code>embed-multilingual-v3.0</code>) y los <strong>planes gratuitos</strong> cambian con el tiempo. Si algo no funciona, revisa la <strong>documentación oficial</strong> de Google AI Studio, Cohere y Supabase para ver la versión vigente.</div>
+
+  <h2>1. Qué vamos a construir y por qué así</h2>
+  <p>Vamos a construir un <strong>chat en React</strong> que responde preguntas usando <strong>nuestros propios
+  documentos</strong> (apuntes, reglamento, manual de un producto…). Esta técnica se llama <strong>RAG</strong>
+  (Retrieval-Augmented Generation): en lugar de confiar en lo que el modelo "recuerda", le
+  <strong>entregamos la información</strong> justo antes de responder, así contesta con datos reales y
+  <strong>alucina mucho menos</strong>.</p>
+
+  <h3>La arquitectura</h3>
+  <pre><code>React (navegador)  ──pregunta──▶  Backend Express (Node)
+                   ◀─respuesta──        │
+                                        ├─▶ Cohere      (crea embeddings)
+                                        ├─▶ Supabase    (busca vectores parecidos)
+                                        └─▶ Gemini      (genera la respuesta)</code></pre>
+
+  <h3>El stack tecnológico</h3>
+  <table>
+    <tr><th>Pieza</th><th>Herramienta</th><th>Para qué sirve</th></tr>
+    <tr><td>Frontend</td><td>React + Vite</td><td>La interfaz de chat en el navegador</td></tr>
+    <tr><td>Backend</td><td>Node.js + Express</td><td>Proteger las claves y orquestar el RAG</td></tr>
+    <tr><td>Embeddings</td><td>Cohere <code>embed-multilingual-v3.0</code> (1024 dimensiones)</td><td>Convertir texto en vectores</td></tr>
+    <tr><td>Base vectorial</td><td>Supabase + extensión pgvector</td><td>Guardar y buscar los vectores</td></tr>
+    <tr><td>LLM</td><td>Google Gemini <code>gemini-1.5-flash</code></td><td>Generar la respuesta final</td></tr>
+  </table>
+  <div class="caja"><span class="et">Alternativas de base vectorial</span>Si no quieres usar Supabase, puedes usar <strong>Pinecone</strong> o <strong>Upstash Vector</strong> (en la nube) o <strong>Chroma</strong> (local, en tu propio PC). La idea de "guardar embeddings y buscar los más parecidos" es la misma.</div>
+
+  <h2>2. Por qué se necesita un backend (seguridad de claves)</h2>
+  <p>El código de React <strong>se descarga completo al navegador del usuario</strong>. Cualquiera puede abrir
+  las herramientas de desarrollo (tecla F12) y leerlo. Por eso, si pusieras una clave de API en el
+  frontend, la estarías <strong>publicando</strong>: otras personas podrían usarla a tu nombre y agotar tu cupo.</p>
+  <div class="caja alerta"><span class="et">Regla que no se rompe</span>Las claves de API <strong>solo</strong> viven en el <code>.env</code> del <strong>backend</strong>. En Vite, además, cualquier variable que empiece por <code>VITE_</code> es <strong>pública</strong>: nunca pongas secretos ahí.</div>
+  <p>Por eso el navegador nunca habla directo con Cohere, Supabase ni Gemini: siempre pasa por
+  <strong>nuestro backend</strong>, que es el único que conoce las claves.</p>
+
+  <h2>3. Repaso corto: RAG y base de datos vectorial</h2>
+  <p>Un <strong>embedding</strong> es una lista de números que captura el <em>significado</em> de un texto
+  (Clase 2). Textos parecidos tienen vectores parecidos. Una <strong>base de datos vectorial</strong>
+  guarda esos vectores y sabe encontrar "los más parecidos" a uno dado, usando la <strong>similitud coseno</strong>.</p>
+  <p>RAG usa esto en tres pasos:</p>
+  <ol>
+    <li><strong>Vectorizar</strong> los documentos una vez (ingesta).</li>
+    <li><strong>Buscar</strong> (retrieval) los fragmentos más parecidos a la pregunta.</li>
+    <li><strong>Generar</strong> (generation) la respuesta con el LLM usando SOLO esos fragmentos.</li>
+  </ol>
+
+  <h2>4. Crear el frontend con React + Vite</h2>
+  <p><strong>Vite</strong> es la forma moderna y rápida de arrancar un proyecto React. Necesitas tener
+  instalado <strong>Node.js</strong> (versión 18 o superior). Desde una terminal, en la carpeta donde
+  quieras el proyecto:</p>
+  <pre><code>npm create vite@latest frontend -- --template react
+cd frontend
+npm install
+npm run dev        # arranca en http://localhost:5173</code></pre>
+  <p>La estructura importante que crea Vite:</p>
+  <pre><code>frontend/
+├── index.html
+├── package.json
+└── src/
+    ├── main.jsx     # monta la app en la página
+    ├── App.jsx      # componente principal (aquí va el chat)
+    └── App.css      # estilos</code></pre>
+  <div class="caja idea"><span class="et">Consejo</span>Deja este servidor corriendo en una terminal. Abre <strong>otra terminal</strong> aparte para el backend. Necesitas los dos encendidos al mismo tiempo.</div>
+
+  <h2>5. Crear el backend con Express</h2>
+  <p>El backend es un servidor pequeño de Node.js con <strong>dos endpoints</strong>:
+  <code>/ingest</code> (cargar documentos) y <code>/chat</code> (responder preguntas). En una carpeta
+  <code>backend/</code> aparte:</p>
+  <pre><code>cd backend
+npm init -y
+npm install express cors dotenv cohere-ai @google/generative-ai @supabase/supabase-js</code></pre>
+  <p>Para poder usar <code>import</code> (módulos ES), añade esta línea en el <code>backend/package.json</code>:</p>
+  <pre><code>{
+  "type": "module",
+  "scripts": { "start": "node server.js" }
+}</code></pre>
+
+  <h3>5.1 El archivo <code>server.js</code></h3>
+  <p>Define el servidor, activa <strong>CORS</strong> (para que React pueda llamarlo) y crea los dos endpoints.
+  Archivo completo en <code>codigo/backend/server.js</code>:</p>
+  <pre><code>import express from "express";
+import cors from "cors";
+import "dotenv/config";                       // carga el .env
+import { ingestarTexto, responderPregunta } from "./rag.js";
+
+const app = express();
+app.use(cors());                              // permite las llamadas de React
+app.use(express.json());                      // permite leer JSON del body
+
+// Endpoint para CARGAR documentos a la base vectorial
+app.post("/ingest", async (req, res) =&gt; {
+  try {
+    const { texto } = req.body;
+    const n = await ingestarTexto(texto);
+    res.json({ ok: true, fragmentos: n });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Endpoint para PREGUNTAR al agente RAG
+app.post("/chat", async (req, res) =&gt; {
+  try {
+    const { pregunta } = req.body;
+    const respuesta = await responderPregunta(pregunta);
+    res.json({ respuesta });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.listen(3000, () =&gt; console.log("Backend escuchando en http://localhost:3000"));</code></pre>
+  <div class="caja ojo"><span class="et">¿Qué es CORS?</span>Por seguridad, el navegador bloquea que una página (localhost:5173) llame a otro origen (localhost:3000). La librería <code>cors</code> le da permiso explícito a nuestro frontend.</div>
+
+  <h2>6. Configurar Supabase + pgvector</h2>
+  <p><strong>Supabase</strong> es una base de datos PostgreSQL en la nube con plan gratuito. Pasos:</p>
+  <ol>
+    <li>Entra a <strong>supabase.com</strong>, crea una cuenta y un <strong>proyecto nuevo</strong> (guarda la contraseña de la base).</li>
+    <li>En el menú lateral abre el <strong>SQL Editor</strong>.</li>
+    <li>Pega y ejecuta el contenido de <code>codigo/backend/supabase.sql</code> (lo vemos abajo).</li>
+    <li>Ve a <strong>Project Settings → API</strong> y copia la <strong>Project URL</strong> y la clave <strong>service_role</strong>.</li>
+  </ol>
+  <p>El SQL habilita pgvector, crea la tabla y la función de búsqueda:</p>
+  <pre><code>-- 1. Habilitar la extensión de vectores
+create extension if not exists vector;
+
+-- 2. Tabla de documentos. 1024 = dimensión de embed-multilingual-v3.0
+create table documentos (
+  id        bigserial primary key,
+  contenido text,
+  embedding vector(1024)
+);
+
+-- 3. Función que busca los documentos más parecidos (similitud coseno)
+create or replace function match_documents(
+  query_embedding vector(1024),
+  match_count int default 3
+)
+returns table (id bigint, contenido text, similitud float)
+language sql stable
+as $$
+  select
+    id,
+    contenido,
+    1 - (embedding &lt;=&gt; query_embedding) as similitud
+  from documentos
+  order by embedding &lt;=&gt; query_embedding   -- &lt;=&gt; es distancia coseno
+  limit match_count;
+$$;</code></pre>
+  <div class="caja alerta"><span class="et">Clave service_role</span>Es una clave <strong>muy poderosa</strong> (puede leer y escribir todo). Úsala <strong>solo</strong> en el backend, nunca en React. Va en el <code>.env</code> del backend.</div>
+
+  <h2>7. Ingesta de datos (cargar los documentos)</h2>
+  <p>La ingesta convierte nuestros documentos en vectores y los guarda. Se hace <strong>una sola vez</strong>
+  (o cada vez que agregas material nuevo). Tres pasos: <strong>partir en chunks → generar embeddings →
+  guardar en Supabase</strong>.</p>
+  <p>En <code>codigo/backend/rag.js</code> (parte de ingesta):</p>
+  <pre><code>import { CohereClient } from "cohere-ai";
+import { createClient } from "@supabase/supabase-js";
+
+const cohere = new CohereClient({ token: process.env.COHERE_API_KEY });
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+
+// Parte un texto largo en fragmentos de ~500 caracteres
+function partirEnChunks(texto, tam = 500) {
+  const chunks = [];
+  for (let i = 0; i &lt; texto.length; i += tam) {
+    chunks.push(texto.slice(i, i + tam));
+  }
+  return chunks;
+}
+
+export async function ingestarTexto(texto) {
+  const chunks = partirEnChunks(texto);
+
+  // input_type "search_document": textos que se GUARDAN en la base
+  const r = await cohere.embed({
+    texts: chunks,
+    model: "embed-multilingual-v3.0",
+    inputType: "search_document",
+  });
+
+  // Cada fila = un fragmento + su vector
+  const filas = chunks.map((c, i) =&gt; ({
+    contenido: c,
+    embedding: r.embeddings[i],
+  }));
+
+  await supabase.from("documentos").insert(filas);
+  return chunks.length;
+}</code></pre>
+  <div class="caja idea"><span class="et">¿Por qué chunks?</span>Fragmentos pequeños hacen que la búsqueda sea más precisa (traes justo el pedazo relevante) y que el prompt final sea más corto, lo que sale más barato y rápido.</div>
+
+  <h2>8. Flujo de consulta: el agente RAG</h2>
+  <p>Cuando el usuario pregunta algo, el backend hace cuatro pasos:</p>
+  <ol>
+    <li>Convertir la <strong>pregunta en un embedding</strong> (con <code>input_type: "search_query"</code>).</li>
+    <li>Llamar a <code>match_documents</code> en Supabase para traer los <strong>chunks más parecidos</strong>.</li>
+    <li>Armar un <strong>prompt</strong> que incluya ese contexto y una instrucción clara.</li>
+    <li>Pedirle a <strong>Gemini</strong> la respuesta y devolverla al frontend.</li>
+  </ol>
+  <p>En <code>codigo/backend/rag.js</code> (parte de consulta):</p>
+  <pre><code>import { GoogleGenerativeAI } from "@google/generative-ai";
+const genai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+export async function responderPregunta(pregunta) {
+  // 1. Embedding de la PREGUNTA (search_query)
+  const e = await cohere.embed({
+    texts: [pregunta],
+    model: "embed-multilingual-v3.0",
+    inputType: "search_query",
+  });
+
+  // 2. RETRIEVAL: buscar los 3 chunks más parecidos en Supabase
+  const { data, error } = await supabase.rpc("match_documents", {
+    query_embedding: e.embeddings[0],
+    match_count: 3,
+  });
+  if (error) throw error;
+
+  const contexto = data.map((d) =&gt; `- ${d.contenido}`).join("\n");
+
+  // 3. Armar el prompt con el contexto recuperado
+  const prompt = `Responde usando ÚNICAMENTE esta información.
+Si la respuesta no está ahí, di que no tienes ese dato.
+
+Información:
+${contexto}
+
+Pregunta: ${pregunta}`;
+
+  // 4. GENERATION: Gemini genera la respuesta
+  const model = genai.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const out = await model.generateContent(prompt);
+  return out.response.text();
+}</code></pre>
+  <div class="caja idea"><span class="et">El agente no inventa</span>Como le pedimos responder SOLO con el contexto, si la información no está en tus documentos, el agente lo dice en vez de inventar. Así se reducen las alucinaciones.</div>
+
+  <h3>El archivo <code>.env</code> del backend</h3>
+  <p>Crea <code>backend/.env</code> con tus claves reales (guíate por <code>codigo/backend/.env.example</code>):</p>
+  <pre><code>COHERE_API_KEY=tu_clave_de_cohere
+GEMINI_API_KEY=tu_clave_de_gemini
+SUPABASE_URL=https://xxxxx.supabase.co
+SUPABASE_KEY=tu_clave_service_role_de_supabase</code></pre>
+
+  <h2>9. Conectar React con el backend (UI de chat)</h2>
+  <p>En <code>frontend/src/App.jsx</code> creamos un chat sencillo con <code>useState</code> y
+  <code>fetch</code>. Archivo completo en <code>codigo/frontend/App.jsx</code>:</p>
+  <pre><code>import { useState } from "react";
+import "./App.css";
+
+const API = "http://localhost:3000";   // dirección del backend
+
+export default function App() {
+  const [mensajes, setMensajes] = useState([]);
+  const [texto, setTexto] = useState("");
+  const [cargando, setCargando] = useState(false);
+
+  async function enviar() {
+    if (!texto.trim()) return;
+    const pregunta = texto;
+    setMensajes((m) =&gt; [...m, { rol: "yo", texto: pregunta }]);
+    setTexto("");
+    setCargando(true);
+    try {
+      const r = await fetch(`${API}/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pregunta }),
+      });
+      const { respuesta } = await r.json();
+      setMensajes((m) =&gt; [...m, { rol: "bot", texto: respuesta }]);
+    } catch (e) {
+      setMensajes((m) =&gt; [...m, { rol: "bot", texto: "Error: " + e.message }]);
+    } finally {
+      setCargando(false);
+    }
+  }
+
+  return (
+    &lt;div className="chat"&gt;
+      &lt;h1&gt;Asistente RAG&lt;/h1&gt;
+      &lt;div className="mensajes"&gt;
+        {mensajes.map((m, i) =&gt; (
+          &lt;div key={i} className={`msg ${m.rol}`}&gt;{m.texto}&lt;/div&gt;
+        ))}
+        {cargando &amp;&amp; &lt;div className="msg bot"&gt;escribiendo…&lt;/div&gt;}
+      &lt;/div&gt;
+      &lt;div className="fila"&gt;
+        &lt;input
+          value={texto}
+          onChange={(e) =&gt; setTexto(e.target.value)}
+          onKeyDown={(e) =&gt; e.key === "Enter" &amp;&amp; enviar()}
+          placeholder="Escribe tu pregunta..."
+        /&gt;
+        &lt;button onClick={enviar}&gt;Enviar&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+  <div class="caja ojo"><span class="et">Orden para probar</span>1) Ejecuta el SQL en Supabase. 2) Arranca el backend (<code>npm start</code>). 3) Carga documentos con <code>/ingest</code> (ver README del código). 4) Arranca el frontend (<code>npm run dev</code>) y pregunta.</div>
+
+  <h2>10. Seguridad, límites y despliegue</h2>
+  <h3>10.1 Seguridad de las claves — ¡crítico!</h3>
+  <ol>
+    <li>Todas las claves van en <code>backend/.env</code>, <strong>NUNCA</strong> en React.</li>
+    <li>Crea un <code>.gitignore</code> para no subir secretos ni dependencias:</li>
+  </ol>
+  <pre><code># .gitignore
+node_modules/
+.env</code></pre>
+  <div class="caja alerta"><span class="et">Si una clave se filtra</span>Revócala de inmediato y genera una nueva desde el panel del proveedor (Cohere, Google AI Studio o Supabase).</div>
+
+  <h3>10.2 Límites y costos</h3>
+  <ul>
+    <li>Las APIs gratuitas tienen <strong>límites de peticiones por minuto</strong> y cupos mensuales.</li>
+    <li>Los LLMs cobran o limitan <strong>por token</strong>: trae solo 3–4 chunks para que el prompt sea corto.</li>
+    <li>Guarda los embeddings una sola vez (no re-vectorices en cada pregunta).</li>
+  </ul>
+
+  <h3>10.3 Cómo desplegar</h3>
+  <table>
+    <tr><th>Parte</th><th>Servicio gratuito</th><th>Notas</th></tr>
+    <tr><td>Frontend (React)</td><td>Vercel o Netlify</td><td>Conecta tu repo de GitHub; se publica solo</td></tr>
+    <tr><td>Backend (Express)</td><td>Render o Railway</td><td>Configura las claves como variables de entorno</td></tr>
+    <tr><td>Base vectorial</td><td>Supabase (ya en la nube)</td><td>No necesita despliegue aparte</td></tr>
+  </table>
+  <div class="caja"><span class="et">Un detalle al desplegar</span>Cambia la dirección del backend en el frontend: en vez de <code>http://localhost:3000</code>, usa la URL pública que te dé Render o Railway.</div>
+
+  <!-- ACTIVIDADES DE REFUERZO -->
+  <h2 class="nueva-pagina">Actividades de refuerzo</h2>
+  <p>Realiza estas actividades para afianzar lo aprendido. Puedes escribir tus respuestas
+  en los espacios en blanco.</p>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">1</span> Dibuja la arquitectura <span class="badge facil">Fácil</span></div>
+    <p>Dibuja el diagrama de la app (React → backend → Cohere / Supabase / Gemini) y explica con tus palabras qué hace cada pieza y por qué las claves no pueden ir en React.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">2</span> Levanta el frontend <span class="badge facil">Fácil</span></div>
+    <p>Crea el proyecto con <code>npm create vite@latest</code>, arráncalo con <code>npm run dev</code> y cambia el título del chat en <code>App.jsx</code>. Anota qué dirección (puerto) abrió el navegador.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">3</span> Crea tu Supabase <span class="badge media">Media</span></div>
+    <p>Crea un proyecto en Supabase, ejecuta <code>supabase.sql</code> y confirma que la tabla <code>documentos</code> y la función <code>match_documents</code> aparecen. Anota la dimensión del vector y por qué es 1024.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">4</span> Prueba los endpoints <span class="badge media">Media</span></div>
+    <p>Con el backend corriendo, usa el navegador o una herramienta como Thunder Client/Postman para llamar a <code>/ingest</code> con un texto de prueba y luego a <code>/chat</code> con una pregunta. Anota la respuesta que recibiste.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">5</span> Afina el retrieval <span class="badge reto">Reto</span></div>
+    <p>Cambia <code>match_count</code> de 3 a 1 y luego a 5, y cambia el tamaño de los chunks (por ejemplo 300 y 800 caracteres). Anota cómo cambian las respuestas y explica el equilibrio entre precisión y costo.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">6</span> Proyecto final: tu propio agente RAG <span class="badge reto">Reto</span></div>
+    <p>Carga <strong>tus propios documentos</strong> (apuntes, el reglamento del SENA, la información de tu emprendimiento…) usando <code>/ingest</code>, y haz que el chat responda con ellos. Incluye una pregunta cuya respuesta NO esté en tus documentos para verificar que el agente responde "no tengo ese dato". Recuerda usar <code>.env</code> y <code>.gitignore</code>. Describe aquí tu idea y qué documentos cargaste:</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <h2>Lista de verificación</h2>
+  <ul class="checklist">
+    <li>Entiendo la arquitectura React → backend → embeddings + base vectorial + LLM.</li>
+    <li>Sé explicar por qué las claves van en el backend y nunca en React.</li>
+    <li>Creé el frontend con React + Vite y lo puedo arrancar.</li>
+    <li>Creé el backend Express con los endpoints <code>/ingest</code> y <code>/chat</code>.</li>
+    <li>Configuré Supabase con pgvector, la tabla <code>documentos</code> y <code>match_documents</code>.</li>
+    <li>Implementé la ingesta (chunks + embeddings) y la consulta (retrieval + Gemini).</li>
+    <li>Conecté el chat de React con el backend usando <code>fetch</code>.</li>
+    <li>Guardo mis claves en <code>.env</code> y tengo un <code>.gitignore</code>.</li>
+    <li>Cargué mis propios documentos y el chat responde con ellos.</li>
+  </ul>
+
+  <div class="caja"><span class="et">Para seguir aprendiendo</span>
+    <strong>Otras bases vectoriales:</strong> Pinecone, Upstash Vector, Chroma, FAISS. ·
+    <strong>Frameworks RAG:</strong> LangChain, LlamaIndex. ·
+    <strong>Despliegue:</strong> Vercel, Netlify, Render, Railway. ·
+    <strong>Documentación oficial:</strong> React/Vite, Supabase, Google AI Studio y Cohere.
+  </div>
+
+  <p class="pie">Curso de Inteligencia Artificial · SENA Piedecuesta · Clase alternativa</p>
+
+</body>
+</html>

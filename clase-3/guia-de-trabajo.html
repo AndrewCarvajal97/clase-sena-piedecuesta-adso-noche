@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Guía de trabajo — Clase 3</title>
+  <link rel="stylesheet" href="../recursos/guia.css">
+</head>
+<body>
+
+  <!-- PORTADA -->
+  <div class="portada">
+    <div class="marca">SENA · PIEDECUESTA — CURSO DE INTELIGENCIA ARTIFICIAL</div>
+    <h1>Clase 3<br>Cómo crear modelos de datos de aprendizaje</h1>
+    <p class="sub">Guía de trabajo del aprendiz · De los datos a un modelo que predice</p>
+    <div class="banda"></div>
+    <div class="datos">
+      Duración: 4 horas (8:00 am – 12:00 m)<br>
+      Pablo Andrés Carvajal — Desarrollador Full Stack<br>
+      <a href="https://pablocarvajal.dev">pablocarvajal.dev</a><br>
+      Nombre del aprendiz: _______________________________
+    </div>
+  </div>
+
+  <!-- OBJETIVOS -->
+  <div class="objetivos">
+    <h3>🎯 ¿Qué sabré hacer al terminar esta guía?</h3>
+    <ul>
+      <li>Explicar qué es un buen <strong>dataset</strong> y las etapas del ciclo de vida de los datos.</li>
+      <li>Identificar y corregir problemas comunes de <strong>limpieza</strong> de datos.</li>
+      <li>Distinguir <strong>features</strong> y <strong>target</strong>, y preparar los datos (one-hot, normalización).</li>
+      <li>Dividir los datos en <strong>entrenamiento</strong> y <strong>prueba</strong> y explicar por qué.</li>
+      <li>Entrenar, <strong>evaluar</strong> (exactitud y matriz de confusión) y detectar <strong>overfitting</strong>.</li>
+      <li>Predecir sobre datos nuevos y <strong>guardar</strong> el modelo con joblib.</li>
+    </ul>
+  </div>
+
+  <div class="caja ojo"><span class="et">Cómo usar esta guía</span>Sigue el contenido teórico y luego reproduce el proyecto paso a paso en tu computador. El código completo y comentado está en <code>clase-3/codigo/entrenar_modelo.py</code>. Al final encontrarás actividades de refuerzo y una lista de verificación.</div>
+
+  <div class="caja idea"><span class="et">🔬 Demos interactivos de esta clase</span>
+    Abre estas páginas en el navegador para <strong>vivir</strong> el ciclo de los datos:
+    <ul>
+      <li><strong>Entrenar y evaluar un modelo sin código</strong> (con tu cámara): <a href="https://teachablemachine.withgoogle.com/">Teachable Machine</a></li>
+      <li><strong>Sobreajuste y división train/test (visual)</strong>: <a href="https://r2d3.us/visual-intro-to-machine-learning-part-1/">R2D3 parte 1</a> y <a href="https://r2d3.us/visual-intro-to-machine-learning-part-2/">parte 2</a></li>
+      <li><strong>Datasets reales para practicar</strong>: <a href="https://www.kaggle.com/datasets">Kaggle Datasets</a></li>
+    </ul>
+    Todas juntas en el hub del curso: <a href="../recursos/demos-interactivos.html">recursos/demos-interactivos.html</a>
+  </div>
+
+  <h2>1. El dato es el rey</h2>
+  <p><strong>"Garbage in, garbage out"</strong> (basura entra, basura sale): un modelo nunca es
+  mejor que los datos con los que aprende. En un proyecto real de IA, alrededor del
+  <strong>80% del trabajo</strong> es recolectar, limpiar y preparar los datos; entrenar el
+  modelo es solo una parte pequeña.</p>
+
+  <h3>1.1 Ciclo de vida de un proyecto de datos</h3>
+  <pre><code>1. RECOLECTAR  →  2. EXPLORAR  →  3. LIMPIAR  →  4. PREPARAR (features)
+     →  5. ENTRENAR  →  6. EVALUAR  →  7. DESPLEGAR / USAR  →  (volver a 1)</code></pre>
+  <p>Es un <strong>ciclo</strong>, no una línea recta: cuando el modelo se usa en el mundo real
+  aparecen datos nuevos y aprendizajes que alimentan una versión mejorada.</p>
+
+  <h3>1.2 ¿Qué es un buen dataset?</h3>
+  <ul>
+    <li><strong>Suficiente cantidad:</strong> más ejemplos permiten que el modelo generalice mejor.</li>
+    <li><strong>Representativo:</strong> debe parecerse a los casos reales donde se va a usar.</li>
+    <li><strong>Balanceado:</strong> si el 99% de los ejemplos son de una clase, el modelo aprenderá a decir siempre esa clase.</li>
+    <li><strong>Sin sesgos dañinos:</strong> si los datos contienen prejuicios, el modelo los aprende y los amplifica.</li>
+    <li><strong>Limpio:</strong> sin errores, duplicados ni valores faltantes descontrolados.</li>
+  </ul>
+
+  <h3>1.3 Problemas comunes al limpiar datos</h3>
+  <table>
+    <tr><th>Problema</th><th>Ejemplo</th><th>Qué hacer</th></tr>
+    <tr><td>Valores faltantes</td><td>Edad = (vacío)</td><td>Rellenar (media/mediana) o eliminar la fila</td></tr>
+    <tr><td>Duplicados</td><td>La misma fila 2 veces</td><td>Eliminar los repetidos</td></tr>
+    <tr><td>Formatos mezclados</td><td>"Sí", "si", "SI", "1"</td><td>Estandarizar a un único valor</td></tr>
+    <tr><td>Valores atípicos (outliers)</td><td>Edad = 999</td><td>Revisar y corregir o descartar</td></tr>
+    <tr><td>Texto en vez de número</td><td>"$1.200.000"</td><td>Convertir a número (1200000)</td></tr>
+  </table>
+
+  <h2>2. Preparación de datos: features y división</h2>
+
+  <h3>2.1 Features y target</h3>
+  <ul>
+    <li><strong>Features (X):</strong> las columnas de entrada que describen cada ejemplo.</li>
+    <li><strong>Target (y):</strong> lo que queremos predecir.</li>
+  </ul>
+  <p>El modelo aprende la relación entre <strong>X</strong> y <strong>y</strong> a partir de
+  muchos ejemplos. En el proyecto de hoy, las features son las medidas de la flor y el target
+  es la especie.</p>
+
+  <h3>2.2 Ingeniería de features (feature engineering)</h3>
+  <p>Consiste en crear o transformar columnas para ayudar al modelo:</p>
+  <ul>
+    <li><strong>Variables categóricas → números (one-hot encoding):</strong> "rojo/verde/azul" no se
+    puede sumar. Se crea una columna 0/1 por categoría, de modo que el modelo pueda trabajarlas.</li>
+    <li><strong>Escalado / normalización:</strong> poner todas las features en rangos parecidos
+    (por ejemplo, entre 0 y 1) para que ninguna domine solo por tener números grandes.</li>
+    <li><strong>Fechas → partes útiles:</strong> de "2026-09-04" extraer día de la semana, mes, etc.</li>
+  </ul>
+  <div class="caja idea"><span class="et">Nota</span>El árbol de decisión que usaremos hoy no necesita
+  normalización, pero muchos modelos (regresión, redes neuronales, k-NN) sí. Es un buen hábito conocerla.</div>
+
+  <h3>2.3 La división más importante: entrenamiento vs. prueba</h3>
+  <p>Nunca evaluamos el modelo con los mismos datos con los que aprendió (¡sería como darle el
+  examen con las respuestas!). Por eso dividimos el dataset:</p>
+  <pre><code>   DATASET COMPLETO (100%)
+   ┌──────────────────────────┬──────────────────┐
+   │  ENTRENAMIENTO (70-80%)  │  PRUEBA (20-30%)  │
+   │  el modelo aprende aquí  │  examen final     │
+   └──────────────────────────┴──────────────────┘</code></pre>
+  <ul>
+    <li><strong>Train:</strong> el modelo ajusta sus parámetros internos.</li>
+    <li><strong>Test:</strong> medimos qué tan bien generaliza a datos que <strong>nunca vio</strong>.</li>
+  </ul>
+  <div class="caja alerta"><span class="et">Overfitting</span>Si al modelo le va muy bien en train pero
+  mal en test, significa que <strong>memorizó</strong> en lugar de aprender. Soluciones: más datos, un
+  modelo más simple (menor <code>max_depth</code>) o regularización.</div>
+
+  <h2 class="nueva-pagina">3. Proyecto guiado: clasificar flores Iris</h2>
+  <p>Usaremos el dataset clásico <strong>Iris</strong>: medidas de flores para predecir su especie.
+  Es pequeño, limpio y perfecto para aprender el flujo completo. Instala las librerías:</p>
+  <pre><code>pip install scikit-learn pandas joblib</code></pre>
+  <p>El código completo está en <code>clase-3/codigo/entrenar_modelo.py</code>. A continuación lo
+  explicamos por partes.</p>
+
+  <h3>Paso 1 — Cargar y explorar los datos</h3>
+  <pre><code>from sklearn.datasets import load_iris
+import pandas as pd
+
+iris = load_iris()
+X = pd.DataFrame(iris.data, columns=iris.feature_names)  # features (entradas)
+y = iris.target                                          # target (0,1,2 = especies)
+
+print(X.head())                    # primeras filas
+print("Especies:", list(iris.target_names))
+print("Total de ejemplos:", len(X))</code></pre>
+  <p>Antes de entrenar conviene <strong>mirar los datos</strong>: cuántas filas hay, qué columnas
+  (features) los describen y cuál es el target. Iris tiene 150 ejemplos, 4 features (largo y ancho
+  de sépalo y pétalo) y 3 especies: <em>setosa</em>, <em>versicolor</em> y <em>virginica</em>.</p>
+
+  <h3>Paso 2 — Dividir en entrenamiento y prueba</h3>
+  <pre><code>from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42   # 20% para prueba
+)
+print("Entrenamiento:", len(X_train), " | Prueba:", len(X_test))</code></pre>
+  <p><code>test_size=0.2</code> reserva el 20% de los datos para el examen final.
+  <code>random_state=42</code> fija el "azar" de la división para que los resultados sean
+  <strong>reproducibles</strong> (siempre la misma partición).</p>
+
+  <h3>Paso 3 — Elegir y entrenar el modelo</h3>
+  <p>Usamos un <strong>árbol de decisión</strong>: aprende reglas del tipo "si el pétalo mide más
+  de X → especie Y". Es fácil de entender e interpretar.</p>
+  <pre><code>from sklearn.tree import DecisionTreeClassifier
+
+modelo = DecisionTreeClassifier(max_depth=3, random_state=42)
+modelo.fit(X_train, y_train)   # &lt;- aquí el modelo APRENDE</code></pre>
+  <div class="caja idea"><span class="et">.fit() = entrenamiento</span>La línea <code>modelo.fit(...)</code>
+  es el momento en que el modelo mira los ejemplos y ajusta sus reglas internas. <code>max_depth=3</code>
+  limita la profundidad del árbol para que no se vuelva demasiado complejo (menos overfitting).</div>
+
+  <h2>4. Evaluar el modelo</h2>
+
+  <h3>Paso 4 — Medir qué tan bien predice</h3>
+  <pre><code>from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+predicciones = modelo.predict(X_test)   # predice sobre datos NUEVOS
+
+exactitud = accuracy_score(y_test, predicciones)
+print(f"Exactitud: {exactitud:.2%}")           # ej. 96.67%
+
+print("\nMatriz de confusión:")
+print(confusion_matrix(y_test, predicciones))
+
+print("\nReporte detallado:")
+print(classification_report(y_test, predicciones, target_names=iris.target_names))</code></pre>
+
+  <h3>4.1 Cómo leer las métricas</h3>
+  <ul>
+    <li><strong>Exactitud (accuracy):</strong> porcentaje de predicciones correctas. Es simple, pero
+    <strong>engaña</strong> cuando los datos están desbalanceados.</li>
+    <li><strong>Precisión y recall:</strong> útiles cuando importa más un tipo de error que otro
+    (por ejemplo, en un diagnóstico médico un falso negativo puede ser grave).</li>
+  </ul>
+
+  <h3>4.2 Cómo leer una matriz de confusión</h3>
+  <p>La matriz de confusión es una tabla que cruza lo <strong>real</strong> (filas) contra lo que el
+  modelo <strong>predijo</strong> (columnas). Cada celda cuenta cuántos ejemplos cayeron ahí:</p>
+  <pre><code>                 Predijo
+              setosa versi virgin
+   Real setosa  [ 10    0     0 ]   ← 10 aciertos
+        versi   [  0    9     1 ]   ← confundió 1 versicolor con virginica
+        virgin  [  0    0    10 ]</code></pre>
+  <ul>
+    <li>La <strong>diagonal</strong> (de arriba-izquierda a abajo-derecha) son los <strong>aciertos</strong>:
+    lo real coincide con lo predicho.</li>
+    <li>Todo lo que está <strong>fuera de la diagonal</strong> son <strong>errores</strong>, y muestra
+    exactamente <strong>en qué se confunde</strong> el modelo.</li>
+    <li>En el ejemplo, el modelo acertó 29 de 30 flores; solo confundió 1 versicolor con virginica.</li>
+  </ul>
+  <div class="caja idea"><span class="et">Truco</span>Lee cada fila así: "de las N flores que <em>realmente</em>
+  eran de esta especie, ¿cuántas predijo bien y con cuáles las confundió?".</div>
+
+  <h3>Paso 4b — Detectar overfitting</h3>
+  <pre><code>print("Exactitud en TRAIN:", modelo.score(X_train, y_train))
+print("Exactitud en TEST: ", modelo.score(X_test, y_test))</code></pre>
+  <p>Si la exactitud en TRAIN es cercana al 100% pero en TEST es mucho menor, el modelo está
+  <strong>sobreajustado</strong> (overfitting): memorizó los ejemplos de entrenamiento en vez de
+  aprender patrones generales. Prueba a bajar <code>max_depth</code>, conseguir más datos o usar un
+  modelo con regularización.</p>
+
+  <h2>5. Usar y guardar el modelo</h2>
+
+  <h3>Paso 5 — Predecir sobre una flor nueva</h3>
+  <pre><code>import pandas as pd
+
+flor_nueva = pd.DataFrame([[5.1, 3.5, 1.4, 0.2]], columns=iris.feature_names)
+pred = modelo.predict(flor_nueva)
+print("Especie predicha:", iris.target_names[pred[0]])</code></pre>
+  <p>Le entregamos medidas que el modelo <strong>nunca vio</strong> y responde con la especie más
+  probable. Así es como el modelo "trabaja" una vez entrenado.</p>
+
+  <h3>Paso 6 — Guardar el modelo entrenado</h3>
+  <pre><code>import joblib
+
+joblib.dump(modelo, "modelo_iris.pkl")            # guardar
+# ... en otro programa:
+modelo_cargado = joblib.load("modelo_iris.pkl")   # cargar y usar</code></pre>
+  <div class="caja idea"><span class="et">Llevar a producción</span>Guardar el modelo evita re-entrenarlo
+  cada vez. Se entrena una sola vez, se guarda en un archivo <code>.pkl</code>, y una aplicación lo
+  carga para responder al instante. Este es el puente entre "experimentar" y "usar en el mundo real".</div>
+
+  <!-- ACTIVIDADES DE REFUERZO -->
+  <h2 class="nueva-pagina">Actividades de refuerzo</h2>
+  <p>Realiza estas actividades para afianzar lo aprendido. Puedes escribir tus respuestas en los
+  espacios en blanco o anexar capturas de tu código y resultados.</p>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">1</span> Ciclo de vida con mis palabras <span class="badge facil">Fácil</span></div>
+    <p>Enumera las 7 etapas del ciclo de vida de los datos y explica en una frase qué se hace en cada una.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">2</span> Detective de datos sucios <span class="badge facil">Fácil</span></div>
+    <p>Para cada problema de limpieza, escribe un ejemplo propio (distinto a los de la guía) y cómo lo corregirías: valor faltante, duplicado, formato mezclado, outlier y texto en vez de número.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">3</span> Ejecuta el proyecto Iris <span class="badge media">Media</span></div>
+    <p>Ejecuta <code>python entrenar_modelo.py</code> (dentro de <code>clase-3/codigo/</code>). Anota la exactitud en test que obtuviste y copia la matriz de confusión. ¿En qué especie se confunde más el modelo?</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">4</span> Experimenta con max_depth <span class="badge media">Media</span></div>
+    <p>Cambia <code>max_depth</code> a 1 y luego a 10. Completa la tabla con la exactitud en train y en test para cada valor. ¿Con cuál aparece overfitting y cómo lo notas?</p>
+    <table>
+      <tr><th>max_depth</th><th>Exactitud TRAIN</th><th>Exactitud TEST</th></tr>
+      <tr><td>1</td><td></td><td></td></tr>
+      <tr><td>3</td><td></td><td></td></tr>
+      <tr><td>10</td><td></td><td></td></tr>
+    </table>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">5</span> Prueba un bosque de árboles <span class="badge reto">Reto</span></div>
+    <p>Reemplaza el <code>DecisionTreeClassifier</code> por <code>RandomForestClassifier</code>
+    (<code>from sklearn.ensemble import RandomForestClassifier</code>). Entrena y evalúa igual.
+    ¿Mejora la exactitud en test respecto al árbol simple? Anota los dos resultados y compáralos.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <div class="actividad">
+    <div class="titulo"><span class="num">6</span> Tu propio CSV <span class="badge reto">Reto</span></div>
+    <p>Con ayuda de <strong>OpenCode</strong>, carga un CSV propio (ventas, notas, clientes, etc.) con
+    <code>pd.read_csv("archivo.csv")</code>, elige una columna como target, adapta el flujo
+    (limpieza, train/test, entrenar, evaluar) y predice sobre una fila nueva. Describe tu dataset y el resultado.</p>
+    <div class="lineas"><div class="l"></div><div class="l"></div><div class="l"></div><div class="l"></div></div>
+  </div>
+
+  <h2>Lista de verificación</h2>
+  <ul class="checklist">
+    <li>Sé nombrar las etapas del ciclo de vida de los datos.</li>
+    <li>Puedo identificar y corregir problemas comunes de limpieza.</li>
+    <li>Distingo features (X) del target (y).</li>
+    <li>Entiendo por qué se separan datos de train y test.</li>
+    <li>Puedo entrenar y evaluar un modelo con scikit-learn.</li>
+    <li>Sé leer una matriz de confusión y detectar overfitting.</li>
+    <li>Sé guardar y reutilizar un modelo con joblib.</li>
+  </ul>
+
+  <div class="caja"><span class="et">Solución de problemas</span>
+    <strong>ModuleNotFoundError:</strong> ejecuta <code>pip install scikit-learn pandas joblib</code>. ·
+    <strong>pip no se reconoce:</strong> usa <code>python -m pip install ...</code> ·
+    <strong>Resultados distintos cada vez:</strong> revisa que <code>random_state=42</code> esté puesto. ·
+    <strong>Exactitud muy baja:</strong> revisa la limpieza de tus datos y la elección del target.
+  </div>
+
+  <p class="pie">Curso de Inteligencia Artificial · SENA Piedecuesta · Clase 3</p>
+
+</body>
+</html>

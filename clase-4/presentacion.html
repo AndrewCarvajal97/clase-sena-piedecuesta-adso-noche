@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clase 4 — Agentes de IA con APIs gratuitas | Curso IA SENA</title>
+  <link rel="stylesheet" href="../recursos/presentacion.css">
+</head>
+<body>
+  <div class="barra-sup">
+    <span class="logo">SENA <span>·</span> Curso IA</span>
+    <span>Clase 4 — Crear agentes de IA con APIs gratuitas</span>
+  </div>
+  <div class="ayuda">← → para navegar · F pantalla completa</div>
+
+  <div class="deck">
+
+    <!-- 1 · PORTADA -->
+    <section class="slide portada">
+      <span class="pill">CLASE 4 · 8:00 am – 12:00 m</span>
+      <h1>Crear agentes de IA con APIs gratuitas</h1>
+      <p class="subtitulo">De "chatear con un modelo" a construir agentes con memoria, herramientas y datos propios (Gemini y Cohere)</p>
+      <p class="meta">Curso: IA, Modelos de Aprendizaje y Agentes con LLMs · SENA Piedecuesta — Sábados<br><strong style="color:#fff">Pablo Andrés Carvajal</strong> · Desarrollador Full Stack · <a href="https://pablocarvajal.dev" target="_blank" rel="noopener" style="color:#8fe1ff;font-weight:700;text-decoration:underline">pablocarvajal.dev</a></p>
+    </section>
+
+    <!-- 2 · AGENDA -->
+    <section class="slide">
+      <h2>Agenda de hoy (4 horas)</h2>
+      <table class="t">
+        <tr><th>Hora</th><th>Bloque</th><th>Contenido</th></tr>
+        <tr><td>8:00 – 8:15</td><td>Repaso</td><td>Ideas de asistente de cada aprendiz</td></tr>
+        <tr><td>8:15 – 8:50</td><td>¿Qué es un agente?</td><td>Anatomía: LLM + memoria + herramientas + bucle</td></tr>
+        <tr><td>8:50 – 9:40</td><td>Chatbot con memoria</td><td>Proyecto 1 con Gemini</td></tr>
+        <tr><td>9:40 – 9:55</td><td>☕ Descanso</td><td></td></tr>
+        <tr><td>9:55 – 10:45</td><td>Agente con herramientas</td><td>Proyecto 2: function calling</td></tr>
+        <tr><td>10:45 – 11:35</td><td>Agente RAG</td><td>Proyecto 3: responder con datos propios (Cohere)</td></tr>
+        <tr><td>11:35 – 11:55</td><td>Seguridad y despliegue</td><td>Claves, límites, siguientes pasos</td></tr>
+        <tr><td>11:55 – 12:00</td><td>Cierre</td><td>Certificación y muestra de proyectos</td></tr>
+      </table>
+    </section>
+
+    <!-- 3 · CHATBOT vs AGENTE -->
+    <section class="slide">
+      <h2>Chatbot vs. Agente</h2>
+      <div class="cols">
+        <div class="caja"><span class="et">Chatbot simple</span>Recibe un mensaje y responde. No recuerda, no actúa, no consulta nada fuera del modelo.</div>
+        <div class="caja idea"><span class="et">Agente</span><strong>Razona, decide y actúa</strong> para cumplir un objetivo, usando recursos externos: memoria, herramientas y datos.</div>
+      </div>
+      <div class="caja ojo"><span class="et">En una frase</span>Un agente es un LLM al que le damos <strong>memoria + herramientas + un bucle</strong> para resolver tareas, no solo para conversar.</div>
+    </section>
+
+    <!-- 5 · ANATOMÍA -->
+    <section class="slide">
+      <h2>Anatomía de un agente</h2>
+      <ol>
+        <li><strong>LLM (el cerebro):</strong> decide qué hacer y genera lenguaje. (Gemini / Cohere).</li>
+        <li><strong>Memoria:</strong> recuerda la conversación y los hechos. (Historial + RAG).</li>
+        <li><strong>Herramientas (tools):</strong> funciones que puede llamar: calcular, buscar, consultar una base de datos, enviar un correo…</li>
+        <li><strong>Bucle de razonamiento:</strong> <em>pensar → actuar → observar → repetir</em> hasta resolver la tarea.</li>
+      </ol>
+      <div class="caja idea"><span class="et">Ya lo conoces</span><strong>OpenCode</strong> (Clase 0) es justo esto: un LLM + herramientas (leer/escribir archivos, ejecutar comandos) + memoria del proyecto.</div>
+    </section>
+
+    <!-- 6 · ReAct -->
+    <section class="slide">
+      <h2>El patrón ReAct (Reason + Act)</h2>
+      <p>La mayoría de los agentes siguen este ciclo de <strong>razonar y actuar</strong>:</p>
+      <pre><code>Pensamiento: necesito saber el clima de hoy.
+Acción:      llamar herramienta buscar_clima("Piedecuesta")
+Observación: "24°C, soleado"
+Pensamiento: ya tengo la info, puedo responder.
+Respuesta:   "Hoy en Piedecuesta hay 24°C y está soleado."</code></pre>
+      <div class="caja idea"><span class="et">Clave</span>El modelo <strong>alterna</strong> entre pensar y usar herramientas hasta tener todo lo que necesita para responder bien.</div>
+    </section>
+
+    <!-- 7 · PROYECTO 1 intro -->
+    <section class="slide centro">
+      <h2>Proyecto 1</h2>
+      <p class="grande">🧠</p>
+      <p style="max-width:22em">Chatbot con <strong>memoria de conversación</strong> usando Gemini</p>
+      <p class="meta" style="color:var(--gris)">8:50 – 9:40</p>
+    </section>
+
+    <!-- 8 · PROYECTO 1 concepto -->
+    <section class="slide">
+      <h2>Chatbot con memoria (Gemini)</h2>
+      <p>Un modelo por defecto <strong>no recuerda</strong> el mensaje anterior. La "memoria" se logra <strong>enviándole el historial</strong> en cada turno.</p>
+      <pre><code>pip install google-generativeai python-dotenv</code></pre>
+      <div class="caja ojo"><span class="et">La pieza mágica</span>El método <code>.start_chat()</code> mantiene el historial <strong>automáticamente</strong> = MEMORIA.</div>
+    </section>
+
+    <!-- 9 · PROYECTO 1 código -->
+    <section class="slide">
+      <h2>Proyecto 1 — el código</h2>
+      <pre><code>import os
+from dotenv import load_dotenv
+import google.generativeai as genai
+
+load_dotenv()
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+modelo = genai.GenerativeModel(
+    "gemini-1.5-flash",
+    system_instruction="Eres un tutor amable del SENA. Respondes claro y corto."
+)
+
+# start_chat mantiene el historial = MEMORIA
+chat = modelo.start_chat(history=[])
+
+while True:
+    mensaje = input("Tú: ")
+    if mensaje.lower() == "salir":
+        break
+    print("Tutor:", chat.send_message(mensaje).text)</code></pre>
+      <p style="font-size:.85em;color:var(--gris)">Archivo completo: <code>clase-4/codigo/1_chatbot_memoria.py</code></p>
+    </section>
+
+    <!-- 10 · PROYECTO 1 demo -->
+    <section class="slide">
+      <h2>Demostrar la memoria</h2>
+      <table class="t">
+        <tr><th>Tú escribes</th><th>El tutor responde</th></tr>
+        <tr><td>Me llamo Andrés.</td><td>Mucho gusto, Andrés.</td></tr>
+        <tr><td>¿Cómo me llamo?</td><td>Te llamas Andrés. ✅</td></tr>
+      </table>
+      <div class="caja idea"><span class="et">El <code>system_instruction</code></span>Define la <strong>personalidad y las reglas</strong> del agente. Es la herramienta más poderosa y barata para controlarlo.</div>
+    </section>
+
+    <!-- 11 · PROYECTO 2 intro -->
+    <section class="slide centro">
+      <h2>Proyecto 2</h2>
+      <p class="grande">🛠️</p>
+      <p style="max-width:22em">Agente con <strong>herramientas</strong> (function calling)</p>
+      <p class="meta" style="color:var(--gris)">9:55 – 10:45</p>
+    </section>
+
+    <!-- 12 · PROYECTO 2 concepto -->
+    <section class="slide">
+      <h2>Agente con herramientas</h2>
+      <p>Los LLMs son malos en matemáticas exactas y no conocen datos en tiempo real. Solución: darles <strong>herramientas</strong> (funciones de Python) que ellos deciden cuándo llamar.</p>
+      <div class="caja idea"><span class="et">La idea central</span>Una herramienta puede ser <strong>CUALQUIER función de Python</strong>. El <code>docstring</code> le dice al modelo qué hace y cuándo usarla.</div>
+      <div class="caja ojo"><span class="et">Nombre técnico</span>Esto se llama <strong>function calling</strong> o <strong>tool use</strong>.</div>
+    </section>
+
+    <!-- 13 · PROYECTO 2 código -->
+    <section class="slide">
+      <h2>Proyecto 2 — el código</h2>
+      <pre><code># 1. Herramientas = funciones normales de Python
+def calcular(operacion: str) -> str:
+    """Evalúa una operación matemática. Ej: '15 * 23 + 7'."""
+    return str(eval(operacion, {"__builtins__": {}}, {}))
+
+def clima(ciudad: str) -> str:
+    """Devuelve el clima (simulado) de una ciudad."""
+    datos = {"piedecuesta": "24°C, soleado", "bogota": "14°C, lluvioso"}
+    return datos.get(ciudad.lower(), "No tengo datos de esa ciudad.")
+
+# 2. Le entregamos las herramientas al modelo
+modelo = genai.GenerativeModel("gemini-1.5-flash", tools=[calcular, clima])
+chat = modelo.start_chat(enable_automatic_function_calling=True)
+
+# 3. El modelo DECIDE solo cuándo usar cada herramienta
+print(chat.send_message("¿Cuánto es 1520 * 34?").text)
+print(chat.send_message("¿Y qué clima hace en Piedecuesta?").text)</code></pre>
+      <p style="font-size:.85em;color:var(--gris)">Archivo completo: <code>clase-4/codigo/2_agente_herramientas.py</code></p>
+    </section>
+
+    <!-- 14 · PROYECTO 2 qué observar + Cohere -->
+    <section class="slide">
+      <h2>¿Qué verá el grupo?</h2>
+      <ul>
+        <li>El aprendiz pregunta en <strong>lenguaje natural</strong>.</li>
+        <li>El modelo <strong>entiende</strong> que debe usar <code>calcular</code> o <code>clima</code>.</li>
+        <li>Llama la función, recibe el resultado y <strong>responde con él</strong>.</li>
+      </ul>
+      <div class="caja idea"><span class="et">Independiente del proveedor</span><strong>Cohere</strong> también soporta <em>tool use</em> con <code>co.chat(tools=...)</code>. Se declaran las herramientas y el modelo pide ejecutarlas: el concepto de agente es el mismo.</div>
+    </section>
+
+    <!-- 15 · PROYECTO 3 intro -->
+    <section class="slide centro">
+      <h2>Proyecto 3</h2>
+      <p class="grande">📚</p>
+      <p style="max-width:22em">Agente <strong>RAG</strong> que responde con datos propios (Cohere)</p>
+      <p class="meta" style="color:var(--gris)">10:45 – 11:35</p>
+    </section>
+
+    <!-- 16 · PROYECTO 3 concepto -->
+    <section class="slide">
+      <h2>Agente RAG con datos propios</h2>
+      <p>Unimos el RAG de la Clase 2 con un agente que <strong>responde solo con nuestros documentos</strong>. Caso real: un asistente del reglamento del SENA.</p>
+      <p><strong>RAG</strong> = Retrieval-Augmented Generation:</p>
+      <ol>
+        <li><strong>Vectorizar</strong> los documentos una vez (embeddings).</li>
+        <li><strong>Buscar</strong> los fragmentos más parecidos a la pregunta (retrieval).</li>
+        <li><strong>Generar</strong> la respuesta usando SOLO esos fragmentos (generation).</li>
+      </ol>
+      <pre><code>pip install cohere numpy python-dotenv</code></pre>
+    </section>
+
+    <!-- 17 · PROYECTO 3 código -->
+    <section class="slide">
+      <h2>Proyecto 3 — el código</h2>
+      <pre><code>documentos = [
+    "El curso de IA del SENA Piedecuesta es los sábados de 8am a 12m.",
+    "Se requiere 80% de asistencia para certificarse.",
+    "El instructor del curso es Andrés Carvajal.",
+]
+# Vectorizamos la base una sola vez
+emb_docs = co.embed(texts=documentos, model="embed-multilingual-v3.0",
+                    input_type="search_document").embeddings
+
+def responder(pregunta):
+    emb_p = co.embed(texts=[pregunta], model="embed-multilingual-v3.0",
+                     input_type="search_query").embeddings[0]
+    ranking = sorted(range(len(documentos)),
+                     key=lambda i: similitud(emb_p, emb_docs[i]), reverse=True)
+    contexto = "\n".join(documentos[i] for i in ranking[:2])
+    prompt = (f"Usa SOLO esta información.\n{contexto}\n\n"
+              f"Pregunta: {pregunta}\nSi no está, di que no la tienes.")
+    return co.chat(message=prompt, model="command-r").text</code></pre>
+      <p style="font-size:.85em;color:var(--gris)">Archivo completo: <code>clase-4/codigo/3_agente_rag.py</code></p>
+    </section>
+
+    <!-- 18 · PROYECTO 3 discusión -->
+    <section class="slide">
+      <h2>El agente que no inventa</h2>
+      <table class="t">
+        <tr><th>Pregunta</th><th>Respuesta del agente</th></tr>
+        <tr><td>¿A qué hora es el curso?</td><td>Los sábados de 8am a 12m.</td></tr>
+        <tr><td>¿Quién es el instructor?</td><td>Andrés Carvajal.</td></tr>
+        <tr><td>¿Cuánto cuesta un carro?</td><td>No tengo ese dato. ✅</td></tr>
+      </table>
+      <div class="caja idea"><span class="et">Menos alucinaciones</span>Si la respuesta no está en los documentos, el agente <strong>lo dice</strong>. Cambia los <code>documentos</code> por tus apuntes reales → asistente personalizado.</div>
+    </section>
+
+    <!-- 19 · SEGURIDAD -->
+    <section class="slide">
+      <h2>Seguridad de las claves — ¡crítico!</h2>
+      <ol>
+        <li>Las claves van en <code>.env</code>, <strong>NUNCA</strong> en el código.</li>
+        <li>Crear un archivo <code>.gitignore</code> para que <code>.env</code> nunca se suba a GitHub.</li>
+      </ol>
+      <pre><code># .gitignore
+.env
+__pycache__/
+*.pkl</code></pre>
+      <div class="caja alerta"><span class="et">Si una clave se filtra</span><strong>Revócala</strong> y genera una nueva de inmediato desde el panel del proveedor.</div>
+    </section>
+
+    <!-- 20 · LÍMITES Y DESPLIEGUE -->
+    <section class="slide">
+      <h2>Límites, costos y despliegue</h2>
+      <div class="cols">
+        <div>
+          <h3>Límites y costos</h3>
+          <ul>
+            <li>Las APIs gratuitas tienen <strong>límites por minuto</strong> y cupos.</li>
+            <li>Los LLMs cobran <strong>por token</strong>: prompts más cortos = más barato.</li>
+            <li>Elige el modelo más pequeño que sirva (<code>flash</code>, <code>command-r</code>).</li>
+          </ul>
+        </div>
+        <div>
+          <h3>¿Cómo llega a usuarios?</h3>
+          <p>Ponle una interfaz web con <strong>Streamlit</strong> en pocas líneas:</p>
+          <pre><code>pip install streamlit
+streamlit run app.py</code></pre>
+          <p style="font-size:.9em">Súbelo gratis a Streamlit Cloud o Hugging Face Spaces.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 21 · PROYECTO FINAL + RÚBRICA -->
+    <section class="slide">
+      <h2>Proyecto final del curso 🏆</h2>
+      <p>Cada aprendiz construye <strong>su propio agente</strong>: un chatbot con personalidad, un agente con una herramienta propia, o un agente RAG con sus documentos.</p>
+      <table class="t">
+        <tr><th>Criterio</th><th>Puntos</th></tr>
+        <tr><td>El agente funciona y responde</td><td>40</td></tr>
+        <tr><td>Usa memoria, herramienta o RAG</td><td>30</td></tr>
+        <tr><td>Maneja las claves de forma segura (.env + .gitignore)</td><td>15</td></tr>
+        <tr><td>Presentación y explicación clara de cómo funciona</td><td>15</td></tr>
+      </table>
+    </section>
+
+    <!-- Laboratorio interactivo -->
+    <section class="slide">
+      <h2>🔬 Laboratorio interactivo</h2>
+      <p>Prueba modelos y prompts en vivo antes de construir tu agente:</p>
+      <ul>
+        <li><strong>Playground de Gemini (ajusta la temperatura)</strong> — <a href="https://aistudio.google.com/" target="_blank" rel="noopener">Google AI Studio</a></li>
+        <li><strong>Playground y embeddings de Cohere</strong> — <a href="https://dashboard.cohere.com/" target="_blank" rel="noopener">Cohere Dashboard</a></li>
+        <li><strong>Cómo la temperatura cambia la respuesta</strong> — <a href="https://poloclub.github.io/transformer-explainer/" target="_blank" rel="noopener">Transformer Explainer</a></li>
+      </ul>
+      <div class="caja idea"><span class="et">Todas juntas</span>Hub de demos del curso: <a href="../recursos/demos-interactivos.html" target="_blank" rel="noopener">recursos/demos-interactivos.html</a></div>
+    </section>
+
+    <!-- 22 · REPASO DEL CURSO -->
+    <section class="slide">
+      <h2>Repaso de todo el curso</h2>
+      <pre><code>Clase 0: entorno listo (cuentas, claves, OpenCode)
+Clase 1: qué es la IA y los 5 tipos de aprendizaje
+Clase 2: cómo funciona un LLM (tokens, embeddings, atención, RAG)
+Clase 3: crear modelos a partir de datos (entrenar, evaluar)
+Clase 4: construir AGENTES de IA con APIs gratuitas  ← ¡aquí llegamos!</code></pre>
+      <div class="caja idea"><span class="et">Para seguir</span>Frameworks: <strong>LangChain</strong>, <strong>CrewAI</strong>. Bases vectoriales: <strong>Chroma</strong>, <strong>FAISS</strong>. Modelos locales: <strong>Ollama</strong>.</div>
+    </section>
+
+    <!-- 23 · CIERRE -->
+    <section class="slide centro">
+      <h2>¡Felicitaciones! 🎓</h2>
+      <p style="max-width:24em">Pasaste de no conocer la IA a <strong>construir tus propios agentes</strong> con memoria, herramientas y datos propios.</p>
+      <p class="grande">🤖</p>
+      <p style="max-width:24em">Ahora te toca crear el tuyo. ¡El mundo de la IA es tuyo!</p>
+    </section>
+
+  </div>
+
+  <div class="progreso"></div>
+  <div class="contador"></div>
+  <button class="nav-btn" id="prev" title="Anterior">‹</button>
+  <button class="nav-btn" id="next" title="Siguiente">›</button>
+  <script src="../recursos/presentacion.js"></script>
+</body>
+</html>
