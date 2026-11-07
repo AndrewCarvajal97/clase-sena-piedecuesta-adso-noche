@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Crear y administrar agentes de IA desde cero | SENA</title>
+  <link rel="stylesheet" href="assets/presentacion.css">
+  <link rel="stylesheet" href="assets/agentes.css">
+</head>
+<body>
+  <div class="barra-sup">
+    <span class="logo">Agentes de IA <span>·</span> desde cero</span>
+    <span>TypeScript · Node · Gemini · Cohere · Groq · Strategy</span>
+  </div>
+  <div class="ayuda">← → navegar · F pantalla completa</div>
+  <div class="progreso"></div>
+  <div class="contador"></div>
+  <button class="nav-btn" id="prev" aria-label="Anterior">‹</button>
+  <button class="nav-btn" id="next" aria-label="Siguiente">›</button>
+
+  <div class="deck">
+
+    <!-- 1 · PORTADA -->
+    <section class="slide portada">
+      <span class="pill">CLASE ÚNICA · 4 h 40 min · Técnicos sin experiencia en agentes</span>
+      <h1>Crear y administrar<br>agentes de IA desde cero</h1>
+      <p class="subtitulo">De una llamada a un LLM hasta un equipo de agentes — con TypeScript, Node y el patrón Strategy</p>
+      <p class="meta">SENA Piedecuesta · Sábados<br><strong style="color:#fff">Pablo Andrés Carvajal</strong> · Desarrollador Full Stack · <a href="https://pablocarvajal.dev" target="_blank" rel="noopener" style="color:#8fe1ff;font-weight:700;text-decoration:underline">pablocarvajal.dev</a></p>
+    </section>
+
+    <!-- 2 · AGENDA -->
+    <section class="slide">
+      <h2>Nuestra ruta de hoy</h2>
+      <table class="t mini">
+        <tr><th>Hora</th><th>Bloque</th><th>Sales sabiendo…</th></tr>
+        <tr><td>0:00</td><td><strong>Bienvenida y preparación</strong></td><td>Tener el proyecto corriendo (¡sin claves!)</td></tr>
+        <tr><td>0:20</td><td><strong>1 · El vocabulario</strong></td><td>LLM, token, prompt, herramienta, agente, ReAct…</td></tr>
+        <tr><td>1:00</td><td><strong>2 · Strategy + proveedores</strong></td><td>Cambiar de Gemini a Groq sin tocar el agente</td></tr>
+        <tr><td>1:50</td><td>☕ Descanso (10 min)</td><td></td></tr>
+        <tr><td>2:00</td><td><strong>3 · Memoria y herramientas</strong></td><td>Niveles 1 y 2</td></tr>
+        <tr><td>2:40</td><td><strong>4 · Agente ReAct</strong></td><td>Nivel 3: el bucle pensar-actuar-observar</td></tr>
+        <tr><td>3:30</td><td>☕ Descanso (10 min)</td><td></td></tr>
+        <tr><td>3:40</td><td><strong>5 · Planificar, orquestar, administrar</strong></td><td>Niveles 4 y 5 + control de costos</td></tr>
+        <tr><td>4:15</td><td><strong>Reto final y cierre</strong></td><td>Tu propio agente funcionando</td></tr>
+      </table>
+    </section>
+
+    <!-- 3 · OBJETIVOS -->
+    <section class="slide">
+      <h2>Al terminar hoy podrás…</h2>
+      <ul>
+        <li><strong>Explicar</strong> con tus palabras qué es (y qué no es) un agente de IA.</li>
+        <li><strong>Construir</strong> 6 niveles de agentes, del más simple al más avanzado, en TypeScript.</li>
+        <li>Usar el patrón <strong>Strategy</strong> para conectar <strong>Gemini, Cohere y Groq</strong> de forma intercambiable.</li>
+        <li><strong>Administrar</strong> agentes: medir, limitar, trazar y proteger.</li>
+        <li>Decidir <strong>cuándo NO</strong> necesitas un agente.</li>
+      </ul>
+      <div class="caja idea"><span class="et">Promesa</span>No hace falta saber IA. Si sabes programar un poco en JS/TS, todo lo demás lo construimos juntos, <strong>desde cero y sin frameworks</strong>.</div>
+    </section>
+
+    <!-- 4 · PREPARACIÓN -->
+    <section class="slide">
+      <h2>Preparación (20 min)</h2>
+      <div class="cols">
+        <div>
+          <h3>🧰 Necesitas</h3>
+          <ul class="pequeno">
+            <li><strong>Node.js 20.12+</strong> (<code>node -v</code>)</li>
+            <li>Editor: VS Code</li>
+            <li>Carpeta <code>codigo/</code> de esta clase</li>
+            <li>Claves gratis (opcionales hoy): Gemini, Cohere, Groq</li>
+          </ul>
+        </div>
+        <div>
+          <h3>▶️ Comandos</h3>
+<pre><code>cd codigo
+npm install
+copy .env.example .env
+npm test</code></pre>
+          <p class="pequeno">Si ves <strong>🎉 15 pruebas pasaron</strong>, estás listo.</p>
+        </div>
+      </div>
+      <div class="caja ojo"><span class="et">Modo sin claves</span><code>LLM_PROVIDER=mock</code> usa un "LLM de mentira" local: todo el código funciona sin internet ni gastar cuota. Luego cambias a un proveedor real con <strong>una sola línea</strong> (¡eso es Strategy!).</div>
+    </section>
+
+    <!-- 5 · BLOQUE 1 -->
+    <section class="slide bloque">
+      <div class="num">1</div>
+      <h2>El vocabulario</h2>
+      <p>Antes de escribir código: las palabras que vas a escuchar todo el día.</p>
+      <span class="dur">⏱ 40 min · incluye Actividad 1</span>
+    </section>
+
+    <!-- 6 · LLM -->
+    <section class="slide">
+      <h2>LLM: el "autocompletar" gigante</h2>
+      <div class="cols">
+        <div>
+          <p>Un <strong>LLM</strong> (<em>Large Language Model</em>) es un modelo entrenado con muchísimo texto. Su único truco:</p>
+          <div class="caja idea"><span class="et">Su superpoder</span>Dado un texto, <strong>predice qué texto sigue</strong>.</div>
+          <p class="pequeno">De ese truco salen: conversar, resumir, traducir, escribir código y "razonar".</p>
+        </div>
+        <div>
+          <div class="conversa">
+            <div class="burbuja u">La capital de Colombia es…</div>
+            <div class="burbuja a">Bogotá<span class="cursor">&nbsp;</span></div>
+          </div>
+          <div class="caja ojo"><span class="et">Ejemplos</span>Gemini (Google) · Command (Cohere) · Llama (Meta, servido por Groq)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 · TOKEN -->
+    <section class="slide">
+      <h2>Token: la moneda del LLM</h2>
+      <p>El modelo no lee letras ni palabras: lee <strong>tokens</strong> (trozos de texto, ≈ 4 caracteres en promedio).</p>
+      <div class="flujo">
+        <div class="nodo">"Piedecuesta"</div><div class="flecha">→</div>
+        <div class="nodo verde">Pie|de|cu|esta<small>≈ 4 tokens</small></div>
+      </div>
+      <div class="cols3">
+        <div class="tarjeta"><h3>💰 Se cobra</h3><p>Por tokens de <strong>entrada</strong> (lo que envías) y de <strong>salida</strong> (lo que responde).</p></div>
+        <div class="tarjeta azul"><h3>🚦 Se limita</h3><p>Cuota por minuto/día en planes gratuitos (error <code>429</code>).</p></div>
+        <div class="tarjeta amar"><h3>📏 Tiene techo</h3><p>La <strong>ventana de contexto</strong>: máximo de tokens que cabe en una llamada.</p></div>
+      </div>
+    </section>
+
+    <!-- 8 · PROMPT / ROLES -->
+    <section class="slide">
+      <h2>Prompt y roles</h2>
+      <p>Una llamada al LLM es una <strong>lista de mensajes</strong>, cada uno con un rol:</p>
+      <table class="t mini">
+        <tr><th>Rol</th><th>Quién habla</th><th>Para qué sirve</th></tr>
+        <tr><td><code>system</code></td><td>Tú, el desarrollador</td><td>Instrucciones permanentes: personalidad, reglas, formato</td></tr>
+        <tr><td><code>user</code></td><td>La persona usuaria</td><td>La pregunta o tarea</td></tr>
+        <tr><td><code>assistant</code></td><td>El LLM</td><td>Sus respuestas anteriores (parte del historial)</td></tr>
+      </table>
+<pre><code>[
+  { rol: "system", contenido: "Eres un tutor amable. Máximo 3 frases." },
+  { rol: "user",   contenido: "¿Qué es un token?" }
+]</code></pre>
+    </section>
+
+    <!-- 9 · TEMPERATURA -->
+    <section class="slide">
+      <h2>Temperatura y otros "diales"</h2>
+      <div class="cols3">
+        <div class="tarjeta azul"><h3>🌡️ temperatura</h3><p><strong>0</strong> = serio y repetible.<br><strong>1</strong> = creativo e impredecible.</p><p><span class="good">Agentes → usa 0 a 0.3.</span> Quieres decisiones estables.</p></div>
+        <div class="tarjeta"><h3>✂️ max tokens</h3><p>Corta la respuesta. Protege tu costo y tu tiempo.</p></div>
+        <div class="tarjeta amar"><h3>🧾 modo JSON</h3><p>Fuerza al modelo a responder JSON. Clave para que <strong>tu código</strong> entienda al LLM.</p></div>
+      </div>
+      <div class="caja idea"><span class="et">Idea clave</span>Un agente es código que <strong>lee la respuesta del LLM y actúa</strong>. Por eso necesitamos respuestas predecibles y parseables.</div>
+    </section>
+
+    <!-- 10 · STATELESS -->
+    <section class="slide">
+      <h2>El LLM no tiene memoria</h2>
+      <div class="cols">
+        <div>
+          <h3>Llamada 1</h3>
+          <div class="conversa"><div class="burbuja u">Me llamo Camila</div><div class="burbuja a">¡Mucho gusto, Camila!</div></div>
+          <h3>Llamada 2 (independiente)</h3>
+          <div class="conversa"><div class="burbuja u">¿Cómo me llamo?</div><div class="burbuja a">No lo sé 🤷</div></div>
+        </div>
+        <div>
+          <div class="caja alerta"><span class="et">Verdad incómoda</span>Cada llamada nace de cero. El modelo es una <strong>función pura</strong>: texto entra, texto sale.</div>
+          <div class="caja idea"><span class="et">La solución es nuestra</span>La "memoria" es <strong>reenviar el historial</strong> en cada llamada. Tú decides cuánto reenviar → <strong>(¡Strategy otra vez!)</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 · TOOLS -->
+    <section class="slide">
+      <h2>Herramienta (tool): las manos del LLM</h2>
+      <p>El LLM solo produce texto. No puede consultar el clima, sumar con exactitud ni saber qué hora es. Una <strong>herramienta</strong> es una <strong>función normal de tu código</strong> que el LLM puede <em>pedir</em> que ejecutes.</p>
+      <div class="flujo">
+        <div class="nodo azul">🧠 LLM<small>"Necesito el clima de Cali"</small></div><div class="flecha">→</div>
+        <div class="nodo verde">⚙️ Tu código<small>ejecuta clima("Cali")</small></div><div class="flecha">→</div>
+        <div class="nodo amar">📦 Resultado<small>"27 °C, soleado"</small></div><div class="flecha">→</div>
+        <div class="nodo azul">🧠 LLM<small>redacta la respuesta</small></div>
+      </div>
+      <div class="caja ojo"><span class="et">Ojo</span>El LLM <strong>no ejecuta nada</strong>: solo <em>pide</em>. Quien ejecuta (y puede negarse) eres tú. Ahí vive la seguridad.</div>
+    </section>
+
+    <!-- 12 · AGENTE -->
+    <section class="slide">
+      <h2>¿Qué es un agente de IA?</h2>
+      <div class="caja idea"><span class="et">Definición de trabajo</span>Un <strong>agente</strong> es un programa que usa un LLM para <strong>decidir qué hacer</strong>, ejecuta <strong>acciones</strong> con herramientas, mira el <strong>resultado</strong> y repite <strong>en un bucle</strong> hasta cumplir un objetivo.</div>
+      <div class="cols3">
+        <div class="tarjeta"><h3>🎯 Objetivo</h3><p>Una tarea abierta, no un solo paso.</p></div>
+        <div class="tarjeta azul"><h3>🔁 Bucle</h3><p>Pensar → actuar → observar → repetir.</p></div>
+        <div class="tarjeta amar"><h3>🛠️ Herramientas</h3><p>Su forma de tocar el mundo real.</p></div>
+      </div>
+      <p class="pequeno"><strong>Truco para recordar:</strong> agente = <em>LLM + herramientas + bucle + (memoria)</em>.</p>
+    </section>
+
+    <!-- 13 · CHATBOT vs AGENTE -->
+    <section class="slide">
+      <h2>Chatbot vs. Agente</h2>
+      <table class="t">
+        <tr><th></th><th>💬 Chatbot / LLM simple</th><th>🤖 Agente</th></tr>
+        <tr><td><strong>Quién decide el flujo</strong></td><td>Tu código (fijo)</td><td>El LLM (dinámico)</td></tr>
+        <tr><td><strong>Herramientas</strong></td><td>No</td><td>Sí</td></tr>
+        <tr><td><strong>Pasos</strong></td><td>1 llamada</td><td>N llamadas en bucle</td></tr>
+        <tr><td><strong>Predecible</strong></td><td>Mucho</td><td>Menos (¡hay que vigilarlo!)</td></tr>
+        <tr><td><strong>Costo</strong></td><td>Bajo</td><td>Variable → hay que limitarlo</td></tr>
+      </table>
+      <div class="caja ojo"><span class="et">Pregunta de oro</span>¿El <strong>camino</strong> para resolver la tarea lo conoces de antemano? Si sí → un flujo fijo basta. Si no → entra el agente.</div>
+    </section>
+
+    <!-- 14 · ANATOMÍA -->
+    <section class="slide">
+      <h2>Anatomía de un agente</h2>
+      <div class="flujo">
+        <div class="nodo">👤 Usuario<small>tarea</small></div><div class="flecha">→</div>
+        <div class="nodo azul">🧠 CEREBRO<small>LLM (strategy intercambiable)</small></div>
+      </div>
+      <div class="cols3">
+        <div class="tarjeta"><h3>📜 System prompt</h3><p>Rol, reglas, formato de respuesta.</p></div>
+        <div class="tarjeta azul"><h3>🧰 Caja de herramientas</h3><p>Funciones + descripción que el LLM lee.</p></div>
+        <div class="tarjeta amar"><h3>🗂️ Memoria</h3><p>Historial que se reenvía (estrategia elegible).</p></div>
+      </div>
+      <div class="cols3">
+        <div class="tarjeta"><h3>🔁 Bucle de control</h3><p>Tu código: ejecuta, valida, corta.</p></div>
+        <div class="tarjeta rojo"><h3>🛑 Límites</h3><p>Máx. pasos, máx. llamadas, timeouts.</p></div>
+        <div class="tarjeta azul"><h3>📈 Trazas</h3><p>Eventos: qué pensó, qué hizo, qué vio.</p></div>
+      </div>
+    </section>
+
+    <!-- 15 · ReAct -->
+    <section class="slide">
+      <h2>El bucle ReAct (<em>Reason + Act</em>)</h2>
+      <div class="ciclo">
+        <div class="nodo azul">1 · PENSAR<small>"¿Qué me falta saber?"</small></div>
+        <div class="nodo verde">2 · ACTUAR<small>llamar una herramienta</small></div>
+        <div class="nodo amar">3 · OBSERVAR<small>leer el resultado</small></div>
+      </div>
+      <p style="text-align:center"><span class="sello">↻ repetir hasta tener la respuesta final (o llegar al límite de pasos)</span></p>
+      <div class="conversa">
+        <div class="burbuja u">¿Qué clima hace en Bucaramanga y cuánto es 25 × 4?</div>
+        <div class="burbuja t">💭 Necesito el clima → 🛠 clima("Bucaramanga") → 👁 24 °C</div>
+        <div class="burbuja t">💭 Ahora el cálculo → 🛠 calculadora("25*4") → 👁 100</div>
+        <div class="burbuja a">✅ Hace 24 °C en Bucaramanga y 25 × 4 = 100.</div>
+      </div>
+    </section>
+
+    <!-- 16 · MÁS TÉRMINOS -->
+    <section class="slide">
+      <h2>Más palabras que escucharás</h2>
+      <table class="t mini">
+        <tr><th>Término</th><th>En una frase</th></tr>
+        <tr><td><strong>Observación</strong></td><td>El resultado de una herramienta, devuelto al LLM.</td></tr>
+        <tr><td><strong>Alucinación</strong></td><td>El LLM inventa algo falso con total seguridad. Se combate con herramientas y datos.</td></tr>
+        <tr><td><strong>Function calling</strong></td><td>Función nativa de algunos proveedores para pedir herramientas. Nosotros usaremos JSON propio (funciona en todos).</td></tr>
+        <tr><td><strong>RAG</strong></td><td>Buscar fragmentos en tus documentos y dárselos al LLM para responder con datos reales.</td></tr>
+        <tr><td><strong>Guardrail</strong></td><td>Una barrera de seguridad: validar entradas, limitar acciones, filtrar salidas.</td></tr>
+        <tr><td><strong>Orquestador</strong></td><td>Agente "jefe" que reparte tareas a agentes especialistas.</td></tr>
+        <tr><td><strong>MCP</strong></td><td>Estándar para conectar herramientas externas a cualquier agente (siguiente paso del camino).</td></tr>
+        <tr><td><strong>Inyección de prompt</strong></td><td>Texto malicioso que intenta darle órdenes al agente. Por eso: nunca <code>eval()</code>.</td></tr>
+      </table>
+    </section>
+
+    <!-- 17 · ACTIVIDAD 1 -->
+    <section class="slide">
+      <h2>🎮 Actividad 1 · Glosario en vivo <span class="sello">10 min</span></h2>
+      <div class="act">
+        <h3>Abre <code>actividades/laboratorio-agentes.html</code> → pestaña "1 · Glosario"</h3>
+        <ul>
+          <li><strong>Ronda de tarjetas:</strong> lee el término y adivina la definición.</li>
+          <li><strong>Reto de parejas:</strong> une cada término con su significado. ¡Compite con tu compañero!</li>
+          <li>Meta: <strong>8/8</strong> sin ayuda. Quien lo logre explica un término al grupo.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 18 · BLOQUE 2 -->
+    <section class="slide bloque">
+      <div class="num">2</div>
+      <h2>Los 6 niveles + patrón Strategy</h2>
+      <p>El mapa de la clase y la base de código que sostiene todo.</p>
+      <span class="dur">⏱ 50 min · incluye Actividad 2</span>
+    </section>
+
+    <!-- 19 · ESCALERA -->
+    <section class="slide">
+      <h2>La escalera de agentes</h2>
+      <div class="escalera">
+        <div class="escalon e0"><span class="n">0</span> Llamada simple <small>LLM como función</small></div>
+        <div class="escalon e1"><span class="n">1</span> Chatbot con memoria <small>rol + historial</small></div>
+        <div class="escalon e2"><span class="n">2</span> Agente con herramientas <small>1 herramienta por pregunta</small></div>
+        <div class="escalon e3"><span class="n">3</span> Agente ReAct <small>bucle de herramientas</small></div>
+        <div class="escalon e4"><span class="n">4</span> Planificador <small>plan → ejecutar → sintetizar</small></div>
+        <div class="escalon e5"><span class="n">5</span> Multi-agente <small>orquestador + especialistas</small></div>
+      </div>
+      <p class="pequeno">Cada nivel <strong>agrega una capacidad</strong> y también <strong>un riesgo</strong>. Sube solo cuando el nivel actual no alcance.</p>
+    </section>
+
+    <!-- 20 · TABLA NIVELES -->
+    <section class="slide">
+      <h2>¿Qué agrega cada nivel?</h2>
+      <table class="t mini">
+        <tr><th>Nivel</th><th>Agrega</th><th>Úsalo para…</th><th>Riesgo</th></tr>
+        <tr><td><strong>0</strong></td><td>—</td><td>Resumir, traducir, clasificar</td><td>Alucina datos</td></tr>
+        <tr><td><strong>1</strong></td><td>Rol + memoria</td><td>Asistentes, tutores, FAQ</td><td>Historial caro/largo</td></tr>
+        <tr><td><strong>2</strong></td><td>Herramientas (1 vez)</td><td>"¿Qué hora es?", cálculo, consulta puntual</td><td>No encadena pasos</td></tr>
+        <tr><td><strong>3</strong></td><td>Bucle ReAct</td><td>Preguntas que necesitan 2+ herramientas</td><td>Bucles, costo variable</td></tr>
+        <tr><td><strong>4</strong></td><td>Plan explícito</td><td>Tareas largas y revisables</td><td>Plan malo = todo malo</td></tr>
+        <tr><td><strong>5</strong></td><td>Especialistas</td><td>Dominios distintos, equipos</td><td>Complejidad y latencia</td></tr>
+      </table>
+    </section>
+
+    <!-- 21 · PROBLEMA -->
+    <section class="slide">
+      <h2>El problema: depender de un solo proveedor</h2>
+      <div class="cols">
+        <div>
+          <h3 class="bad">❌ Sin patrón</h3>
+<pre><code>if (prov === "gemini") {
+  // formato Gemini...
+} else if (prov === "cohere") {
+  // formato Cohere...
+} else if (prov === "groq") {
+  // formato Groq...
+}
+// ...repetido en CADA agente 😱</code></pre>
+        </div>
+        <div>
+          <h3>Consecuencias</h3>
+          <ul class="pequeno">
+            <li>Cambiar de proveedor = reescribir todo.</li>
+            <li>Cuota agotada → la app se cae.</li>
+            <li>Imposible hacer pruebas sin gastar.</li>
+            <li>Cada <code>if</code> nuevo rompe algo.</li>
+          </ul>
+          <div class="caja ojo"><span class="et">Realidad</span>Los proveedores cambian precios, modelos y límites cada mes.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 22 · STRATEGY IDEA -->
+    <section class="slide">
+      <h2>Patrón Strategy: piezas intercambiables</h2>
+      <div class="caja idea"><span class="et">La idea</span>Define una <strong>interfaz común</strong> y haz que cada variante sea una clase que la cumple. El resto del código solo conoce la interfaz.</div>
+      <div class="cols3">
+        <div class="tarjeta"><h3>🚗 Analogía: el GPS</h3><p>Misma app, distintas "estrategias" de ruta: más rápida, más corta, sin peajes. Tú eliges, la app no cambia.</p></div>
+        <div class="tarjeta azul"><h3>🔌 Analogía: el enchufe</h3><p>Tu laptop no sabe si la energía viene de una hidroeléctrica o de un panel solar. Solo exige el enchufe.</p></div>
+        <div class="tarjeta amar"><h3>💳 Analogía: pagos</h3><p>El carrito de compras llama <code>pagar()</code>. Detrás puede ser tarjeta, PSE o Nequi.</p></div>
+      </div>
+    </section>
+
+    <!-- 23 · UML -->
+    <section class="slide">
+      <h2>Strategy en nuestro proyecto</h2>
+      <div class="flujo vertical">
+        <div class="flujo">
+          <div class="nodo">ChatAgent / ReActAgent / Orquestador<small>"el contexto": solo conoce LLMProvider</small></div>
+        </div>
+        <div class="flecha" style="transform:none;font-size:clamp(13px,1.6vw,20px)">▼ usa</div>
+        <div class="nodo azul" style="min-width:18em">«interfaz» LLMProvider<small>chat(mensajes): Promise&lt;string&gt;</small></div>
+        <div class="flecha" style="transform:none;font-size:clamp(13px,1.6vw,20px)">▲ implementan</div>
+        <div class="flujo">
+          <div class="nodo verde">GeminiProvider</div>
+          <div class="nodo verde">CohereProvider</div>
+          <div class="nodo verde">GroqProvider</div>
+          <div class="nodo amar">MockProvider<small>sin internet</small></div>
+          <div class="nodo rojo">FallbackProvider<small>cadena de estrategias</small></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 24 · INTERFAZ -->
+    <section class="slide">
+      <h2>Paso 1 · La interfaz (el "enchufe")</h2>
+<pre><code>// src/llm/types.ts
+export interface Mensaje {
+  rol: "system" | "user" | "assistant";
+  contenido: string;
+}
+
+export interface LLMProvider {
+  readonly nombre: string;
+  chat(mensajes: Mensaje[], opciones?: OpcionesChat): Promise&lt;string&gt;;
+}</code></pre>
+      <div class="caja idea"><span class="et">Qué notar</span>Entra una lista de mensajes <strong>nuestra</strong>, sale un <code>string</code>. Cada proveedor traduce de/hacia su formato propio. <strong>Nadie más lo sabrá.</strong></div>
+    </section>
+
+    <!-- 25 · UNA ESTRATEGIA -->
+    <section class="slide">
+      <h2>Paso 2 · Una estrategia concreta (Groq)</h2>
+<pre><code>export class GroqProvider implements LLMProvider {
+  readonly nombre = "groq";
+  constructor(private apiKey: string,
+              private modelo = "llama-3.3-70b-versatile") {}
+
+  async chat(mensajes: Mensaje[], op: OpcionesChat = {}) {
+    const data = await postJson("groq",
+      "https://api.groq.com/openai/v1/chat/completions",
+      { Authorization: `Bearer ${this.apiKey}` },
+      { model: this.modelo,
+        messages: mensajes.map(m =&gt; ({ role: m.rol, content: m.contenido })),
+        temperature: op.temperatura ?? 0.3 });
+    return data.choices[0].message.content;   // ← el texto
+  }
+}</code></pre>
+      <p class="pequeno">Gemini cambia <code>assistant</code>→<code>model</code> y separa el <code>system</code>; Cohere usa otra URL. <strong>Esas diferencias quedan encapsuladas aquí.</strong></p>
+    </section>
+
+    <!-- 26 · FÁBRICA -->
+    <section class="slide">
+      <h2>Paso 3 · Elegir la estrategia con <code>.env</code></h2>
+      <div class="cols">
+        <div>
+<pre><code># .env
+LLM_PROVIDER=groq
+GROQ_API_KEY=gsk_...</code></pre>
+<pre><code>// src/llm/factory.ts
+switch (nombre) {
+  case "gemini": return new GeminiProvider(key);
+  case "cohere": return new CohereProvider(key);
+  case "groq":   return new GroqProvider(key);
+  case "mock":   return new MockProvider();
+}</code></pre>
+        </div>
+        <div>
+          <div class="caja idea"><span class="et">Resultado</span>Para cambiar de Groq a Gemini editas <strong>una línea del .env</strong>. Cero cambios en agentes.</div>
+          <div class="caja alerta"><span class="et">Seguridad</span><code>.env</code> está en <code>.gitignore</code>. <strong>Nunca</strong> subas una clave a GitHub ni la pegues en un chat.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 27 · PROVEEDORES -->
+    <section class="slide">
+      <h2>Nuestros 3 proveedores (+1 de práctica)</h2>
+      <table class="t mini">
+        <tr><th></th><th>Gemini (Google)</th><th>Cohere</th><th>Groq</th><th>Mock</th></tr>
+        <tr><td><strong>Fortaleza</strong></td><td>Contexto grande, multimodal, buen nivel general</td><td>Texto empresarial, RAG, embeddings y reranking</td><td>Velocidad muy alta con modelos abiertos (Llama)</td><td>Gratis, offline, determinista</td></tr>
+        <tr><td><strong>Formato API</strong></td><td>Propio (<code>contents/parts</code>)</td><td>Propio v2 (<code>messages</code>)</td><td>Compatible con OpenAI</td><td>—</td></tr>
+        <tr><td><strong>Autenticación</strong></td><td>Header <code>x-goog-api-key</code></td><td>Bearer token</td><td>Bearer token</td><td>—</td></tr>
+        <tr><td><strong>Úsalo para</strong></td><td>Documentos largos, imágenes</td><td>Búsqueda y respuestas con fuentes</td><td>Agentes con muchos pasos (rápido)</td><td>Clases y tests</td></tr>
+      </table>
+      <div class="caja ojo"><span class="et">Cuotas gratis</span>Cambian con frecuencia. Revisa los límites vigentes en cada consola (aistudio.google.com · dashboard.cohere.com · console.groq.com).</div>
+    </section>
+
+    <!-- 28 · FALLBACK + DECORATOR -->
+    <section class="slide">
+      <h2>Estrategias que combinan estrategias</h2>
+      <div class="cols">
+        <div class="tarjeta rojo">
+          <h3>🔀 FallbackProvider</h3>
+<pre><code>new FallbackProvider([
+  groq,    // 1º
+  gemini,  // si falla…
+  cohere,  // …y luego este
+]);</code></pre>
+          <p>Implementa <code>LLMProvider</code>, así que <strong>el agente ni se entera</strong>.</p>
+        </div>
+        <div class="tarjeta azul">
+          <h3>📊 LLMMedido (Decorator)</h3>
+<pre><code>const llm = new LLMMedido(
+  crearProveedor(), 40 // tope
+);
+// ...
+llm.resumen();
+// 📊 6 llamadas · ~2434 tokens</code></pre>
+          <p>Envuelve cualquier proveedor y le suma <strong>métricas y presupuesto</strong>.</p>
+        </div>
+      </div>
+      <div class="caja idea"><span class="et">Poder del patrón</span>Como todos cumplen la misma interfaz, se pueden <strong>apilar</strong> como legos: <code>Medido(Fallback([Groq, Gemini]))</code>.</div>
+    </section>
+
+    <!-- 29 · ACTIVIDAD 2 -->
+    <section class="slide">
+      <h2>🎮 Actividad 2 · Strategy Playground <span class="sello">15 min</span></h2>
+      <div class="act">
+        <h3>Laboratorio → pestaña "2 · Strategy"</h3>
+        <ul>
+          <li>Arma una <strong>cadena de proveedores</strong> arrastrando Gemini, Cohere y Groq.</li>
+          <li>Apaga proveedores ("simular caída" / "cuota agotada") y envía mensajes.</li>
+          <li>Observa la <strong>bitácora</strong>: ¿quién respondió? ¿cuánto tardó?</li>
+          <li><strong>Reto:</strong> ordena la cadena para que el sistema sobreviva a 2 caídas seguidas.</li>
+        </ul>
+      </div>
+      <div class="caja idea"><span class="et">Luego, en código</span><code>npm run nivel0</code> y <code>npm run comparar</code> (con tu <code>.env</code>).</div>
+    </section>
+
+    <!-- 30 · NIVEL 0 -->
+    <section class="slide">
+      <h2>Nivel 0 · La llamada simple</h2>
+<pre><code>const llm = crearLLM();                 // lo que diga .env
+const r = await llm.chat([
+  { rol: "user", contenido: "Hola, me llamo Camila." },
+]);
+
+// 2ª llamada SIN historial → no sabe tu nombre
+await llm.chat([{ rol: "user", contenido: "¿Cómo me llamo?" }]);</code></pre>
+      <div class="caja ojo"><span class="et">Ejecuta ahora</span><code>npm run nivel0</code> — verás las 3 llamadas del archivo <code>niveles/nivel0-llamada.ts</code> y la demostración de que el modelo no recuerda.</div>
+      <p class="pequeno"><strong>Pregunta al grupo:</strong> ¿esto es un agente? ¿Por qué no? <em>(No decide acciones, no usa herramientas, no hay bucle.)</em></p>
+    </section>
+
+    <!-- 31 · BLOQUE 3 -->
+    <section class="slide bloque">
+      <div class="num">3</div>
+      <h2>Memoria y herramientas</h2>
+      <p>Niveles 1 y 2: del chatbot al agente que actúa.</p>
+      <span class="dur">⏱ 40 min</span>
+    </section>
+
+    <!-- 32 · MEMORIA STRATEGY -->
+    <section class="slide">
+      <h2>Nivel 1 · Memoria = otra Strategy</h2>
+<pre><code>interface EstrategiaMemoria {
+  agregar(m: Mensaje): void | Promise&lt;void&gt;;
+  obtener(): Mensaje[];        // lo que se reenvía al LLM
+}</code></pre>
+      <table class="t mini">
+        <tr><th>Estrategia</th><th>Cómo funciona</th><th>Ventaja</th><th>Desventaja</th></tr>
+        <tr><td><code>MemoriaCompleta</code></td><td>Guarda todo</td><td>No olvida nada</td><td>Crece sin parar → caro</td></tr>
+        <tr><td><code>MemoriaVentana(n)</code></td><td>Últimos n mensajes</td><td>Costo constante</td><td>Olvida lo antiguo</td></tr>
+        <tr><td><code>MemoriaResumen</code></td><td>Resume lo viejo con el LLM</td><td>Equilibrio</td><td>Una llamada extra; puede perder detalle</td></tr>
+      </table>
+      <p class="pequeno">Prueba: <code>npm run nivel1 -- ventana</code> → dile tu nombre, charla 4 turnos y pregunta <em>"¿cómo me llamo?"</em></p>
+    </section>
+
+    <!-- 33 · ANATOMÍA TOOL -->
+    <section class="slide">
+      <h2>Nivel 2 · Anatomía de una herramienta</h2>
+<pre><code>export const clima: Herramienta = {
+  nombre: "clima",                      // cómo la invoca el LLM
+  descripcion: "Consulta el clima de una ciudad colombiana. " +
+               "La entrada es SOLO el nombre de la ciudad.",
+  ejemploEntrada: "Bucaramanga",
+  ejecutar: (ciudad) =&gt; { /* código normal de TypeScript */
+    return `Clima en ${ciudad}: 24 °C`;
+  },
+};</code></pre>
+      <div class="cols3">
+        <div class="tarjeta"><h3>1 · nombre</h3><p>Corto, sin espacios.</p></div>
+        <div class="tarjeta azul"><h3>2 · descripción</h3><p><strong>Lo único que el LLM lee.</strong> ¡Cuídala!</p></div>
+        <div class="tarjeta amar"><h3>3 · ejecutar()</h3><p>Tu código. Si falla, <em>no debe tumbar al agente.</em></p></div>
+      </div>
+    </section>
+
+    <!-- 34 · DESCRIPCIÓN -->
+    <section class="slide">
+      <h2>La descripción manda</h2>
+      <div class="cols">
+        <div class="tarjeta rojo">
+          <h3 class="bad">❌ Descripción pobre</h3>
+<pre><code>descripcion: "clima"</code></pre>
+          <p>El LLM duda: ¿qué entrada? ¿Para qué ciudades? ¿Cuándo usarla? Se equivoca o no la usa.</p>
+        </div>
+        <div class="tarjeta">
+          <h3 class="good">✅ Descripción útil</h3>
+<pre><code>descripcion: "Clima actual de una
+ ciudad colombiana. Entrada: SOLO el
+ nombre de la ciudad. Úsala cuando
+ pregunten por temperatura o lluvia."</code></pre>
+          <p>Qué hace · qué recibe · cuándo usarla.</p>
+        </div>
+      </div>
+      <div class="caja idea"><span class="et">Regla de bolsillo</span>Explícala como si le dieras la herramienta a un practicante el primer día de trabajo.</div>
+    </section>
+
+    <!-- 35 · SEGURIDAD EVAL -->
+    <section class="slide">
+      <h2>⚠️ Seguridad: jamás <code>eval()</code></h2>
+      <div class="cols">
+        <div class="tarjeta rojo">
+          <h3 class="bad">Peligroso</h3>
+<pre><code>ejecutar: (expr) =&gt; eval(expr)
+
+// Un texto manipulado puede pedir:
+// "require('fs').rmSync('/', ...)"</code></pre>
+        </div>
+        <div class="tarjeta">
+          <h3 class="good">Correcto</h3>
+<pre><code>// calculadora.ts: parser propio
+// solo entiende: números + - * / % ^ ( )
+evaluar("(12 + 8) * 3")  // 60
+evaluar("process.exit()") // ❌ lanza error</code></pre>
+        </div>
+      </div>
+      <div class="caja alerta"><span class="et">Principio</span>Todo lo que sale de un LLM es <strong>entrada no confiable</strong>, igual que un formulario web. Valida, limita, nunca ejecutes a ciegas.</div>
+    </section>
+
+    <!-- 36 · PROTOCOLO -->
+    <section class="slide">
+      <h2>El protocolo JSON (funciona en los 3 proveedores)</h2>
+      <p class="pequeno">Le pedimos al LLM que SIEMPRE responda con uno de dos formatos:</p>
+<pre><code>// A) quiero usar una herramienta
+{ "pensamiento": "necesito el clima",
+  "accion": "clima", "entrada": "Cali" }
+
+// B) ya puedo responder
+{ "pensamiento": "tengo todo",
+  "respuesta_final": "En Cali hay 27 °C." }</code></pre>
+      <div class="flujo">
+        <div class="nodo">LLM responde texto</div><div class="flecha">→</div>
+        <div class="nodo verde">extraerJson()<small>limpia ```json</small></div><div class="flecha">→</div>
+        <div class="nodo azul">interpretar()<small>acción o final</small></div><div class="flecha">→</div>
+        <div class="nodo amar">ejecutar tool</div>
+      </div>
+    </section>
+
+    <!-- 37 · NIVEL 2 LÍMITE -->
+    <section class="slide">
+      <h2>Nivel 2 en acción… y su límite</h2>
+      <div class="flujo">
+        <div class="nodo">Pregunta</div><div class="flecha">→</div>
+        <div class="nodo azul">LLM decide</div><div class="flecha">→</div>
+        <div class="nodo verde">1 herramienta</div><div class="flecha">→</div>
+        <div class="nodo azul">LLM redacta</div>
+      </div>
+      <p><code>npm run nivel2</code> — mira la <strong>3.ª pregunta</strong>:</p>
+      <div class="conversa">
+        <div class="burbuja u">¿Qué clima hace en Bucaramanga y cuánto es 25 × 4?</div>
+        <div class="burbuja a">(Nivel 2 solo usa una herramienta) Clima: 24 °C… <span class="bad">¡falta el cálculo!</span></div>
+      </div>
+      <div class="caja ojo"><span class="et">Pregunta para el grupo</span>¿Qué le falta a este agente para poder usar una segunda herramienta?<br><em>Respuesta: un bucle. → Nivel 3.</em></div>
+    </section>
+
+    <!-- 38 · BLOQUE 4 -->
+    <section class="slide bloque">
+      <div class="num">4</div>
+      <h2>Agente ReAct</h2>
+      <p>Nivel 3: aquí nace un agente de verdad.</p>
+      <span class="dur">⏱ 50 min · incluye Actividad 3</span>
+    </section>
+
+    <!-- 39 · CÓDIGO BUCLE -->
+    <section class="slide">
+      <h2>El bucle completo (resumen)</h2>
+<pre><code>for (let paso = 1; paso &lt;= maxPasos; paso++) {
+  const crudo = await llm.chat(mensajes, { json: true, temperatura: 0 });
+
+  let decision;
+  try { decision = interpretar(crudo); }                // 🛡️ defensa 1
+  catch { /* pedir que corrija el formato */ continue; }
+
+  if (decision.tipo === "final") return decision.respuesta;   // ✅ fin
+
+  if (yaLoHizo(decision)) { /* avisar: no repitas */ }        // 🛡️ defensa 2
+  else obs = await herramientas.ejecutar(decision.accion, decision.entrada);
+
+  mensajes.push(asistente(crudo), usuario(`Observación: ${obs}`)); // 🔁
+}
+return "No pude terminar en maxPasos";                         // 🛡️ defensa 3</code></pre>
+    </section>
+
+    <!-- 40 · DEFENSAS -->
+    <section class="slide">
+      <h2>Lo que sale mal (y cómo se defiende)</h2>
+      <table class="t mini">
+        <tr><th>Falla típica</th><th>Ejemplo</th><th>Defensa en el código</th></tr>
+        <tr><td><strong>JSON inválido</strong></td><td>Texto antes/después, llaves rotas</td><td><code>extraerJson</code> + pedir al LLM que corrija</td></tr>
+        <tr><td><strong>Herramienta inexistente</strong></td><td>Inventa <code>"buscar_vuelos"</code></td><td>Observación de error con la lista de válidas</td></tr>
+        <tr><td><strong>Herramienta que falla</strong></td><td>Ciudad desconocida</td><td><code>try/catch</code> → el error vuelve como observación</td></tr>
+        <tr><td><strong>Bucle infinito</strong></td><td>Repite la misma acción</td><td>Huella de acciones + <code>maxPasos</code></td></tr>
+        <tr><td><strong>Costo desbocado</strong></td><td>40 llamadas por una pregunta</td><td><code>LLMMedido</code> con tope de llamadas</td></tr>
+        <tr><td><strong>Cuota / caída</strong></td><td>Error 429 / 503</td><td>Reintentos con espera + <code>FallbackProvider</code></td></tr>
+      </table>
+    </section>
+
+    <!-- 41 · TRAZA -->
+    <section class="slide">
+      <h2>Ejecuta y lee la traza</h2>
+      <p><code>npm run nivel3</code></p>
+<pre><code>[ReAct · paso 1] 💭 Necesito usar "clima" para avanzar.
+[ReAct · paso 1] 🛠️  clima("Bucaramanga")
+[ReAct · paso 1] 👁️  Clima en Bucaramanga: 24 °C, parcialmente soleado
+[ReAct · paso 2] 💭 Necesito usar "calculadora" para avanzar.
+[ReAct · paso 2] 🛠️  calculadora("25 * 4")
+[ReAct · paso 2] 👁️  25 * 4 = 100
+[ReAct · paso 3] ✅ Hace 24 °C en Bucaramanga y 25 × 4 = 100.</code></pre>
+      <div class="caja idea"><span class="et">Por qué importa</span>Un agente que no puedes ver pensar es un agente que no puedes depurar. Cada paso emite un <strong>evento</strong>: puedes imprimirlo, guardarlo o mostrarlo en una web.</div>
+    </section>
+
+    <!-- 42 · ACTIVIDAD 3 -->
+    <section class="slide">
+      <h2>🎮 Actividad 3 · Simulador ReAct <span class="sello">20 min</span></h2>
+      <div class="act">
+        <h3>Laboratorio → pestaña "3 · Simulador ReAct"</h3>
+        <ul>
+          <li>Elige una pregunta y <strong>avanza paso a paso</strong> el bucle pensar-actuar-observar.</li>
+          <li><strong>Apaga herramientas</strong> y mira cómo se rompe o se adapta el agente.</li>
+          <li>Baja <strong>maxPasos</strong> a 1 y activa "bucle infinito": ¿qué defensa salva al agente?</li>
+          <li><strong>Reto:</strong> escribe tu propia pregunta que obligue a usar las 3 herramientas.</li>
+        </ul>
+      </div>
+      <div class="caja idea"><span class="et">Después, en código</span>Agrega una herramienta nueva (<code>convertirMoneda</code>) y pruébala con <code>npm run nivel3 -- "tu pregunta"</code>.</div>
+    </section>
+
+    <!-- 43 · BLOQUE 5 -->
+    <section class="slide bloque">
+      <div class="num">5</div>
+      <h2>Planificar, orquestar y administrar</h2>
+      <p>Niveles 4 y 5, más lo que separa un demo de un sistema real.</p>
+      <span class="dur">⏱ 35 min · incluye Actividad 4</span>
+    </section>
+
+    <!-- 44 · NIVEL 4 -->
+    <section class="slide">
+      <h2>Nivel 4 · Plan-and-Execute</h2>
+      <div class="flujo">
+        <div class="nodo azul">1 · PLANIFICAR<small>LLM → lista de pasos</small></div><div class="flecha">→</div>
+        <div class="nodo verde">2 · EJECUTAR<small>un ReAct por paso</small></div><div class="flecha">→</div>
+        <div class="nodo amar">3 · SINTETIZAR<small>respuesta final</small></div>
+      </div>
+<pre><code>Tarea: "Qué es un agente, el clima en Piedecuesta y cuánto es 18 * 7"
+Plan:  1) Qué es un agente   2) Clima en Piedecuesta   3) 18 * 7
+→ cada paso lo resuelve un ReActAgent con el contexto de los anteriores</code></pre>
+      <div class="cols">
+        <div class="caja idea"><span class="et">Ventajas</span>Plan visible y aprobable · no se "pierde" en tareas largas · fácil de depurar por paso.</div>
+        <div class="caja ojo"><span class="et">Cuidado</span>Si el plan es malo, todo sale mal. Un plan fijo es rígido ante imprevistos.</div>
+      </div>
+    </section>
+
+    <!-- 45 · NIVEL 5 -->
+    <section class="slide">
+      <h2>Nivel 5 · Multi-agente con orquestador</h2>
+      <div class="flujo vertical">
+        <div class="nodo azul" style="min-width:16em">🎩 Orquestador<small>reparte subtareas por especialidad</small></div>
+        <div class="flujo">
+          <div class="nodo verde">🔎 Investigador<small>conocimiento · clima · hora</small></div>
+          <div class="nodo verde">🧮 Matemático<small>solo calculadora</small></div>
+          <div class="nodo amar">✍️ (tu especialista)<small>¡el reto!</small></div>
+        </div>
+      </div>
+      <div class="cols3">
+        <div class="tarjeta"><h3>🎯 Enfoque</h3><p>Pocas herramientas por agente → menos confusión.</p></div>
+        <div class="tarjeta azul"><h3>🔐 Seguridad</h3><p>Cada uno solo toca lo que necesita (mínimo privilegio).</p></div>
+        <div class="tarjeta amar"><h3>🧪 Mantenible</h3><p>Pruebas, mide y reemplaza cada especialista.</p></div>
+      </div>
+    </section>
+
+    <!-- 46 · ADMINISTRAR -->
+    <section class="slide">
+      <h2>Administrar agentes: la lista de control</h2>
+      <div class="cols3">
+        <div class="tarjeta"><h3>📏 Límites</h3><ul><li>Máx. pasos por agente</li><li>Máx. llamadas al LLM</li><li>Timeout por llamada</li></ul></div>
+        <div class="tarjeta azul"><h3>📈 Observabilidad</h3><ul><li>Eventos por paso</li><li>Tokens, tiempo, errores</li><li>Tablero por agente</li></ul></div>
+        <div class="tarjeta rojo"><h3>🛡️ Seguridad</h3><ul><li>Validar toda salida del LLM</li><li>Herramientas con mínimo privilegio</li><li>Claves solo en <code>.env</code></li></ul></div>
+        <div class="tarjeta amar"><h3>🔁 Resiliencia</h3><ul><li>Reintentos con espera</li><li>Fallback de proveedores</li><li>Errores como observaciones</li></ul></div>
+        <div class="tarjeta"><h3>🧪 Calidad</h3><ul><li>Pruebas con Mock (<code>npm test</code>)</li><li>Casos de oro por agente</li><li>Versiona tus prompts</li></ul></div>
+        <div class="tarjeta azul"><h3>👤 Humano en el bucle</h3><ul><li>Aprobar acciones riesgosas</li><li>Mostrar el plan antes</li><li>Botón de parar</li></ul></div>
+      </div>
+    </section>
+
+    <!-- 47 · CUÁNDO NO -->
+    <section class="slide">
+      <h2>La regla de oro: el nivel más bajo que funcione</h2>
+      <div class="escalera" style="margin-bottom:.6em">
+        <div class="escalon e3" style="width:100%"><span class="n">?</span> ¿Necesitas varios pasos que no conoces de antemano? <small>→ Nivel 3+</small></div>
+        <div class="escalon e2" style="width:100%"><span class="n">?</span> ¿Necesitas consultar algo externo una vez? <small>→ Nivel 2</small></div>
+        <div class="escalon e1" style="width:100%"><span class="n">?</span> ¿Es solo conversar con contexto? <small>→ Nivel 1</small></div>
+        <div class="escalon e0" style="width:100%"><span class="n">?</span> ¿Es una transformación de texto? <small>→ Nivel 0</small></div>
+      </div>
+      <div class="caja alerta"><span class="et">Cuidado</span>Un agente complejo donde bastaba un <code>if</code> es más lento, más caro, menos predecible y más difícil de depurar. <strong>Un buen ingeniero sabe cuándo no usar IA.</strong></div>
+    </section>
+
+    <!-- 48 · ACTIVIDAD 4 -->
+    <section class="slide">
+      <h2>🎮 Actividad 4 · ¿Qué nivel necesito? <span class="sello">10 min</span></h2>
+      <div class="act">
+        <h3>Laboratorio → pestañas "4 · Elige el nivel", "5 · Prompt Lab" y "6 · Caza-bugs"</h3>
+        <ul>
+          <li><strong>Escenarios reales:</strong> decide qué nivel (0–5) resuelve cada caso con el menor costo.</li>
+          <li><strong>Prompt Lab:</strong> arma el system prompt de un agente por piezas y mira su puntaje de calidad.</li>
+          <li><strong>Caza-bugs:</strong> encuentra el arreglo correcto a 6 fallos reales de producción.</li>
+          <li>Discutan en parejas los casos donde no coincidieron: <em>ahí está el aprendizaje.</em></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 49 · RETO FINAL -->
+    <section class="slide">
+      <h2>🏆 Reto final · Tu propio agente <span class="sello">25 min</span></h2>
+      <div class="cols">
+        <div>
+          <h3>Elige UNO</h3>
+          <ul class="pequeno">
+            <li><strong>🌦 Clima real:</strong> reemplaza <code>clima</code> por <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (sin clave).</li>
+            <li><strong>💱 Convertidor:</strong> herramienta <code>convertirMoneda</code> con tasas fijas.</li>
+            <li><strong>📚 Especialista nuevo:</strong> un 3.er agente en el orquestador (redactor, traductor…).</li>
+            <li><strong>🔧 Nueva estrategia:</strong> <code>OllamaProvider</code> (modelo local) o <code>OpenRouterProvider</code>.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Criterios</h3>
+          <table class="t mini">
+            <tr><td>Funciona y compila (<code>npm test</code>)</td><td>40%</td></tr>
+            <tr><td>Descripción de herramienta clara</td><td>20%</td></tr>
+            <tr><td>Respeta Strategy (no <code>if</code> por proveedor)</td><td>20%</td></tr>
+            <tr><td>Manejo de errores y límites</td><td>20%</td></tr>
+          </table>
+          <p class="pequeno">Demo de 1 minuto por persona al final.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 50 · RESUMEN -->
+    <section class="slide">
+      <h2>Lo que te llevas</h2>
+      <ul>
+        <li>Un <strong>LLM</strong> es una función sin memoria; un <strong>agente</strong> es código que lo usa en un <strong>bucle</strong> con <strong>herramientas</strong>.</li>
+        <li><strong>Strategy</strong> te libera del proveedor: Gemini, Cohere, Groq, Mock y combinaciones (Fallback, Medido).</li>
+        <li>Seis niveles: llamada → memoria → herramienta → ReAct → plan → multi-agente.</li>
+        <li><strong>Administrar</strong> = límites + trazas + seguridad + resiliencia + pruebas.</li>
+        <li>Usa siempre <strong>el nivel más bajo que resuelva el problema</strong>.</li>
+      </ul>
+    </section>
+
+    <!-- 51 · SIGUIENTES PASOS -->
+    <section class="slide">
+      <h2>¿Y ahora qué?</h2>
+      <div class="cols3">
+        <div class="tarjeta"><h3>🔌 Function calling nativo</h3><p>Cada proveedor ofrece su versión; tu interfaz <code>LLMProvider</code> puede crecer para soportarla.</p></div>
+        <div class="tarjeta azul"><h3>📚 RAG</h3><p>Convierte <code>buscar_conocimiento</code> en búsqueda vectorial sobre tus documentos (ver Clases 2 y 4).</p></div>
+        <div class="tarjeta amar"><h3>🔗 MCP</h3><p>Conecta herramientas externas con un estándar, sin escribir cada integración.</p></div>
+        <div class="tarjeta"><h3>🧪 Evaluaciones</h3><p>Conjuntos de preguntas con respuesta esperada para medir mejoras reales.</p></div>
+        <div class="tarjeta azul"><h3>🌐 Web</h3><p>Expón tu agente con Express y muestra la traza en tiempo real (clase alternativa React).</p></div>
+        <div class="tarjeta rojo"><h3>🛡️ Producción</h3><p>Logs persistentes, cuotas por usuario, revisión humana y secretos gestionados.</p></div>
+      </div>
+      <p style="text-align:center;margin-top:1em"><span class="sello">¡Gracias! Pregunta lo que quieras 🙌</span></p>
+    </section>
+
+  </div>
+
+  <script src="assets/presentacion.js"></script>
+</body>
+</html>

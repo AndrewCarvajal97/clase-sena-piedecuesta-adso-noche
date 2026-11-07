@@ -33,6 +33,10 @@ Son **4 clases de 4 horas (8:00 am – 12:00 m)**, más una **Clase 0 de prepara
 > es un proyecto avanzado y opcional: construir una app en **React** con un **agente LLM**
 > conectado a una **base de datos vectorial** (React + Express + Cohere + Supabase/pgvector + Gemini).
 
+> La clase **[`crear-administrar-agentes-desde-cero/`](crear-administrar-agentes-desde-cero/)** (4 h 40 min) es
+> independiente: construye 6 niveles de agentes en **TypeScript + Node** con **Gemini, Cohere y Groq** usando el
+> patrón **Strategy**, con presentación, actividades interactivas y guía del instructor.
+
 ## 📁 Cómo está organizado
 
 Cada clase es una **carpeta autocontenida** con todo lo necesario:

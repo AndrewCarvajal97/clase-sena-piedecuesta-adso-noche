@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Guía de trabajo — Crear y administrar agentes de IA desde cero</title>
+  <link rel="stylesheet" href="assets/guia.css">
+  <style>
+    table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:10pt}
+    th,td{border:1px solid #cdd8e1;padding:2mm 3mm;text-align:left;vertical-align:top}
+    th{background:#00304d;color:#fff}
+    tr:nth-child(even) td{background:#f4f8fb}
+    pre{background:#0d1b2a;color:#e6edf3;padding:3mm 4mm;border-radius:2mm;font-size:9pt;line-height:1.4;white-space:pre-wrap;border-left:2mm solid #39a900;page-break-inside:avoid}
+    code{font-family:Consolas,monospace;background:#eef2f5;color:#b5179e;padding:0 1mm;border-radius:1mm;font-size:.92em}
+    pre code{background:none;color:inherit;padding:0}
+    .caja{border-left:2mm solid #39a900;background:#eef8e6;padding:2.5mm 4mm;margin:3mm 0;border-radius:1.5mm;page-break-inside:avoid}
+    .caja.ojo{border-color:#ffcf3f;background:#fff8e2}.caja.alerta{border-color:#e5484d;background:#fdecec}
+    .caja .et{display:block;font-weight:800;text-transform:uppercase;font-size:8.5pt;letter-spacing:.04em;color:#5b6b7b}
+    .objetivos{background:#eef8e6;border:1px solid #39a900;border-radius:2mm;padding:2mm 5mm;margin:5mm 0}
+    .guion{border:1px dashed #5b6b7b;border-radius:2mm;padding:2mm 4mm;margin:3mm 0;background:#fafcfd}
+    .guion b.t{color:#2b7d00}
+    .linea{border-bottom:1px solid #889;display:inline-block;min-width:60mm}
+    h2{page-break-before:always}
+    h2.sin{page-break-before:auto}
+  </style>
+</head>
+<body>
+
+<div class="portada">
+  <div class="marca">SENA · PIEDECUESTA — CURSO DE INTELIGENCIA ARTIFICIAL</div>
+  <h1>Crear y administrar<br>agentes de IA desde cero</h1>
+  <p class="sub">Guía de trabajo · TypeScript, Node, Gemini, Cohere, Groq y patrón Strategy</p>
+  <div class="banda"></div>
+  <div class="datos">
+    Duración: 4 h 40 min (incluye 2 descansos de 10 min)<br>
+    Pablo Andrés Carvajal — Desarrollador Full Stack<br>
+    <a href="https://pablocarvajal.dev">pablocarvajal.dev</a><br>
+    Nombre del aprendiz: <span class="linea"></span>
+  </div>
+</div>
+
+<div class="objetivos">
+  <h3>🎯 ¿Qué sabré hacer al terminar?</h3>
+  <ul>
+    <li>Explicar qué es un <strong>agente de IA</strong> y en qué se diferencia de un chatbot.</li>
+    <li>Construir 6 niveles de agentes en <strong>TypeScript</strong> (llamada, memoria, herramientas, ReAct, planificador, multi-agente).</li>
+    <li>Aplicar el patrón <strong>Strategy</strong> para usar <strong>Gemini, Cohere y Groq</strong> de forma intercambiable.</li>
+    <li><strong>Administrar</strong> agentes: límites, métricas, trazas, seguridad y respaldo ante fallos.</li>
+  </ul>
+</div>
+
+<h2 class="sin">1. Materiales de la clase</h2>
+<table>
+  <tr><th>Archivo</th><th>Para qué sirve</th></tr>
+  <tr><td><code>presentacion.html</code></td><td>51 diapositivas para proyectar (← → para navegar, <code>F</code> pantalla completa).</td></tr>
+  <tr><td><code>actividades/laboratorio-agentes.html</code></td><td>6 actividades interactivas (glosario, Strategy, simulador ReAct, elige el nivel, Prompt Lab, caza-bugs). Funciona sin internet.</td></tr>
+  <tr><td><code>codigo/</code></td><td>Proyecto Node + TypeScript con los 6 niveles, proveedores, herramientas y pruebas.</td></tr>
+  <tr><td><code>codigo/src/soluciones/</code></td><td>Soluciones de los retos (clima real, convertidor, Ollama). <em>No las compartas antes del reto.</em></td></tr>
+  <tr><td><code>guia-de-trabajo.html</code></td><td>Este documento (imprímelo como PDF desde el navegador).</td></tr>
+</table>
+
+<h3>Mapa del código</h3>
+<pre><code>codigo/src/
+├── llm/                     ← PATRÓN STRATEGY
+│   ├── types.ts             interfaz LLMProvider (el "enchufe")
+│   ├── providers/           gemini.ts · cohere.ts · groq.ts · mock.ts · fallback.ts
+│   ├── medido.ts            Decorator: métricas + presupuesto de llamadas
+│   └── factory.ts           convierte "groq" en un objeto LLMProvider
+├── tools/                   herramientas (calculadora segura, clima, hora, conocimiento)
+├── agentes/                 ChatAgent · ToolAgent · ReActAgent · Planificador · Orquestador
+│   └── memoria.ts           SEGUNDO Strategy: completa / ventana / resumen
+├── niveles/                 nivel0 … nivel5 + comparar-proveedores (los que ejecutas)
+└── verificar.ts             15 pruebas offline (npm test)</code></pre>
+
+<h2>2. Preparación previa (instructor y aprendices)</h2>
+<h3>Antes del día de clase (instructor)</h3>
+<ul>
+  <li>Verifica Node: <code>node -v</code> debe ser <strong>20.12 o superior</strong> (recomendado 22).</li>
+  <li>Ejecuta <code>npm install</code> y <code>npm test</code> en un equipo del aula. Debe decir <strong>🎉 15 pruebas pasaron</strong>.</li>
+  <li>Pide a los aprendices que creen sus claves gratuitas (opcional; con <code>mock</code> todo funciona):
+    <ul>
+      <li>Gemini: <code>aistudio.google.com/apikey</code></li>
+      <li>Cohere: <code>dashboard.cohere.com/api-keys</code></li>
+      <li>Groq: <code>console.groq.com/keys</code></li>
+    </ul>
+  </li>
+  <li>Plan B si falla el internet: <code>LLM_PROVIDER=mock</code>. Todo el código corre local (y el laboratorio HTML también).</li>
+</ul>
+<div class="caja alerta"><span class="et">Seguridad de claves</span>Cada aprendiz usa <strong>su propia</strong> clave y la guarda solo en <code>.env</code>. Nunca se comparten por chat ni se suben a GitHub. Si alguien expone una clave, se revoca y se crea otra en el momento.</div>
+
+<h3>Arranque (20 min)</h3>
+<pre><code>cd codigo
+npm install
+copy .env.example .env      (Windows)   |   cp .env.example .env   (Mac/Linux)
+npm test                    → 🎉 15 pruebas pasaron
+npm run nivel0              → debe funcionar con LLM_PROVIDER=mock</code></pre>
+
+<h2>3. Plan minuto a minuto</h2>
+<table>
+  <tr><th>Min</th><th>Bloque</th><th>Qué hacer</th><th>Recurso</th></tr>
+  <tr><td>0–20</td><td>Bienvenida y setup</td><td>Objetivos, agenda, instalación, <code>npm test</code> en cada equipo.</td><td>Diap. 1–4</td></tr>
+  <tr><td>20–60</td><td><strong>1 · Vocabulario</strong></td><td>LLM, token, roles, temperatura, stateless, herramienta, agente, ReAct. Actividad 1.</td><td>Diap. 5–17 · Lab pestaña 1</td></tr>
+  <tr><td>60–110</td><td><strong>2 · Niveles + Strategy</strong></td><td>Escalera de niveles, problema del <code>if</code> por proveedor, patrón, código de proveedores, fallback. Actividad 2. Ejecutar nivel 0 y <code>comparar</code>.</td><td>Diap. 18–30 · Lab pestaña 2</td></tr>
+  <tr><td>110–120</td><td>☕ Descanso</td><td></td><td></td></tr>
+  <tr><td>120–160</td><td><strong>3 · Memoria y herramientas</strong></td><td>Nivel 1 (memoria como Strategy), nivel 2 (herramienta, descripción, seguridad, protocolo JSON, límite).</td><td>Diap. 31–37</td></tr>
+  <tr><td>160–210</td><td><strong>4 · ReAct</strong></td><td>Bucle, defensas, traza. Ejecutar nivel 3. Actividad 3 (simulador).</td><td>Diap. 38–42 · Lab pestaña 3</td></tr>
+  <tr><td>210–220</td><td>☕ Descanso</td><td></td><td></td></tr>
+  <tr><td>220–255</td><td><strong>5 · Planificar, orquestar, administrar</strong></td><td>Niveles 4 y 5, lista de control, regla de oro. Actividad 4 (niveles, Prompt Lab, caza-bugs).</td><td>Diap. 43–48 · Lab pestañas 4–6</td></tr>
+  <tr><td>255–280</td><td>Reto final y cierre</td><td>Trabajo individual o en parejas, demos de 1 minuto, resumen y próximos pasos.</td><td>Diap. 49–51</td></tr>
+</table>
+
+<h2>4. Guion del instructor por bloque</h2>
+
+<h3>Bloque 1 · Vocabulario (40 min)</h3>
+<div class="guion"><b class="t">Mensaje central:</b> un LLM es una <em>función sin memoria</em> que predice texto; un agente es <em>código</em> que lo usa en un bucle con herramientas.</div>
+<ul>
+  <li><strong>Analogía del autocompletar:</strong> el teclado del celular sugiere la siguiente palabra; un LLM hace lo mismo pero entrenado con casi todo internet.</li>
+  <li><strong>Demo de "sin memoria":</strong> en la diapositiva 10 pregunta al grupo "¿cómo se acuerda ChatGPT de lo que dije?" → Respuesta: la aplicación reenvía el historial.</li>
+  <li><strong>Pregunta clave (diap. 13):</strong> "¿El camino lo conozco de antemano?" Si sí, no necesitas agente.</li>
+  <li><strong>Cierra con la Actividad 1</strong> (10 min). Quien termine el reto de parejas con 0 errores explica un término.</li>
+</ul>
+<div class="caja ojo"><span class="et">Error común</span>Pensar que "el LLM ejecuta la herramienta". No: solo <em>pide</em> que se ejecute; tu código decide si lo hace.</div>
+
+<h3>Bloque 2 · Niveles y Strategy (50 min)</h3>
+<div class="guion"><b class="t">Mensaje central:</b> el agente no debe saber si habla con Gemini, Cohere o Groq. Eso se logra con una interfaz común.</div>
+<ol>
+  <li>Muestra la <strong>escalera de niveles</strong> (diap. 19–20) como mapa de lo que construirán.</li>
+  <li><strong>Dolor primero:</strong> diap. 21 (el <code>if</code> por proveedor). Pregunta: "¿qué pasa cuando Groq cambie su API?".</li>
+  <li>Explica Strategy con las 3 analogías (GPS, enchufe, pagos) y luego el diagrama (diap. 23).</li>
+  <li><strong>Live coding</strong>: abre <code>llm/types.ts</code>, luego <code>providers/groq.ts</code>, luego <code>factory.ts</code>. Muestra que Gemini cambia <code>assistant→model</code> y separa <code>system</code>.</li>
+  <li>Ejecuta <code>npm run nivel0</code>. Que cada aprendiz cambie <code>LLM_PROVIDER</code> y repita (¡cero cambios de código!).</li>
+  <li><code>npm run comparar</code>: misma pregunta, distintos proveedores y demo de Fallback.</li>
+  <li><strong>Actividad 2</strong> (15 min): Strategy Playground con el reto de "2 caídas seguidas".</li>
+</ol>
+<div class="caja"><span class="et">Dato para explicar Decorator</span><code>LLMMedido</code> envuelve a cualquier proveedor sin modificarlo. Como también cumple <code>LLMProvider</code>, se pueden apilar: <code>Medido(Fallback([Groq, Gemini]))</code>.</div>
+
+<h3>Bloque 3 · Memoria y herramientas (40 min)</h3>
+<ul>
+  <li><strong>Nivel 1:</strong> <code>npm run nivel1 -- ventana --demo</code>. Observa que al final no recuerda el nombre. Luego repite con <code>completa</code> y compara.</li>
+  <li><strong>Nivel 2:</strong> abre <code>tools/basicas.ts</code>. Resalta que la <em>descripción</em> es lo único que el LLM lee.</li>
+  <li><strong>Seguridad:</strong> abre <code>tools/calculadora.ts</code> y explica por qué no se usa <code>eval()</code>. Prueba <code>evaluar("process.exit()")</code>.</li>
+  <li><strong>Protocolo JSON:</strong> abre <code>agentes/protocolo.ts</code>. Explica por qué es portable entre proveedores.</li>
+  <li><code>npm run nivel2</code>: la tercera pregunta necesita 2 herramientas y el nivel 2 no puede → gancho para el bucle.</li>
+</ul>
+
+<h3>Bloque 4 · ReAct (50 min)</h3>
+<div class="guion"><b class="t">Mensaje central:</b> el LLM es el cerebro que decide; tu código es el cuerpo que ejecuta, valida y corta.</div>
+<ol>
+  <li>Dibuja en el tablero el ciclo Pensar → Actuar → Observar.</li>
+  <li>Abre <code>agentes/ReActAgent.ts</code> y señala las <strong>3 defensas</strong>: formato inválido, acción repetida, límite de pasos.</li>
+  <li><code>npm run nivel3</code> y lee la traza en voz alta, paso a paso.</li>
+  <li>Experimento guiado: cambia <code>maxPasos</code> a 1; luego pregunta algo que necesite una herramienta inexistente.</li>
+  <li><strong>Actividad 3</strong> (20 min): simulador ReAct. Pide que provoquen un bucle y expliquen qué defensa lo detuvo.</li>
+</ol>
+<div class="caja ojo"><span class="et">Para discutir</span>Con el mock el agente "siempre acierta". Con un LLM real puede equivocarse. ¿Qué defensas del código ayudan? ¿Cuáles no alcanzan?</div>
+
+<h3>Bloque 5 · Planificar, orquestar y administrar (35 min)</h3>
+<ul>
+  <li><strong>Nivel 4:</strong> <code>npm run nivel4</code>. Resalta que el plan se imprime <em>antes</em> de ejecutar (podrías pedir aprobación).</li>
+  <li><strong>Nivel 5:</strong> <code>npm run nivel5</code>. Muestra el tablero final: ejecuciones, éxitos, fallos y tiempo por agente.</li>
+  <li><strong>Lista de control</strong> (diap. 46): límites, observabilidad, seguridad, resiliencia, calidad, humano en el bucle.</li>
+  <li><strong>Regla de oro</strong> (diap. 47): el nivel más bajo que resuelva el problema.</li>
+  <li><strong>Actividad 4:</strong> pestañas 4 (¿qué nivel?), 5 (Prompt Lab) y 6 (caza-bugs). Repartir por parejas.</li>
+</ul>
+
+<h2>5. Ejercicios guiados de código</h2>
+
+<h3>E1 · Cambiar de proveedor (5 min)</h3>
+<p>Edita <code>.env</code> y ejecuta <code>npm run nivel3</code> con <code>mock</code>, luego con <code>groq</code>, luego con <code>gemini</code>. <strong>Pregunta:</strong> ¿cuántas líneas de código del agente cambiaste? <em>(Cero.)</em></p>
+
+<h3>E2 · Memoria que olvida (10 min)</h3>
+<p>Ejecuta <code>npm run nivel1 -- ventana</code>. Dile <em>"me llamo X"</em>, escribe 4 mensajes más y pregunta <em>"¿cómo me llamo?"</em>. Repite con <code>completa</code> y <code>resumen</code>. Completa:</p>
+<table>
+  <tr><th>Memoria</th><th>¿Recordó el nombre?</th><th>Mensajes enviados al final</th></tr>
+  <tr><td>ventana</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+  <tr><td>completa</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+  <tr><td>resumen</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+</table>
+
+<h3>E3 · Tu primera herramienta (15 min)</h3>
+<p>Crea <code>src/tools/miHerramienta.ts</code> con una herramienta <code>convertir_moneda</code> (entrada: <code>"50 USD a COP"</code>). Agrégala en <code>bootstrap.ts</code> a <code>todasLasHerramientas()</code> y ejecuta:</p>
+<pre><code>npm run nivel3 -- "¿Cuánto son 50 USD a COP?"</code></pre>
+<div class="caja ojo"><span class="et">Nota con mock</span>El mock solo reconoce 4 herramientas (calculadora, clima, hora, buscar_conocimiento). Para ver tu herramienta nueva en acción necesitas un proveedor real (Groq, Gemini o Cohere). Solución: <code>src/soluciones/convertirMoneda.ts</code>.</div>
+
+<h3>E4 · Que el agente falle bien (10 min)</h3>
+<ul>
+  <li>Pregunta por el clima de una ciudad que no existe. ¿El agente se cae o se recupera?</li>
+  <li>Cambia <code>maxPasos</code> a 1 en <code>nivel3-react.ts</code> con una pregunta de dos herramientas.</li>
+  <li>Crea <code>new LLMMedido(proveedor, 2)</code> y observa el error de presupuesto.</li>
+</ul>
+
+<h3>E5 · Un tercer especialista (15 min)</h3>
+<p>En <code>nivel5-multiagente.ts</code> agrega un especialista <code>traductor</code> o <code>redactor</code> con su propia caja (puede ir vacía) y su descripción. Pregunta: ¿por qué conviene que cada especialista tenga <strong>pocas</strong> herramientas?</p>
+
+<h2>6. Reto final (25 min) y rúbrica</h2>
+<p>Elige <strong>uno</strong>:</p>
+<ol>
+  <li><strong>Clima real</strong> con Open-Meteo (sin clave). Solución: <code>src/soluciones/climaReal.ts</code>.</li>
+  <li><strong>Convertidor de moneda</strong> como herramienta nueva.</li>
+  <li><strong>Especialista nuevo</strong> dentro del orquestador.</li>
+  <li><strong>Nueva estrategia</strong>: <code>OllamaProvider</code> (LLM local) u <code>OpenRouterProvider</code>. Solución de Ollama: <code>src/soluciones/ollama.ts</code>.</li>
+</ol>
+<table>
+  <tr><th>Criterio</th><th>Peso</th><th>Logrado</th></tr>
+  <tr><td>Compila y pasa <code>npm test</code> (+ <code>npx tsc --noEmit</code>)</td><td>40 %</td><td>☐</td></tr>
+  <tr><td>La descripción de la herramienta es clara (qué hace, qué recibe, cuándo usarla)</td><td>20 %</td><td>☐</td></tr>
+  <tr><td>Respeta Strategy: sin <code>if</code> por proveedor; todo detrás de <code>LLMProvider</code></td><td>20 %</td><td>☐</td></tr>
+  <tr><td>Maneja errores y límites (errores como observaciones, <code>maxPasos</code>, presupuesto)</td><td>20 %</td><td>☐</td></tr>
+</table>
+
+<h2>7. Evaluación rápida (10 preguntas)</h2>
+<ol>
+  <li>¿Un LLM recuerda lo que le dijiste en la llamada anterior? <em>(No; reenviamos el historial.)</em></li>
+  <li>¿Qué es un token y por qué importa? <em>(Trozo de texto; define costo, límites y ventana de contexto.)</em></li>
+  <li>¿Quién ejecuta realmente una herramienta? <em>(Tu código, no el LLM.)</em></li>
+  <li>Define agente en una frase. <em>(LLM + herramientas + bucle para cumplir un objetivo.)</em></li>
+  <li>¿Cuáles son los pasos de ReAct? <em>(Pensar, actuar, observar; repetir.)</em></li>
+  <li>¿Qué problema resuelve Strategy aquí? <em>(Cambiar de proveedor sin tocar los agentes.)</em></li>
+  <li>¿Para qué sirve <code>FallbackProvider</code>? <em>(Pasar al siguiente proveedor si uno falla.)</em></li>
+  <li>¿Por qué nunca <code>eval()</code> con texto del LLM? <em>(Es entrada no confiable; riesgo de ejecución arbitraria.)</em></li>
+  <li>Nombra 3 defensas del bucle ReAct. <em>(JSON inválido, acción repetida, límite de pasos.)</em></li>
+  <li>¿Cuándo NO usar un agente? <em>(Cuando el camino es conocido: un flujo fijo es más barato y predecible.)</em></li>
+</ol>
+
+<h2>8. Solución de problemas</h2>
+<table>
+  <tr><th>Síntoma</th><th>Causa probable</th><th>Qué hacer</th></tr>
+  <tr><td><code>Falta GROQ_API_KEY en tu archivo .env</code></td><td>No copiaste <code>.env.example</code> o falta la clave</td><td>Copia el archivo, pega la clave, o usa <code>LLM_PROVIDER=mock</code>.</td></tr>
+  <tr><td>HTTP 401 / 403</td><td>Clave incorrecta, vencida o con espacios</td><td>Genera otra clave y pégala sin comillas ni espacios.</td></tr>
+  <tr><td>HTTP 429</td><td>Cuota gratuita agotada</td><td>Espera un minuto, baja la frecuencia o usa <code>LLM_PROVIDER=fallback</code>.</td></tr>
+  <tr><td>"Formato inválido" en la traza</td><td>El modelo no devolvió JSON limpio</td><td>Es normal de vez en cuando: el agente pide corregir. Si es constante, usa un modelo más grande o baja la temperatura.</td></tr>
+  <tr><td><code>process.loadEnvFile is not a function</code></td><td>Node anterior a 20.12</td><td>Actualiza Node (recomendado 22 LTS).</td></tr>
+  <tr><td>El agente repite la misma acción</td><td>El modelo no entendió la observación</td><td>Mejora la descripción de la herramienta o el mensaje de error que devuelve.</td></tr>
+  <tr><td>Error de modelo no encontrado (404)</td><td>El proveedor renombró el modelo</td><td>Define <code>GEMINI_MODEL</code>, <code>COHERE_MODEL</code> o <code>GROQ_MODEL</code> en <code>.env</code> con uno vigente de su consola.</td></tr>
+</table>
+<div class="caja ojo"><span class="et">Modelos y cuotas cambian</span>Los nombres de modelos y los límites gratuitos varían con el tiempo. Los valores por defecto del proyecto están en cada archivo de <code>llm/providers/</code> y se sobrescriben desde <code>.env</code> sin tocar el código (gracias a Strategy).</div>
+
+<h2>9. Próximos pasos</h2>
+<ul>
+  <li><strong>Function calling nativo:</strong> extender <code>LLMProvider</code> para soportar herramientas declaradas por el proveedor.</li>
+  <li><strong>RAG:</strong> reemplazar <code>buscar_conocimiento</code> por búsqueda vectorial (Clases 2 y 4 del curso, y la clase alternativa con React).</li>
+  <li><strong>MCP:</strong> conectar herramientas externas con un estándar.</li>
+  <li><strong>Evaluaciones:</strong> conjuntos de preguntas con respuesta esperada para medir mejoras.</li>
+  <li><strong>Producción:</strong> logs persistentes, cuotas por usuario, aprobación humana de acciones riesgosas.</li>
+</ul>
+
+</body>
+</html>

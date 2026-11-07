@@ -1,0 +1,158 @@
+/* ============================================================
+   Estilos compartidos para las presentaciones del curso
+   SENA Piedecuesta — IA y Agentes con LLMs
+   ============================================================ */
+:root {
+  --verde: #39a900;        /* verde institucional SENA */
+  --verde-osc: #2b7d00;
+  --azul: #00304d;
+  --tinta: #1b2733;
+  --gris: #5b6b7b;
+  --gris-cl: #eef2f5;
+  --amarillo: #ffcf3f;
+  --rojo: #e5484d;
+  --blanco: #ffffff;
+  --sombra: 0 10px 40px rgba(0, 48, 77, .12);
+  --fuente: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: var(--fuente);
+  background: #0d1b2a;
+  color: var(--tinta);
+  overflow: hidden;
+}
+
+/* ---------- Contenedor de diapositivas ---------- */
+.deck { position: fixed; inset: 0; }
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  padding: 6vh 8vw 9vh;
+  background: var(--blanco);
+  animation: aparece .4s ease;
+}
+.slide.activa { display: flex; }
+
+@keyframes aparece {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Tipografía ---------- */
+.slide h1 { font-size: clamp(28px, 4.6vw, 60px); line-height: 1.1; color: var(--azul); }
+.slide h2 {
+  font-size: clamp(24px, 3.6vw, 44px);
+  color: var(--azul);
+  margin-bottom: .6em;
+  padding-bottom: .3em;
+  border-bottom: 5px solid var(--verde);
+  display: inline-block;
+}
+.slide h3 { font-size: clamp(19px, 2.3vw, 28px); color: var(--verde-osc); margin: .5em 0 .3em; }
+.slide p, .slide li { font-size: clamp(16px, 2.05vw, 25px); line-height: 1.5; color: var(--tinta); }
+.slide ul, .slide ol { padding-left: 1.3em; }
+.slide li { margin: .45em 0; }
+.slide li::marker { color: var(--verde); font-weight: 700; }
+strong { color: var(--azul); }
+code {
+  font-family: "Consolas", "Courier New", monospace;
+  background: var(--gris-cl);
+  color: #b5179e;
+  padding: .1em .4em;
+  border-radius: 5px;
+  font-size: .92em;
+}
+.slide pre {
+  background: #0d1b2a;
+  color: #e6edf3;
+  padding: 1em 1.2em;
+  border-radius: 12px;
+  overflow: auto;
+  font-size: clamp(13px, 1.5vw, 18px);
+  line-height: 1.5;
+  border-left: 5px solid var(--verde);
+}
+.slide pre code { background: none; color: inherit; padding: 0; }
+
+/* ---------- Diapositiva de título ---------- */
+.slide.portada {
+  background: linear-gradient(135deg, var(--azul) 0%, #024b6e 60%, var(--verde-osc) 100%);
+  color: var(--blanco);
+  align-items: flex-start;
+}
+.slide.portada h1 { color: var(--blanco); font-size: clamp(32px, 6vw, 74px); }
+.slide.portada .subtitulo { font-size: clamp(18px, 2.6vw, 30px); color: #d7f3c8; margin-top: .4em; }
+.slide.portada .meta { margin-top: auto; font-size: clamp(14px, 1.8vw, 20px); color: #bfe6ff; }
+.slide.portada .pill {
+  display: inline-block; background: var(--verde); color: #fff;
+  padding: .3em .9em; border-radius: 999px; font-weight: 700;
+  font-size: clamp(13px, 1.6vw, 18px); margin-bottom: 1.2em;
+}
+
+/* ---------- Cajas de apoyo ---------- */
+.caja {
+  background: var(--gris-cl);
+  border-left: 6px solid var(--verde);
+  border-radius: 10px;
+  padding: .9em 1.2em;
+  margin: .6em 0;
+}
+.caja.idea { border-color: var(--verde); background: #eef8e6; }
+.caja.ojo  { border-color: var(--amarillo); background: #fff8e2; }
+.caja.alerta { border-color: var(--rojo); background: #fdecec; }
+.caja .et { font-weight: 800; text-transform: uppercase; letter-spacing: .04em; font-size: .8em; color: var(--gris); display: block; margin-bottom: .2em; }
+
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4em; align-items: start; }
+.centro { text-align: center; align-items: center; }
+.centro h2 { display: inline-block; }
+
+table.t { border-collapse: collapse; width: 100%; margin: .5em 0; font-size: clamp(14px, 1.7vw, 21px); }
+.t th, .t td { border: 1px solid #cdd8e1; padding: .5em .7em; text-align: left; }
+.t th { background: var(--azul); color: #fff; }
+.t tr:nth-child(even) td { background: #f4f8fb; }
+
+.tag { display:inline-block; background: var(--verde); color:#fff; border-radius:6px; padding:.1em .5em; font-size:.8em; font-weight:700; }
+
+/* ---------- Barra superior e inferior ---------- */
+.barra-sup {
+  position: fixed; top: 0; left: 0; right: 0; height: 46px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px; background: rgba(0,48,77,.92); color: #fff;
+  font-size: 14px; z-index: 20;
+}
+.barra-sup .logo { font-weight: 800; letter-spacing: .5px; }
+.barra-sup .logo span { color: var(--verde); }
+.progreso { position: fixed; bottom: 0; left: 0; height: 6px; background: var(--verde); width: 0; z-index: 20; transition: width .3s; }
+.contador {
+  position: fixed; bottom: 12px; right: 18px; z-index: 20;
+  background: rgba(0,48,77,.9); color:#fff; padding: 4px 12px;
+  border-radius: 999px; font-size: 14px;
+}
+.nav-btn {
+  position: fixed; bottom: 10px; z-index: 20; border: none; cursor: pointer;
+  background: var(--verde); color:#fff; width: 42px; height: 42px; border-radius: 50%;
+  font-size: 20px; box-shadow: var(--sombra); opacity:.85;
+}
+.nav-btn:hover { opacity: 1; }
+#prev { left: 18px; }
+#next { left: 68px; }
+
+.ayuda { position: fixed; top: 54px; right: 14px; z-index: 20; font-size: 12px; color:#fff; background: rgba(0,48,77,.6); padding: 3px 9px; border-radius: 6px; }
+
+.slide .grande { font-size: clamp(40px, 8vw, 110px); font-weight: 800; color: var(--verde); line-height: 1; }
+.emoji { font-size: 1.15em; }
+
+/* ---------- Impresión (por si se exporta la presentación) ---------- */
+@media print {
+  html, body { overflow: visible; height: auto; background:#fff; }
+  .barra-sup, .progreso, .contador, .nav-btn, .ayuda { display: none !important; }
+  .slide { display: flex !important; position: relative; inset: auto; page-break-after: always; min-height: 90vh; }
+}

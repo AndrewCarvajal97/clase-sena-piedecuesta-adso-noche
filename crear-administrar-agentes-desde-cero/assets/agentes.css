@@ -1,0 +1,67 @@
+/* Extras de la presentación "Crear y administrar agentes de IA desde cero" */
+.slide { overflow: auto; }
+.slide h2 { margin-top: 2vh; }
+
+/* ---------- Diapositiva divisora de bloque ---------- */
+.slide.bloque {
+  background: linear-gradient(135deg, #00304d 0%, #0b5c8a 100%);
+  color: #fff; align-items: flex-start;
+}
+.slide.bloque h2 { color: #fff; border-color: var(--verde); font-size: clamp(30px, 5vw, 64px); }
+.slide.bloque p { color: #cfeaff; }
+.slide.bloque .num { font-size: clamp(60px, 14vw, 180px); font-weight: 900; color: rgba(57,169,0,.85); line-height: 1; }
+.slide.bloque .dur { background: rgba(255,255,255,.14); border-radius: 999px; padding: .3em 1em; font-weight: 700; margin-top: 1em; display: inline-block; }
+
+/* ---------- Diagramas de flujo ---------- */
+.flujo { display: flex; align-items: stretch; justify-content: center; gap: .5em; flex-wrap: wrap; margin: .8em 0; }
+.nodo {
+  background: #fff; border: 3px solid var(--azul); border-radius: 14px; padding: .55em .9em;
+  text-align: center; font-weight: 700; font-size: clamp(14px, 1.75vw, 22px); color: var(--azul);
+  box-shadow: var(--sombra); min-width: 8.5em;
+}
+.nodo small { display: block; font-weight: 500; color: var(--gris); font-size: .72em; margin-top: .2em; }
+.nodo.verde { border-color: var(--verde); background: #eef8e6; }
+.nodo.amar { border-color: #e0a800; background: #fff8e2; }
+.nodo.rojo { border-color: var(--rojo); background: #fdecec; }
+.nodo.azul { background: var(--azul); color: #fff; }
+.nodo.azul small { color: #bfe6ff; }
+.flecha { align-self: center; font-size: clamp(22px, 3vw, 40px); color: var(--verde); font-weight: 900; }
+.flujo.vertical { flex-direction: column; align-items: center; }
+.flujo.vertical .flecha { transform: rotate(90deg); }
+
+/* ---------- Bucle circular ---------- */
+.ciclo { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6em; align-items: center; margin: .6em 0; }
+.ciclo .nodo { min-width: 0; }
+
+/* ---------- Escalera de niveles ---------- */
+.escalera { display: flex; flex-direction: column-reverse; gap: .35em; margin-top: .5em; }
+.escalon {
+  display: flex; align-items: center; gap: .8em; border-radius: 10px; padding: .35em .9em;
+  color: #fff; font-weight: 700; font-size: clamp(14px, 1.9vw, 24px);
+}
+.escalon span.n { background: rgba(255,255,255,.25); border-radius: 8px; padding: .05em .55em; }
+.escalon small { font-weight: 500; opacity: .92; margin-left: auto; font-size: .78em; text-align: right; }
+.e0 { background: #7a8b99; width: 52%; } .e1 { background: #4f8fb0; width: 62%; }
+.e2 { background: #2f9aa3; width: 72%; } .e3 { background: #39a900; width: 82%; }
+.e4 { background: #e08a00; width: 92%; } .e5 { background: #c2185b; width: 100%; }
+
+/* ---------- Tablas y textos compactos ---------- */
+table.t.mini { font-size: clamp(12px, 1.45vw, 18px); }
+.pequeno, .pequeno li, .pequeno p { font-size: clamp(14px, 1.7vw, 21px) !important; }
+.cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1em; align-items: start; }
+.tarjeta { background: var(--gris-cl); border-radius: 14px; padding: .8em 1em; border-top: 6px solid var(--verde); }
+.tarjeta h3 { margin: 0 0 .3em; font-size: clamp(16px, 2vw, 25px); }
+.tarjeta p, .tarjeta li { font-size: clamp(13px, 1.55vw, 20px) !important; }
+.tarjeta.azul { border-color: #0b5c8a; } .tarjeta.amar { border-color: #e0a800; } .tarjeta.rojo { border-color: var(--rojo); }
+.bad { color: var(--rojo); font-weight: 800; } .good { color: var(--verde-osc); font-weight: 800; }
+.cursor { display: inline-block; width: .6em; background: var(--verde); animation: parp 1s steps(2) infinite; }
+@keyframes parp { 50% { opacity: 0; } }
+.slide pre { font-size: clamp(12px, 1.4vw, 17px); }
+.act { background: linear-gradient(135deg, #fff8e2, #ffeeb0); border: 4px dashed #e0a800; border-radius: 18px; padding: 1em 1.4em; }
+.act h3 { color: #8a5a00; }
+.sello { display: inline-block; background: var(--amarillo); color: #4a3500; border-radius: 8px; padding: .1em .6em; font-weight: 800; font-size: .8em; }
+.conversa { display: flex; flex-direction: column; gap: .4em; margin: .5em 0; }
+.burbuja { max-width: 80%; padding: .45em .9em; border-radius: 16px; font-size: clamp(14px, 1.7vw, 21px); }
+.burbuja.u { background: var(--azul); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+.burbuja.a { background: var(--gris-cl); align-self: flex-start; border-bottom-left-radius: 4px; }
+.burbuja.t { background: #fff8e2; border: 2px solid #e0a800; align-self: flex-start; font-family: Consolas, monospace; font-size: clamp(12px, 1.45vw, 18px); }

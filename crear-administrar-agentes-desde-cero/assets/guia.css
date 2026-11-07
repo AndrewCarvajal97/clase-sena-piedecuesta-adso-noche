@@ -1,0 +1,161 @@
+/* ============================================================
+   Estilos para las GUÍAS DE TRABAJO (optimizado para PDF/A4)
+   SENA Piedecuesta — IA y Agentes con LLMs
+   ============================================================ */
+:root {
+  --verde: #39a900;
+  --verde-osc: #2b7d00;
+  --azul: #00304d;
+  --tinta: #1b2733;
+  --gris: #5b6b7b;
+  --gris-cl: #eef2f5;
+  --amarillo: #ffcf3f;
+  --rojo: #e5484d;
+}
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: var(--tinta);
+  font-size: 11.2pt;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ---------- Portada ---------- */
+.portada {
+  text-align: center;
+  padding: 40mm 0 0;
+  page-break-after: always;
+}
+.portada .marca { color: var(--verde); font-weight: 800; letter-spacing: 2px; font-size: 13pt; }
+.portada h1 { color: var(--azul); font-size: 30pt; margin: 8mm 0 4mm; line-height: 1.15; }
+.portada .sub { color: var(--gris); font-size: 15pt; }
+.portada .datos {
+  margin-top: 24mm; font-size: 12pt; color: var(--tinta);
+  border-top: 3px solid var(--verde); display: inline-block; padding-top: 6mm;
+}
+.portada .banda { height: 8px; background: var(--verde); width: 60%; margin: 10mm auto 0; border-radius: 4px; }
+
+/* ---------- Encabezados ---------- */
+h2 {
+  color: var(--azul);
+  font-size: 17pt;
+  border-bottom: 3px solid var(--verde);
+  padding-bottom: 3px;
+  margin: 12mm 0 4mm;
+  page-break-after: avoid;
+}
+h3 { color: var(--verde-osc); font-size: 13.5pt; margin: 7mm 0 2mm; page-break-after: avoid; }
+h4 { color: var(--azul); font-size: 12pt; margin: 5mm 0 1mm; }
+p { margin: 2mm 0; }
+ul, ol { margin: 2mm 0; padding-left: 7mm; }
+li { margin: 1.4mm 0; }
+li::marker { color: var(--verde); }
+strong { color: var(--azul); }
+a { color: var(--verde-osc); }
+
+code {
+  font-family: "Consolas", "Courier New", monospace;
+  background: var(--gris-cl);
+  color: #b5179e;
+  padding: .5mm 1.5mm;
+  border-radius: 3px;
+  font-size: 9.8pt;
+}
+pre {
+  background: #0d1b2a;
+  color: #e6edf3;
+  padding: 4mm 5mm;
+  border-radius: 6px;
+  border-left: 4px solid var(--verde);
+  overflow-x: auto;
+  font-size: 9.3pt;
+  line-height: 1.45;
+  page-break-inside: avoid;
+}
+pre code { background: none; color: inherit; padding: 0; }
+
+/* ---------- Tablas ---------- */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 3mm 0;
+  font-size: 10pt;
+  page-break-inside: avoid;
+}
+th, td { border: 1px solid #c7d3dd; padding: 2mm 3mm; text-align: left; vertical-align: top; }
+th { background: var(--azul); color: #fff; }
+tr:nth-child(even) td { background: #f4f8fb; }
+
+/* ---------- Cajas ---------- */
+.caja {
+  border-left: 5px solid var(--verde);
+  background: var(--gris-cl);
+  padding: 3mm 4mm;
+  border-radius: 5px;
+  margin: 3mm 0;
+  page-break-inside: avoid;
+}
+.caja .et { display: block; font-weight: 800; text-transform: uppercase; font-size: 8.5pt; letter-spacing: .05em; color: var(--gris); margin-bottom: 1mm; }
+.caja.idea { border-color: var(--verde); background: #eef8e6; }
+.caja.ojo { border-color: var(--amarillo); background: #fff8e2; }
+.caja.alerta { border-color: var(--rojo); background: #fdecec; }
+
+/* ---------- Objetivos / meta ---------- */
+.objetivos {
+  border: 2px solid var(--verde);
+  border-radius: 8px;
+  padding: 4mm 5mm;
+  background: #f5fbef;
+  margin: 4mm 0;
+  page-break-inside: avoid;
+}
+.objetivos h3 { margin-top: 0; }
+
+/* ---------- Actividades de refuerzo ---------- */
+.actividad {
+  border: 1.5px dashed var(--verde-osc);
+  border-radius: 8px;
+  padding: 4mm 5mm;
+  margin: 4mm 0;
+  background: #fbfef8;
+  page-break-inside: avoid;
+}
+.actividad .titulo {
+  font-weight: 800; color: var(--verde-osc); font-size: 12pt;
+  display: flex; align-items: center; gap: 6px; margin-bottom: 2mm;
+}
+.actividad .num {
+  background: var(--verde); color: #fff; border-radius: 50%;
+  width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11pt; flex: 0 0 auto;
+}
+.badge { display:inline-block; font-size: 8.5pt; font-weight:700; color:#fff; background:var(--gris); border-radius: 999px; padding: .5mm 3mm; margin-left: 4px; }
+.badge.facil { background: var(--verde); }
+.badge.media { background: #d99400; }
+.badge.reto  { background: var(--rojo); }
+
+/* Renglones para escribir a mano en la guía impresa */
+.lineas { margin: 3mm 0; }
+.lineas .l { border-bottom: 1px solid #b9c6d1; height: 8mm; }
+
+.checklist { list-style: none; padding-left: 0; }
+.checklist li { padding-left: 8mm; position: relative; }
+.checklist li::before {
+  content: ""; position: absolute; left: 0; top: 1mm;
+  width: 4.5mm; height: 4.5mm; border: 1.5px solid var(--verde-osc); border-radius: 2px;
+}
+
+hr { border: none; border-top: 1px solid #d4dde4; margin: 6mm 0; }
+
+.pie { text-align: center; color: var(--gris); font-size: 9pt; margin-top: 8mm; }
+
+/* Cada sección grande empieza en página nueva si se marca */
+.nueva-pagina { page-break-before: always; }
