@@ -91,6 +91,7 @@ label.chk{display:flex;gap:8px;align-items:flex-start;margin:5px 0;cursor:pointe
   <button data-p="p4">4 · Elige el nivel</button>
   <button data-p="p5">5 · Prompt Lab</button>
   <button data-p="p6">6 · Caza-bugs</button>
+  <button data-p="p7">7 · Memoria</button>
 </nav>
 
 <main>
@@ -240,6 +241,41 @@ label.chk{display:flex;gap:8px;align-items:flex-start;margin:5px 0;cursor:pointe
   <pre id="bCode"></pre>
   <div id="bOps"></div><div id="bFb"></div>
   <div class="fila"><button class="btn sec" id="bSig" style="display:none">Siguiente bug →</button></div>
+</section>
+
+<!-- ======================= 7 · MEMORIA ======================= -->
+<section class="panel" id="p7">
+  <h2>Simulador de memoria: ¿qué se reenvía al LLM?</h2>
+  <p class="sub">El LLM no recuerda nada: <strong>tú decides qué mensajes le reenvías</strong>. Cambia de estrategia y mira qué entra (🟢) y qué se queda fuera (⚪).</p>
+  <div class="grid2">
+    <div>
+      <h3>1 · Estrategia de memoria</h3>
+      <select id="mmModo">
+        <option value="completa">Completa — reenvía todo</option>
+        <option value="ventana" selected>Ventana — solo los últimos N mensajes</option>
+        <option value="resumen">Resumen — lo viejo se comprime</option>
+        <option value="vector">Vectorial — recupera los más parecidos a la pregunta</option>
+      </select>
+      <div class="fila"><label id="mmLbl">N = <strong id="mmNv">4</strong></label><input type="range" id="mmN" min="1" max="8" value="4" style="flex:1"></div>
+      <h3>2 · Pregunta nueva</h3>
+      <select id="mmPre">
+        <option value="0">¿Cómo me llamo?</option>
+        <option value="1" selected>¿Dónde vivo?</option>
+        <option value="2">¿Cómo me gusta el café?</option>
+        <option value="x">✍️ Escribir la mía…</option>
+      </select>
+      <input type="text" id="mmTxt" placeholder="Escribe tu pregunta" style="margin-top:8px;display:none">
+      <div class="kpis" style="margin-top:12px"><span class="kpi" id="mmK1">Enviados: 0</span><span class="kpi" id="mmK2">Tokens (aprox.): 0</span></div>
+      <div class="caja" id="mmVer" style="margin-top:12px"></div>
+      <div class="caja ojo" id="mmNota"></div>
+    </div>
+    <div>
+      <h3>Historial guardado (10 mensajes)</h3>
+      <div id="mmLista"></div>
+      <h3 id="mmResH" style="display:none">Resumen que recibiría el LLM</h3>
+      <pre id="mmRes" style="display:none"></pre>
+    </div>
+  </div>
 </section>
 
 </main>
@@ -558,6 +594,62 @@ $("#bSig").onclick = () => {
   bIdx++; bRender();
 };
 bRender();
+
+/* =====================================================================
+   7 · SIMULADOR DE MEMORIA (completa · ventana · resumen · vectorial)
+   ===================================================================== */
+const HIST = [
+  ["user", "Hola, me llamo Camila"], ["assistant", "¡Mucho gusto, Camila!"],
+  ["user", "Vivo en Piedecuesta y estudio sistemas"], ["assistant", "Qué bien, Piedecuesta es muy bonita."],
+  ["user", "Me gusta el café sin azúcar"], ["assistant", "Anotado: café sin azúcar."],
+  ["user", "Hoy quiero aprender sobre agentes de IA"], ["assistant", "Perfecto, empecemos con los conceptos básicos."],
+  ["user", "¿Qué es un token?"], ["assistant", "Un token es un trozo de texto de unos 4 caracteres."]
+];
+const NECESARIO = { 0: 0, 1: 2, 2: 4 }; // índice del mensaje que contiene el dato
+const STOP = new Set("de la el que me mi es como un una y en a lo los las se por para con soy cual donde qué cómo dónde cuál hola gusta".split(" "));
+const tokensDe = t => sinT(t).replace(/[^a-z0-9ñ\s]/g, " ").split(/\s+/).filter(w => w && !STOP.has(w));
+// "vectorización" didáctica: bolsa de palabras + similitud coseno (los embeddings reales hacen lo mismo con vectores densos)
+function coseno(a, b) {
+  const A = {}, B = {}; tokensDe(a).forEach(w => A[w] = (A[w] || 0) + 1); tokensDe(b).forEach(w => B[w] = (B[w] || 0) + 1);
+  let dot = 0, na = 0, nb = 0; for (const k in A) { na += A[k] ** 2; if (B[k]) dot += A[k] * B[k]; } for (const k in B) nb += B[k] ** 2;
+  return na && nb ? dot / Math.sqrt(na * nb) : 0;
+}
+function mmPregunta() { const v = $("#mmPre").value; return v === "x" ? ($("#mmTxt").value.trim() || "¿Qué es un token?") : ["¿Cómo me llamo?", "¿Dónde vivo?", "¿Cómo me gusta el café?"][+v]; }
+function mmRender() {
+  const modo = $("#mmModo").value, N = +$("#mmN").value, q = mmPregunta(); $("#mmLbl").textContent = modo === "vector" ? "Top-K = " : "N = "; $("#mmLbl").insertAdjacentHTML("beforeend", `<strong>${N}</strong>`);
+  $("#mmN").style.visibility = modo === "completa" || modo === "resumen" ? "hidden" : "visible"; $("#mmLbl").style.visibility = $("#mmN").style.visibility;
+  const sims = HIST.map(([, t]) => coseno(q, t));
+  let enviados = new Set(), resumen = "", nota = "";
+  if (modo === "completa") { HIST.forEach((_, i) => enviados.add(i)); nota = "Recuerda todo, pero cada turno envía más tokens: el costo crece sin parar."; }
+  else if (modo === "ventana") { HIST.slice(-N).forEach((_, k) => enviados.add(HIST.length - N + k)); nota = `Costo constante (siempre ${N} mensajes), pero lo antiguo se olvida para siempre.`; }
+  else if (modo === "resumen") {
+    const keep = 4; HIST.slice(-keep).forEach((_, k) => enviados.add(HIST.length - keep + k));
+    resumen = "[Resumen] " + HIST.slice(0, -keep).filter(([r]) => r === "user").map(([, t]) => t.replace(/[¿?¡!]/g, "")).join(". ") + ".";
+    nota = "Un LLM real escribe el resumen (1 llamada extra). Aquí se simula: aun así puede perder detalles.";
+  } else {
+    [...sims.keys()].filter(i => sims[i] > 0).sort((a, b) => sims[b] - sims[a]).slice(0, N).forEach(i => enviados.add(i));
+    nota = "Cada mensaje se convierte en un vector; se envían los más parecidos a la pregunta (aquí: bolsa de palabras + coseno; en producción: embeddings + base vectorial).";
+  }
+  $("#mmLista").innerHTML = HIST.map(([r, t], i) => {
+    const on = enviados.has(i), s = modo === "vector" ? ` <small style="color:var(--gris)">similitud ${sims[i].toFixed(2)}</small>` : "";
+    return `<div class="ev ${on ? "observacion" : "pensamiento"}" style="opacity:${on ? 1 : .55}"><small>${on ? "🟢 enviado" : "⚪ fuera"} · ${i + 1} · ${r === "user" ? "usuario" : "asistente"}</small>${esc(t)}${s}</div>`;
+  }).join("");
+  $("#mmResH").style.display = $("#mmRes").style.display = resumen ? "block" : "none"; $("#mmRes").textContent = resumen;
+  const chars = [...enviados].reduce((a, i) => a + HIST[i][1].length, 0) + resumen.length + q.length;
+  $("#mmK1").textContent = `Enviados: ${enviados.size}${resumen ? " + resumen" : ""}`; $("#mmK2").textContent = `Tokens (aprox.): ${Math.ceil(chars / 4)}`;
+  const ver = $("#mmVer"), v = $("#mmPre").value;
+  if (v in NECESARIO) {
+    const ok = enviados.has(NECESARIO[v]) || (modo === "resumen" && resumen.toLowerCase().includes(HIST[NECESARIO[v]][1].toLowerCase().slice(0, 12)));
+    ver.className = "caja " + (ok ? "" : "mal");
+    ver.innerHTML = ok ? `✅ El dato necesario <em>("${esc(HIST[NECESARIO[v]][1])}")</em> sí llega al LLM: podrá responder.` : `❌ El dato necesario <em>("${esc(HIST[NECESARIO[v]][1])}")</em> NO llega al LLM: responderá "no lo sé" o inventará.`;
+    if (!mmLogros.has(modo + ok)) { mmLogros.add(modo + ok); if ([...mmLogros].filter(x => x.endsWith("true")).length >= 3 && [...mmLogros].some(x => x.endsWith("false"))) { if (!hechas.has("p7")) { sumar(20); completar("p7"); } } }
+  } else { ver.className = "caja"; ver.textContent = "Pregunta personalizada: revisa a ojo qué mensajes llegaron al LLM."; }
+  $("#mmNota").textContent = "💡 " + nota;
+}
+const mmLogros = new Set();
+$("#p7").addEventListener("input", mmRender); $("#p7").addEventListener("change", e => { if (e.target.id === "mmPre") $("#mmTxt").style.display = e.target.value === "x" ? "block" : "none"; mmRender(); });
+mmRender();
+if (location.hash === "#memoria") $("[data-p=p7]").click();
 </script>
 </body>
 </html>

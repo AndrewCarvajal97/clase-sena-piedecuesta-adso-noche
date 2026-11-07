@@ -60,8 +60,38 @@ table.t.mini { font-size: clamp(12px, 1.45vw, 18px); }
 .act { background: linear-gradient(135deg, #fff8e2, #ffeeb0); border: 4px dashed #e0a800; border-radius: 18px; padding: 1em 1.4em; }
 .act h3 { color: #8a5a00; }
 .sello { display: inline-block; background: var(--amarillo); color: #4a3500; border-radius: 8px; padding: .1em .6em; font-weight: 800; font-size: .8em; }
+/* ---------- Diapositivas de recursos externos ---------- */
+.slide.recursos { background: linear-gradient(180deg, #f2faff 0%, #fff 40%); }
+.slide.recursos h2 { border-color: #0b5c8a; }
+.enlaces { display: grid; grid-template-columns: repeat(2, 1fr); gap: .5em; margin: .3em 0; }
+.enlaces.tres { grid-template-columns: repeat(3, 1fr); }
+a.enlace {
+  display: block; text-decoration: none; background: #fff; color: var(--tinta);
+  border: 3px solid #0b5c8a; border-radius: 14px; padding: .6em .9em; box-shadow: var(--sombra);
+  transition: transform .15s, border-color .15s;
+}
+a.enlace:hover { transform: translateY(-3px); border-color: var(--verde); }
+a.enlace b { display: block; color: #0b5c8a; font-size: clamp(15px, 1.9vw, 24px); }
+a.enlace b::after { content: " ↗"; color: var(--verde); }
+a.enlace small { display: block; color: var(--gris); font-size: clamp(11px, 1.25vw, 15px); word-break: break-all; }
+a.enlace span { display: block; font-size: clamp(12px, 1.3vw, 16px); line-height: 1.3; margin-top: .15em; }
+.etq { display: inline-block; font-size: .62em; font-weight: 800; border-radius: 6px; padding: .05em .5em; vertical-align: middle; background: #e7f3fb; color: #0b5c8a; }
+.etq.cuenta { background: #fff8e2; color: #8a5a00; }
+.reto-mini { background: #eef8e6; border-left: 6px solid var(--verde); border-radius: 10px; padding: .5em 1em; margin-top: .6em; font-size: clamp(13px, 1.7vw, 22px); }
+@media (max-width: 900px) { .enlaces, .enlaces.tres { grid-template-columns: 1fr; } }
 .conversa { display: flex; flex-direction: column; gap: .4em; margin: .5em 0; }
 .burbuja { max-width: 80%; padding: .45em .9em; border-radius: 16px; font-size: clamp(14px, 1.7vw, 21px); }
 .burbuja.u { background: var(--azul); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
 .burbuja.a { background: var(--gris-cl); align-self: flex-start; border-bottom-left-radius: 4px; }
 .burbuja.t { background: #fff8e2; border: 2px solid #e0a800; align-self: flex-start; font-family: Consolas, monospace; font-size: clamp(12px, 1.45vw, 18px); }
+
+/* ---------- Barra "Explora en vivo" dentro de las diapositivas de concepto ---------- */
+.explora { margin-top: .8em; background: #e7f3fb; border: 2px solid #0b5c8a; border-radius: 12px; padding: .4em .9em; font-size: clamp(13px, 1.55vw, 19px); line-height: 1.45; }
+.explora b { color: #0b5c8a; }
+.explora a { color: #0b5c8a; font-weight: 800; text-decoration: underline; margin: 0 .15em; }
+.explora a:hover { color: var(--verde-osc); }
+.explora .mas { color: var(--gris); font-weight: 600; font-size: .9em; }
+
+/* Tabla compacta para diapositivas densas */
+table.t.compacta { font-size: clamp(11px, 1.2vw, 16px); }
+.t.compacta th, .t.compacta td { padding: .18em .55em; }

@@ -25,10 +25,10 @@ Stack: **TypeScript + Node.js**, LLM **Gemini · Cohere · Groq**, patrón **Str
 
 ```
 crear-administrar-agentes-desde-cero/
-├── presentacion.html              ← 51 diapositivas para proyectar
+├── presentacion.html              ← 59 diapositivas para proyectar (incluye enlaces a herramientas interactivas)
 ├── guia-de-trabajo.html           ← guion minuto a minuto + ejercicios + rúbrica (imprimible a PDF)
 ├── actividades/
-│   └── laboratorio-agentes.html   ← 6 actividades interactivas (funciona sin internet)
+│   └── laboratorio-agentes.html   ← 7 actividades interactivas (funciona sin internet)
 ├── assets/                        ← estilos y motor de diapositivas
 └── codigo/                        ← proyecto Node + TypeScript
     ├── src/llm/                   ← Strategy: Gemini, Cohere, Groq, Mock, Fallback, Medido, factory

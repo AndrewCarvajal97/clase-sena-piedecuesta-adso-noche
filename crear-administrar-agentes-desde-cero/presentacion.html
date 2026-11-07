@@ -108,6 +108,7 @@ npm test</code></pre>
           <div class="caja ojo"><span class="et">Ejemplos</span>Gemini (Google) · Command (Cohere) · Llama (Meta, servido por Groq)</div>
         </div>
       </div>
+      <div class="explora"><b>🔗 Explora en vivo:</b> <a href="https://poloclub.github.io/transformer-explainer/" target="_blank" rel="noopener">Transformer Explainer ↗</a> · <a href="https://bbycroft.net/llm" target="_blank" rel="noopener">LLM Visualization 3D ↗</a></div>
     </section>
 
     <!-- 7 · TOKEN -->
@@ -123,6 +124,19 @@ npm test</code></pre>
         <div class="tarjeta azul"><h3>🚦 Se limita</h3><p>Cuota por minuto/día en planes gratuitos (error <code>429</code>).</p></div>
         <div class="tarjeta amar"><h3>📏 Tiene techo</h3><p>La <strong>ventana de contexto</strong>: máximo de tokens que cabe en una llamada.</p></div>
       </div>
+      <div class="explora"><b>🔗 Explora en vivo:</b> <a href="https://tiktokenizer.vercel.app/" target="_blank" rel="noopener">Tiktokenizer ↗</a> · <a href="https://huggingface.co/spaces/Xenova/the-tokenizer-playground" target="_blank" rel="noopener">Tokenizer Playground ↗</a> <span class="mas">· más en la diapositiva siguiente ▸</span></div>
+    </section>
+
+    <!-- R1 · EXPLORA: TOKENS -->
+    <section class="slide recursos">
+      <h2>🔗 Explora en vivo · Cómo se divide el texto en tokens</h2>
+      <div class="enlaces">
+        <a class="enlace" href="https://tiktokenizer.vercel.app/" target="_blank" rel="noopener"><b>Tiktokenizer</b><span>Escribe texto y mira los tokens de colores, sus IDs y el conteo. Cambia de modelo arriba.</span><small>tiktokenizer.vercel.app</small></a>
+        <a class="enlace" href="https://huggingface.co/spaces/Xenova/the-tokenizer-playground" target="_blank" rel="noopener"><b>The Tokenizer Playground</b><span>Compara tokenizadores de muchos modelos (Llama, Gemma, Mistral…) en el navegador.</span><small>huggingface.co/spaces/Xenova/the-tokenizer-playground</small></a>
+        <a class="enlace" href="https://www.pinecone.io/learn/tokenization/" target="_blank" rel="noopener"><b>Introducción interactiva a la tokenización</b><span>Explicación paso a paso con un tokenizador en vivo (Pinecone).</span><small>pinecone.io/learn/tokenization</small></a>
+        <a class="enlace" href="https://tokenization-visualization.netlify.app/" target="_blank" rel="noopener"><b>Tokenizer Visualizer</b><span>Elige un modelo y visualiza límites de tokens, IDs y tamaño del vocabulario.</span><small>tokenization-visualization.netlify.app</small></a>
+      </div>
+      <div class="reto-mini"><strong>⏱ Mini-reto (3 min):</strong> pega <code>Piedecuesta</code>, luego <code>Piedecuesta, Santander</code> y por último la misma frase en inglés. ¿Cuántos tokens usa cada una? ¿Por qué el español suele costar más?</div>
     </section>
 
     <!-- 8 · PROMPT / ROLES -->
@@ -139,6 +153,18 @@ npm test</code></pre>
   { rol: "system", contenido: "Eres un tutor amable. Máximo 3 frases." },
   { rol: "user",   contenido: "¿Qué es un token?" }
 ]</code></pre>
+      <div class="explora"><b>🔗 Explora en vivo:</b> <a href="https://aistudio.google.com/" target="_blank" rel="noopener">Google AI Studio ↗</a> · <a href="https://console.groq.com/playground" target="_blank" rel="noopener">Groq Playground ↗</a> <span class="mas">· más en la diapositiva siguiente ▸</span></div>
+    </section>
+
+    <!-- R4 · EXPLORA: REGLAS / SYSTEM PROMPT -->
+    <section class="slide recursos">
+      <h2>🔗 Explora en vivo · Cómo las reglas (system prompt) cambian el comportamiento</h2>
+      <div class="enlaces tres">
+        <a class="enlace" href="https://aistudio.google.com/" target="_blank" rel="noopener"><b>Google AI Studio</b> <span class="etq cuenta">cuenta Google</span><span>Campo "System instructions" + control de temperatura. Prueba el mismo mensaje con y sin reglas.</span><small>aistudio.google.com</small></a>
+        <a class="enlace" href="https://console.groq.com/playground" target="_blank" rel="noopener"><b>Groq Playground</b> <span class="etq cuenta">cuenta Groq</span><span>System prompt, temperatura y modelo, con respuestas muy rápidas.</span><small>console.groq.com/playground</small></a>
+        <a class="enlace" href="https://dashboard.cohere.com/playground/chat" target="_blank" rel="noopener"><b>Cohere Playground</b> <span class="etq cuenta">cuenta Cohere</span><span>Chat con preámbulo (reglas) y parámetros ajustables.</span><small>dashboard.cohere.com/playground/chat</small></a>
+      </div>
+      <div class="reto-mini"><strong>⏱ Mini-reto (5 min):</strong> pregunta <em>"¿Qué es un token?"</em> tres veces: sin reglas, con <em>"Máximo 2 frases, tono formal"</em> y con <em>"Responde solo en JSON"</em>. Anota qué cambió. Luego arma las reglas en el <strong>Prompt Lab</strong> del laboratorio (pestaña 5).</div>
     </section>
 
     <!-- 9 · TEMPERATURA -->
@@ -150,6 +176,44 @@ npm test</code></pre>
         <div class="tarjeta amar"><h3>🧾 modo JSON</h3><p>Fuerza al modelo a responder JSON. Clave para que <strong>tu código</strong> entienda al LLM.</p></div>
       </div>
       <div class="caja idea"><span class="et">Idea clave</span>Un agente es código que <strong>lee la respuesta del LLM y actúa</strong>. Por eso necesitamos respuestas predecibles y parseables.</div>
+      <div class="explora"><b>🔗 Explora en vivo:</b> <a href="https://poloclub.github.io/transformer-explainer/" target="_blank" rel="noopener">Transformer Explainer (slider de temperatura) ↗</a> · <a href="https://playground.ximg.app/" target="_blank" rel="noopener">AI Playground ↗</a> <span class="mas">· más en la diapositiva siguiente ▸</span></div>
+    </section>
+
+    <!-- TOP-K Y TOP-P -->
+    <section class="slide">
+      <h2>Top-k y Top-p: recortar las opciones</h2>
+      <p class="pequeno" style="margin:0 0 .4em">El modelo puede <strong>descartar las palabras poco probables</strong> antes de sortear. <em>"La playa es …"</em> con <strong>k = 2</strong> y <strong>p = 0.83</strong>:</p>
+      <div class="cols">
+        <div>
+          <table class="t compacta" style="white-space:nowrap">
+            <tr><th>Palabra</th><th>Prob.</th><th>Acumul.</th><th>Top-k 2</th><th>Top-p .83</th></tr>
+            <tr><td>beautiful</td><td>28 %</td><td>28 %</td><td>✅</td><td>✅</td></tr>
+            <tr><td>clear</td><td>22 %</td><td>50 %</td><td>✅</td><td>✅</td></tr>
+            <tr><td>perfect</td><td>15 %</td><td>65 %</td><td>❌</td><td>✅</td></tr>
+            <tr><td>lovely</td><td>10 %</td><td>75 %</td><td>❌</td><td>✅</td></tr>
+            <tr><td>warm</td><td>7 %</td><td>82 %</td><td>❌</td><td>✅</td></tr>
+            <tr><td>bright</td><td>6 %</td><td><strong>88 %</strong> ≥ 83</td><td>❌</td><td>✅ (fin)</td></tr>
+          </table>
+        </div>
+        <div>
+          <div class="tarjeta"><h3>🔢 Top-k</h3><p>Deja solo las <strong>k más probables</strong>: con k = 2, <em>beautiful</em> y <em>clear</em>.</p></div>
+          <div class="tarjeta azul" style="margin-top:.5em"><h3>📊 Top-p (núcleo)</h3><p>Deja las más probables hasta <strong>sumar al menos p</strong>: con p = 0.83 son 6 palabras (88 %).</p></div>
+        </div>
+      </div>
+      <div class="caja idea" style="margin:.5em 0"><span class="et">Cómo usarlos</span>Valores bajos = más predecible. Ajusta <strong>temperatura <em>o</em> top-p</strong>, no ambos. En <strong>agentes</strong>: temperatura 0–0.3 y lo demás por defecto.</div>
+      <div class="explora"><b>🔗 Pruébalo:</b> <a href="https://playground.ximg.app/" target="_blank" rel="noopener">AI Playground (pestaña Top-k/Top-p) ↗</a> · <a href="https://www.promptingguide.ai/introduction/settings" target="_blank" rel="noopener">Guía de ajustes del LLM ↗</a></div>
+    </section>
+
+    <!-- R2 · EXPLORA: PREDICCIÓN Y TEMPERATURA -->
+    <section class="slide recursos">
+      <h2>🔗 Explora en vivo · Siguiente palabra y temperatura</h2>
+      <div class="enlaces">
+        <a class="enlace" href="https://poloclub.github.io/transformer-explainer/" target="_blank" rel="noopener"><b>Transformer Explainer</b><span>Escribe una frase y mira las probabilidades del siguiente token. Tiene un <strong>slider de temperatura</strong>. Corre un GPT-2 en tu navegador.</span><small>poloclub.github.io/transformer-explainer</small></a>
+        <a class="enlace" href="https://bbycroft.net/llm" target="_blank" rel="noopener"><b>LLM Visualization (3D)</b><span>Recorrido 3D por cada capa de un modelo tipo GPT hasta llegar a la palabra siguiente.</span><small>bbycroft.net/llm</small></a>
+        <a class="enlace" href="https://playground.ximg.app/" target="_blank" rel="noopener"><b>AI Playground · temperatura, top-k, top-p</b><span>Explora cómo cambia la distribución de probabilidades al mover temperatura, top-k y top-p.</span><small>playground.ximg.app</small></a>
+        <a class="enlace" href="https://www.promptingguide.ai/introduction/settings" target="_blank" rel="noopener"><b>Guía: ajustes del LLM</b><span>Lectura corta sobre temperatura, top-p y max tokens, con recomendaciones de uso.</span><small>promptingguide.ai/introduction/settings</small></a>
+      </div>
+      <div class="reto-mini"><strong>⏱ Mini-reto (5 min):</strong> escribe <em>"La capital de Colombia es"</em> y mira el top de tokens. Sube la temperatura a 2: ¿qué pasa con las opciones poco probables? ¿Qué valor usarías para un <strong>agente</strong>? <em>(Pista: diapositivas 11 y 12.)</em></div>
     </section>
 
     <!-- 10 · STATELESS -->
@@ -167,6 +231,7 @@ npm test</code></pre>
           <div class="caja idea"><span class="et">La solución es nuestra</span>La "memoria" es <strong>reenviar el historial</strong> en cada llamada. Tú decides cuánto reenviar → <strong>(¡Strategy otra vez!)</strong></div>
         </div>
       </div>
+      <div class="explora"><b>🔗 Explora en vivo:</b> <a href="actividades/laboratorio-agentes.html#memoria" target="_blank" rel="noopener">Simulador de memoria ↗</a> · <a href="https://projector.tensorflow.org/" target="_blank" rel="noopener">Embedding Projector ↗</a></div>
     </section>
 
     <!-- 11 · TOOLS -->
@@ -192,6 +257,7 @@ npm test</code></pre>
         <div class="tarjeta amar"><h3>🛠️ Herramientas</h3><p>Su forma de tocar el mundo real.</p></div>
       </div>
       <p class="pequeno"><strong>Truco para recordar:</strong> agente = <em>LLM + herramientas + bucle + (memoria)</em>.</p>
+      <div class="explora"><b>🔗 Explora en vivo:</b> <a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener">Building effective agents ↗</a> · <a href="https://huggingface.co/learn/agents-course/unit1/introduction" target="_blank" rel="noopener">Curso de agentes HF ↗</a></div>
     </section>
 
     <!-- 13 · CHATBOT vs AGENTE -->
@@ -242,6 +308,19 @@ npm test</code></pre>
         <div class="burbuja t">💭 Ahora el cálculo → 🛠 calculadora("25*4") → 👁 100</div>
         <div class="burbuja a">✅ Hace 24 °C en Bucaramanga y 25 × 4 = 100.</div>
       </div>
+      <div class="explora"><b>🔗 Explora en vivo:</b> <a href="https://promptdeploy.github.io/prompt-deploy-artifacts/react-loop-visualization.html" target="_blank" rel="noopener">Visualización ReAct ↗</a> · <a href="https://react-lm.github.io/" target="_blank" rel="noopener">Sitio del paper ↗</a> <span class="mas">· más en la diapositiva siguiente ▸</span></div>
+    </section>
+
+    <!-- R5 · EXPLORA: AGENTES Y ReAct -->
+    <section class="slide recursos">
+      <h2>🔗 Explora en vivo · Agentes y el bucle ReAct</h2>
+      <div class="enlaces">
+        <a class="enlace" href="https://promptdeploy.github.io/prompt-deploy-artifacts/react-loop-visualization.html" target="_blank" rel="noopener"><b>ReAct: visualización interactiva</b><span>Recorre el ciclo Pensamiento → Acción → Observación de forma visual.</span><small>promptdeploy.github.io/…/react-loop-visualization.html</small></a>
+        <a class="enlace" href="https://react-lm.github.io/" target="_blank" rel="noopener"><b>Sitio oficial del paper ReAct</b><span>Ejemplos y trazas del trabajo original (Yao et al.).</span><small>react-lm.github.io</small></a>
+        <a class="enlace" href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener"><b>Building effective agents</b><span>Guía de Anthropic: cuándo usar flujos y cuándo agentes. Refuerza la "regla de oro".</span><small>anthropic.com/engineering/building-effective-agents</small></a>
+        <a class="enlace" href="https://huggingface.co/learn/agents-course/unit1/introduction" target="_blank" rel="noopener"><b>Curso de agentes (Hugging Face)</b><span>Curso gratuito: qué es un agente, pensamiento-acción-observación y herramientas.</span><small>huggingface.co/learn/agents-course</small></a>
+      </div>
+      <div class="reto-mini"><strong>⏱ Mini-reto (4 min):</strong> abre la visualización de ReAct y compara sus pasos con la traza de <code>npm run nivel3</code>. ¿Qué paso del bucle corresponde a cada línea que imprime tu programa?</div>
     </section>
 
     <!-- 16 · MÁS TÉRMINOS -->
@@ -346,6 +425,7 @@ npm test</code></pre>
         <div class="tarjeta azul"><h3>🔌 Analogía: el enchufe</h3><p>Tu laptop no sabe si la energía viene de una hidroeléctrica o de un panel solar. Solo exige el enchufe.</p></div>
         <div class="tarjeta amar"><h3>💳 Analogía: pagos</h3><p>El carrito de compras llama <code>pagar()</code>. Detrás puede ser tarjeta, PSE o Nequi.</p></div>
       </div>
+      <div class="explora"><b>🔗 Explora en vivo:</b> <a href="https://refactoring.guru/design-patterns/strategy" target="_blank" rel="noopener">Strategy (Refactoring Guru) ↗</a></div>
     </section>
 
     <!-- 23 · UML -->
@@ -441,6 +521,18 @@ switch (nombre) {
       <div class="caja ojo"><span class="et">Cuotas gratis</span>Cambian con frecuencia. Revisa los límites vigentes en cada consola (aistudio.google.com · dashboard.cohere.com · console.groq.com).</div>
     </section>
 
+    <!-- R6 · EXPLORA: STRATEGY Y CONSOLAS -->
+    <section class="slide recursos">
+      <h2>🔗 Explora · Strategy y tus consolas de proveedores</h2>
+      <div class="enlaces tres">
+        <a class="enlace" href="https://refactoring.guru/design-patterns/strategy" target="_blank" rel="noopener"><b>Strategy (Refactoring Guru)</b><span>Explicación ilustrada del patrón con ejemplos en TypeScript.</span><small>refactoring.guru/design-patterns/strategy</small></a>
+        <a class="enlace" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener"><b>Clave de Gemini</b> <span class="etq cuenta">cuenta Google</span><span>Crea tu <code>GEMINI_API_KEY</code> gratuita.</span><small>aistudio.google.com/apikey</small></a>
+        <a class="enlace" href="https://console.groq.com/keys" target="_blank" rel="noopener"><b>Clave de Groq</b> <span class="etq cuenta">cuenta Groq</span><span>Crea tu <code>GROQ_API_KEY</code>.</span><small>console.groq.com/keys</small></a>
+        <a class="enlace" href="https://dashboard.cohere.com/api-keys" target="_blank" rel="noopener"><b>Clave de Cohere</b> <span class="etq cuenta">cuenta Cohere</span><span>Crea tu <code>COHERE_API_KEY</code> (clave de prueba gratuita).</span><small>dashboard.cohere.com/api-keys</small></a>
+      </div>
+      <div class="caja ojo"><span class="et">Recuerda</span>Pega las claves <strong>solo en tu <code>.env</code></strong>. Nunca en el chat, en el código ni en GitHub.</div>
+    </section>
+
     <!-- 28 · FALLBACK + DECORATOR -->
     <section class="slide">
       <h2>Estrategias que combinan estrategias</h2>
@@ -519,6 +611,20 @@ await llm.chat([{ rol: "user", contenido: "¿Cómo me llamo?" }]);</code></pre>
         <tr><td><code>MemoriaResumen</code></td><td>Resume lo viejo con el LLM</td><td>Equilibrio</td><td>Una llamada extra; puede perder detalle</td></tr>
       </table>
       <p class="pequeno">Prueba: <code>npm run nivel1 -- ventana</code> → dile tu nombre, charla 4 turnos y pregunta <em>"¿cómo me llamo?"</em></p>
+      <div class="explora"><b>🔗 Explora en vivo:</b> <a href="actividades/laboratorio-agentes.html#memoria" target="_blank" rel="noopener">Simulador de memoria ↗</a> · <a href="https://projector.tensorflow.org/" target="_blank" rel="noopener">Embedding Projector ↗</a> · <a href="https://www.pinecone.io/learn/vector-embeddings/" target="_blank" rel="noopener">Qué son los embeddings ↗</a> <span class="mas">· más en la diapositiva siguiente ▸</span></div>
+    </section>
+
+    <!-- R3 · EXPLORA: MEMORIA Y VECTORES -->
+    <section class="slide recursos">
+      <h2>🔗 Explora en vivo · Memoria: modos y vectores</h2>
+      <div class="enlaces tres">
+        <a class="enlace" href="actividades/laboratorio-agentes.html#memoria" target="_blank" rel="noopener"><b>Simulador de memoria (nuestro laboratorio)</b><span>Mira qué se reenvía al LLM con memoria completa, ventana, resumen y <strong>vectorial</strong>.</span><small>actividades/laboratorio-agentes.html → pestaña 7</small></a>
+        <a class="enlace" href="https://projector.tensorflow.org/" target="_blank" rel="noopener"><b>Embedding Projector (TensorFlow)</b><span>Explora vectores en 3D: busca una palabra y mira cuáles quedan cerca (similitud).</span><small>projector.tensorflow.org</small></a>
+        <a class="enlace" href="https://poloclub.github.io/wizmap/" target="_blank" rel="noopener"><b>WizMap</b><span>Navega como en un mapa por un espacio de embeddings de miles de textos.</span><small>poloclub.github.io/wizmap</small></a>
+        <a class="enlace" href="https://www.pinecone.io/learn/vector-embeddings/" target="_blank" rel="noopener"><b>¿Qué son los vectores/embeddings?</b><span>Explicación visual de cómo un texto se vuelve números y se busca por significado.</span><small>pinecone.io/learn/vector-embeddings</small></a>
+        <a class="enlace" href="https://docs.langchain.com/oss/python/langchain/short-term-memory" target="_blank" rel="noopener"><b>Memoria de corto plazo (LangChain)</b><span>Cómo un framework recorta y resume el historial: lectura para comparar con nuestras estrategias.</span><small>docs.langchain.com/…/short-term-memory</small></a>
+      </div>
+      <div class="reto-mini"><strong>⏱ Mini-reto (5 min):</strong> en el Embedding Projector busca <code>king</code> y mira sus vecinos. Luego, en nuestro simulador, haz una pregunta con memoria <em>ventana</em> y con <em>vectorial</em>: ¿cuál recupera un dato mencionado hace muchos mensajes?</div>
     </section>
 
     <!-- 33 · ANATOMÍA TOOL -->
@@ -538,6 +644,7 @@ await llm.chat([{ rol: "user", contenido: "¿Cómo me llamo?" }]);</code></pre>
         <div class="tarjeta azul"><h3>2 · descripción</h3><p><strong>Lo único que el LLM lee.</strong> ¡Cuídala!</p></div>
         <div class="tarjeta amar"><h3>3 · ejecutar()</h3><p>Tu código. Si falla, <em>no debe tumbar al agente.</em></p></div>
       </div>
+      <div class="explora"><b>🔗 Explora en vivo:</b> <a href="https://ai.google.dev/gemini-api/docs/function-calling" target="_blank" rel="noopener">Function calling (Gemini) ↗</a> · <a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener">MCP ↗</a></div>
     </section>
 
     <!-- 34 · DESCRIPCIÓN -->
@@ -617,6 +724,18 @@ evaluar("process.exit()") // ❌ lanza error</code></pre>
         <div class="burbuja a">(Nivel 2 solo usa una herramienta) Clima: 24 °C… <span class="bad">¡falta el cálculo!</span></div>
       </div>
       <div class="caja ojo"><span class="et">Pregunta para el grupo</span>¿Qué le falta a este agente para poder usar una segunda herramienta?<br><em>Respuesta: un bucle. → Nivel 3.</em></div>
+    </section>
+
+    <!-- R7 · EXPLORA: HERRAMIENTAS / FUNCTION CALLING -->
+    <section class="slide recursos">
+      <h2>🔗 Explora · Herramientas (function calling) en la documentación oficial</h2>
+      <div class="enlaces">
+        <a class="enlace" href="https://ai.google.dev/gemini-api/docs/function-calling" target="_blank" rel="noopener"><b>Gemini · function calling</b><span>Cómo declara herramientas Gemini de forma nativa.</span><small>ai.google.dev/gemini-api/docs/function-calling</small></a>
+        <a class="enlace" href="https://docs.cohere.com/docs/tool-use" target="_blank" rel="noopener"><b>Cohere · tool use</b><span>Uso básico de herramientas con la API v2.</span><small>docs.cohere.com/docs/tool-use</small></a>
+        <a class="enlace" href="https://console.groq.com/docs/tool-use" target="_blank" rel="noopener"><b>Groq · tool use</b><span>Herramientas con formato compatible con OpenAI.</span><small>console.groq.com/docs/tool-use</small></a>
+        <a class="enlace" href="https://modelcontextprotocol.io/" target="_blank" rel="noopener"><b>Model Context Protocol (MCP)</b><span>Estándar para conectar herramientas externas a cualquier agente.</span><small>modelcontextprotocol.io</small></a>
+      </div>
+      <div class="reto-mini"><strong>⏱ Mini-reto (3 min):</strong> compara cómo declara una herramienta cada proveedor. ¿Se parecen? Esa diferencia es la razón por la que nuestro protocolo JSON propio funciona igual en los tres y por la que <code>LLMProvider</code> podría crecer con el tiempo.</div>
     </section>
 
     <!-- 38 · BLOQUE 4 -->
