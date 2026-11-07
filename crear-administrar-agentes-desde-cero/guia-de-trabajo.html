@@ -31,7 +31,7 @@
   <p class="sub">Guía de trabajo · TypeScript, Node, Gemini, Cohere, Groq y patrón Strategy</p>
   <div class="banda"></div>
   <div class="datos">
-    Duración: 4 h 40 min (incluye 2 descansos de 10 min)<br>
+    Duración: 4 h 55 min (incluye 2 descansos de 10 min)<br>
     Pablo Andrés Carvajal — Desarrollador Full Stack<br>
     <a href="https://pablocarvajal.dev">pablocarvajal.dev</a><br>
     Nombre del aprendiz: <span class="linea"></span>
@@ -51,9 +51,10 @@
 <h2 class="sin">1. Materiales de la clase</h2>
 <table>
   <tr><th>Archivo</th><th>Para qué sirve</th></tr>
-  <tr><td><code>presentacion.html</code></td><td>59 diapositivas para proyectar (7 de enlaces + barras 🔗 en 10 de concepto a herramientas interactivas) (← → para navegar, <code>F</code> pantalla completa).</td></tr>
-  <tr><td><code>actividades/laboratorio-agentes.html</code></td><td>7 actividades interactivas (glosario, Strategy, simulador ReAct, elige el nivel, Prompt Lab, caza-bugs, memoria). Funciona sin internet.</td></tr>
+  <tr><td><code>presentacion.html</code></td><td>63 diapositivas para proyectar (11 de enlaces y skills + barras 🔗 en 10 de concepto a herramientas interactivas) (← → para navegar, <code>F</code> pantalla completa).</td></tr>
+  <tr><td><code>actividades/laboratorio-agentes.html</code></td><td>8 actividades interactivas (glosario, Strategy, simulador ReAct, elige el nivel, Prompt Lab, caza-bugs, memoria, Tool vs Skill). Funciona sin internet.</td></tr>
   <tr><td><code>codigo/</code></td><td>Proyecto Node + TypeScript con los 6 niveles, proveedores, herramientas y pruebas.</td></tr>
+  <tr><td><code>codigo/skills/</code> y <code>src/skills/</code></td><td>Dos skills de ejemplo (<code>reporte-clima</code>, <code>resumen-ejecutivo</code>) y el cargador <code>BibliotecaSkills</code> (<code>npm run skills</code>).</td></tr>
   <tr><td><code>codigo/src/soluciones/</code></td><td>Soluciones de los retos (clima real, convertidor, Ollama). <em>No las compartas antes del reto.</em></td></tr>
   <tr><td><code>guia-de-trabajo.html</code></td><td>Este documento (imprímelo como PDF desde el navegador).</td></tr>
 </table>
@@ -65,17 +66,18 @@
 │   ├── providers/           gemini.ts · cohere.ts · groq.ts · mock.ts · fallback.ts
 │   ├── medido.ts            Decorator: métricas + presupuesto de llamadas
 │   └── factory.ts           convierte "groq" en un objeto LLMProvider
+├── skills/biblioteca.ts     SKILLS: lee skills/*/SKILL.md (catálogo + carga bajo demanda)
 ├── tools/                   herramientas (calculadora segura, clima, hora, conocimiento)
 ├── agentes/                 ChatAgent · ToolAgent · ReActAgent · Planificador · Orquestador
 │   └── memoria.ts           SEGUNDO Strategy: completa / ventana / resumen
 ├── niveles/                 nivel0 … nivel5 + comparar-proveedores (los que ejecutas)
-└── verificar.ts             15 pruebas offline (npm test)</code></pre>
+└── verificar.ts             18 pruebas offline (npm test)</code></pre>
 
 <h2>2. Preparación previa (instructor y aprendices)</h2>
 <h3>Antes del día de clase (instructor)</h3>
 <ul>
   <li>Verifica Node: <code>node -v</code> debe ser <strong>20.12 o superior</strong> (recomendado 22).</li>
-  <li>Ejecuta <code>npm install</code> y <code>npm test</code> en un equipo del aula. Debe decir <strong>🎉 15 pruebas pasaron</strong>.</li>
+  <li>Ejecuta <code>npm install</code> y <code>npm test</code> en un equipo del aula. Debe decir <strong>🎉 18 pruebas pasaron</strong>.</li>
   <li>Pide a los aprendices que creen sus claves gratuitas (opcional; con <code>mock</code> todo funciona):
     <ul>
       <li>Gemini: <code>aistudio.google.com/apikey</code></li>
@@ -91,7 +93,7 @@
 <pre><code>cd codigo
 npm install
 copy .env.example .env      (Windows)   |   cp .env.example .env   (Mac/Linux)
-npm test                    → 🎉 15 pruebas pasaron
+npm test                    → 🎉 18 pruebas pasaron
 npm run nivel0              → debe funcionar con LLM_PROVIDER=mock</code></pre>
 
 <h2>3. Plan minuto a minuto</h2>
@@ -101,11 +103,11 @@ npm run nivel0              → debe funcionar con LLM_PROVIDER=mock</code></pre
   <tr><td>20–60</td><td><strong>1 · Vocabulario</strong></td><td>LLM, token, roles, temperatura, stateless, herramienta, agente, ReAct. Actividad 1.</td><td>Diap. 5–22 · Lab pestaña 1</td></tr>
   <tr><td>60–110</td><td><strong>2 · Niveles + Strategy</strong></td><td>Escalera de niveles, problema del <code>if</code> por proveedor, patrón, código de proveedores, fallback. Actividad 2. Ejecutar nivel 0 y <code>comparar</code>.</td><td>Diap. 23–36 · Lab pestaña 2</td></tr>
   <tr><td>110–120</td><td>☕ Descanso</td><td></td><td></td></tr>
-  <tr><td>120–160</td><td><strong>3 · Memoria y herramientas</strong></td><td>Nivel 1 (memoria como Strategy), nivel 2 (herramienta, descripción, seguridad, protocolo JSON, límite).</td><td>Diap. 37–45 · Lab pestaña 7</td></tr>
-  <tr><td>160–210</td><td><strong>4 · ReAct</strong></td><td>Bucle, defensas, traza. Ejecutar nivel 3. Actividad 3 (simulador).</td><td>Diap. 46–50 · Lab pestaña 3</td></tr>
-  <tr><td>210–220</td><td>☕ Descanso</td><td></td><td></td></tr>
-  <tr><td>220–255</td><td><strong>5 · Planificar, orquestar, administrar</strong></td><td>Niveles 4 y 5, lista de control, regla de oro. Actividad 4 (niveles, Prompt Lab, caza-bugs).</td><td>Diap. 51–56 · Lab pestañas 4–6</td></tr>
-  <tr><td>255–280</td><td>Reto final y cierre</td><td>Trabajo individual o en parejas, demos de 1 minuto, resumen y próximos pasos.</td><td>Diap. 57–59</td></tr>
+  <tr><td>120–175</td><td><strong>3 · Memoria, herramientas y skills</strong></td><td>Nivel 1 (memoria como Strategy), nivel 2 (herramienta, descripción, seguridad, protocolo JSON, límite) y <strong>Tool vs Skill</strong> (SKILL.md, divulgación progresiva, <code>npm run skills</code>, biblioteca de Anthropic, autoskills).</td><td>Diap. 37–49 · Lab pestañas 7 y 8</td></tr>
+  <tr><td>175–225</td><td><strong>4 · ReAct</strong></td><td>Bucle, defensas, traza. Ejecutar nivel 3. Actividad 3 (simulador).</td><td>Diap. 50–54 · Lab pestaña 3</td></tr>
+  <tr><td>225–235</td><td>☕ Descanso</td><td></td><td></td></tr>
+  <tr><td>235–270</td><td><strong>5 · Planificar, orquestar, administrar</strong></td><td>Niveles 4 y 5, lista de control, regla de oro. Actividad 4 (niveles, Prompt Lab, caza-bugs).</td><td>Diap. 55–60 · Lab pestañas 4–6</td></tr>
+  <tr><td>270–295</td><td>Reto final y cierre</td><td>Trabajo individual o en parejas, demos de 1 minuto, resumen y próximos pasos.</td><td>Diap. 61–63</td></tr>
 </table>
 
 <h2>4. Guion del instructor por bloque</h2>
@@ -140,6 +142,10 @@ npm run nivel0              → debe funcionar con LLM_PROVIDER=mock</code></pre
   <li><strong>Seguridad:</strong> abre <code>tools/calculadora.ts</code> y explica por qué no se usa <code>eval()</code>. Prueba <code>evaluar("process.exit()")</code>.</li>
   <li><strong>Protocolo JSON:</strong> abre <code>agentes/protocolo.ts</code>. Explica por qué es portable entre proveedores.</li>
   <li><code>npm run nivel2</code>: la tercera pregunta necesita 2 herramientas y el nivel 2 no puede → gancho para el bucle.</li>
+  <li><strong>Tool vs Skill (15 min, diap. 46–49):</strong> usa la analogía <em>martillo (tool) vs manual de carpintería (skill)</em>. Abre <code>codigo/skills/reporte-clima/SKILL.md</code> y muestra que solo el <code>name</code> y la <code>description</code> van siempre al prompt; el cuerpo se carga bajo demanda (<strong>divulgación progresiva</strong>).</li>
+  <li><code>npm run skills</code>: lee la traza (<code>cargar_skill</code> → <code>clima</code> → respuesta). Resalta que <strong>la skill llega al agente mediante una tool</strong> y que una skill no ejecuta nada por sí sola: cambia cómo razona y responde.</li>
+  <li>Muestra la biblioteca oficial (<code>github.com/anthropics/skills</code>), el estándar <code>agentskills.io</code> y <code>npx autoskills --dry-run</code>. <strong>Seguridad:</strong> una skill es texto que el agente obedece; léela antes de instalarla.</li>
+  <li><strong>Laboratorio pestaña 8:</strong> clasificar Tool / Skill / MCP y el comparador de tokens con y sin divulgación progresiva.</li>
 </ul>
 
 <h3>Bloque 4 · ReAct (50 min)</h3>
@@ -157,8 +163,8 @@ npm run nivel0              → debe funcionar con LLM_PROVIDER=mock</code></pre
 <ul>
   <li><strong>Nivel 4:</strong> <code>npm run nivel4</code>. Resalta que el plan se imprime <em>antes</em> de ejecutar (podrías pedir aprobación).</li>
   <li><strong>Nivel 5:</strong> <code>npm run nivel5</code>. Muestra el tablero final: ejecuciones, éxitos, fallos y tiempo por agente.</li>
-  <li><strong>Lista de control</strong> (diap. 54): límites, observabilidad, seguridad, resiliencia, calidad, humano en el bucle.</li>
-  <li><strong>Regla de oro</strong> (diap. 55): el nivel más bajo que resuelva el problema.</li>
+  <li><strong>Lista de control</strong> (diap. 58): límites, observabilidad, seguridad, resiliencia, calidad, humano en el bucle.</li>
+  <li><strong>Regla de oro</strong> (diap. 59): el nivel más bajo que resuelva el problema.</li>
   <li><strong>Actividad 4:</strong> pestañas 4 (¿qué nivel?), 5 (Prompt Lab) y 6 (caza-bugs). Repartir por parejas.</li>
 </ul>
 
@@ -187,6 +193,9 @@ npm run nivel0              → debe funcionar con LLM_PROVIDER=mock</code></pre
   <li>Cambia <code>maxPasos</code> a 1 en <code>nivel3-react.ts</code> con una pregunta de dos herramientas.</li>
   <li>Crea <code>new LLMMedido(proveedor, 2)</code> y observa el error de presupuesto.</li>
 </ul>
+
+<h3>E4b · Tu primera skill (10 min)</h3>
+<p>Crea <code>codigo/skills/mi-skill/SKILL.md</code> con un encabezado <code>name</code> y <code>description</code> y 3–5 pasos de instrucciones (por ejemplo, cómo responder a un aprendiz nuevo). Ejecuta <code>npm run skills</code> y confirma que aparece en el catálogo. Con un proveedor real, haz una pregunta que la active y comprueba que el agente llama a <code>cargar_skill</code>. <strong>Pregunta:</strong> ¿qué parte decide cuándo se usa la skill? <em>(La <code>description</code>.)</em></p>
 
 <h3>E5 · Un tercer especialista (15 min)</h3>
 <p>En <code>nivel5-multiagente.ts</code> agrega un especialista <code>traductor</code> o <code>redactor</code> con su propia caja (puede ir vacía) y su descripción. Pregunta: ¿por qué conviene que cada especialista tenga <strong>pocas</strong> herramientas?</p>
@@ -262,6 +271,10 @@ npm run nivel0              → debe funcionar con LLM_PROVIDER=mock</code></pre
   <tr><td><a href="https://docs.langchain.com/oss/python/langchain/short-term-memory">Memoria de corto plazo (LangChain)</a></td></tr>
   <tr><td rowspan="2"><strong>Function calling y MCP</strong></td><td><a href="https://ai.google.dev/gemini-api/docs/function-calling">Gemini</a> · <a href="https://docs.cohere.com/docs/tool-use">Cohere</a> · <a href="https://console.groq.com/docs/tool-use">Groq</a></td><td rowspan="2">45</td></tr>
   <tr><td><a href="https://modelcontextprotocol.io/">Model Context Protocol (MCP)</a></td></tr>
+  <tr><td rowspan="4"><strong>Skills</strong></td><td><a href="https://github.com/anthropics/skills">Biblioteca oficial de Anthropic (docx, pdf, pptx, xlsx y ejemplos)</a></td><td rowspan="4">49</td></tr>
+  <tr><td><a href="https://agentskills.io/home">Agent Skills (estándar abierto)</a> · <a href="https://agentskills.io/specification">especificación</a></td></tr>
+  <tr><td><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview">Documentación de Claude</a> · <a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills">Artículo de ingeniería de Anthropic</a></td></tr>
+  <tr><td><a href="https://github.com/midudev/autoskills">autoskills</a> (<code>npx autoskills --dry-run</code>) · <a href="https://skills.sh/">skills.sh</a></td></tr>
 </table>
 <div class="caja ojo"><span class="et">Aprende más rápido</span>Cada diapositiva 🔗 trae un <strong>mini-reto de 3–5 minutos</strong> (por ejemplo: comparar los tokens de "Piedecuesta" en español e inglés, o subir la temperatura a 2 en Transformer Explainer). Úsalos como pausa activa entre explicaciones.</div>
 

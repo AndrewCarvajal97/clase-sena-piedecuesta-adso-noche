@@ -1,6 +1,6 @@
 # Crear y administrar agentes de IA desde cero
 
-**Clase única de 4 h 40 min** (con 2 descansos) para personas técnicas **sin experiencia previa en agentes**.
+**Clase única de 4 h 55 min** (con 2 descansos) para personas técnicas **sin experiencia previa en agentes**.
 Stack: **TypeScript + Node.js**, LLM **Gemini · Cohere · Groq**, patrón **Strategy**.
 
 ## 🎯 Qué se aprende
@@ -14,6 +14,7 @@ Stack: **TypeScript + Node.js**, LLM **Gemini · Cohere · Groq**, patrón **Str
 | 1 | Chatbot con rol y memoria (Strategy de memoria) | `niveles/nivel1-chatbot.ts` |
 | 2 | Agente con una herramienta | `niveles/nivel2-herramientas.ts` |
 | 3 | Agente **ReAct** (bucle pensar-actuar-observar) | `niveles/nivel3-react.ts` |
+| 3b | **ReAct + Skills** (catálogo de skills y carga bajo demanda) | `niveles/nivel3b-skills.ts` |
 | 4 | **Planificador** (planear → ejecutar → sintetizar) | `niveles/nivel4-planificador.ts` |
 | 5 | **Multi-agente** con orquestador y tablero de administración | `niveles/nivel5-multiagente.ts` |
 
@@ -25,13 +26,15 @@ Stack: **TypeScript + Node.js**, LLM **Gemini · Cohere · Groq**, patrón **Str
 
 ```
 crear-administrar-agentes-desde-cero/
-├── presentacion.html              ← 59 diapositivas para proyectar (incluye enlaces a herramientas interactivas)
+├── presentacion.html              ← 63 diapositivas para proyectar (incluye enlaces a herramientas interactivas)
 ├── guia-de-trabajo.html           ← guion minuto a minuto + ejercicios + rúbrica (imprimible a PDF)
 ├── actividades/
-│   └── laboratorio-agentes.html   ← 7 actividades interactivas (funciona sin internet)
+│   └── laboratorio-agentes.html   ← 8 actividades interactivas (funciona sin internet)
 ├── assets/                        ← estilos y motor de diapositivas
 └── codigo/                        ← proyecto Node + TypeScript
     ├── src/llm/                   ← Strategy: Gemini, Cohere, Groq, Mock, Fallback, Medido, factory
+    ├── skills/                    ← skills de ejemplo (reporte-clima, resumen-ejecutivo)
+    ├── src/skills/                ← BibliotecaSkills: catálogo + carga bajo demanda
     ├── src/tools/                 ← calculadora segura, clima, hora, conocimiento
     ├── src/agentes/               ← ChatAgent, ToolAgent, ReActAgent, Planificador, Orquestador
     ├── src/niveles/               ← los scripts que se ejecutan en clase
@@ -46,7 +49,7 @@ Requiere **Node.js 20.12+**.
 cd codigo
 npm install
 copy .env.example .env     # (Mac/Linux: cp .env.example .env)
-npm test                   # 15 pruebas offline → "¡Entorno listo!"
+npm test                   # 18 pruebas offline → "¡Entorno listo!"
 npm run nivel3
 ```
 
@@ -56,6 +59,7 @@ Para usar un LLM real, pon su clave en `.env` y cambia `LLM_PROVIDER` (`groq`, `
 | Comando | Qué hace |
 |---------|----------|
 | `npm run nivel0` … `nivel5` | Cada nivel de agente (admiten `-- "tu pregunta"`) |
+| `npm run skills` | Agente ReAct con skills (`skills/*/SKILL.md`) |
 | `npm run nivel1 -- ventana` | Chatbot con memoria de ventana (`completa`, `ventana`, `resumen`) |
 | `npm run comparar` | Misma pregunta con cada proveedor + demo de fallback |
 | `npm test` | Pruebas offline de todo el proyecto |

@@ -22,7 +22,7 @@
 
     <!-- 1 · PORTADA -->
     <section class="slide portada">
-      <span class="pill">CLASE ÚNICA · 4 h 40 min · Técnicos sin experiencia en agentes</span>
+      <span class="pill">CLASE ÚNICA · 4 h 55 min · Técnicos sin experiencia en agentes</span>
       <h1>Crear y administrar<br>agentes de IA desde cero</h1>
       <p class="subtitulo">De una llamada a un LLM hasta un equipo de agentes — con TypeScript, Node y el patrón Strategy</p>
       <p class="meta">SENA Piedecuesta · Sábados<br><strong style="color:#fff">Pablo Andrés Carvajal</strong> · Desarrollador Full Stack · <a href="https://pablocarvajal.dev" target="_blank" rel="noopener" style="color:#8fe1ff;font-weight:700;text-decoration:underline">pablocarvajal.dev</a></p>
@@ -37,11 +37,11 @@
         <tr><td>0:20</td><td><strong>1 · El vocabulario</strong></td><td>LLM, token, prompt, herramienta, agente, ReAct…</td></tr>
         <tr><td>1:00</td><td><strong>2 · Strategy + proveedores</strong></td><td>Cambiar de Gemini a Groq sin tocar el agente</td></tr>
         <tr><td>1:50</td><td>☕ Descanso (10 min)</td><td></td></tr>
-        <tr><td>2:00</td><td><strong>3 · Memoria y herramientas</strong></td><td>Niveles 1 y 2</td></tr>
-        <tr><td>2:40</td><td><strong>4 · Agente ReAct</strong></td><td>Nivel 3: el bucle pensar-actuar-observar</td></tr>
-        <tr><td>3:30</td><td>☕ Descanso (10 min)</td><td></td></tr>
-        <tr><td>3:40</td><td><strong>5 · Planificar, orquestar, administrar</strong></td><td>Niveles 4 y 5 + control de costos</td></tr>
-        <tr><td>4:15</td><td><strong>Reto final y cierre</strong></td><td>Tu propio agente funcionando</td></tr>
+        <tr><td>2:00</td><td><strong>3 · Memoria, herramientas y skills</strong></td><td>Niveles 1 y 2 + diferencia Tool vs Skill</td></tr>
+        <tr><td>2:55</td><td><strong>4 · Agente ReAct</strong></td><td>Nivel 3: el bucle pensar-actuar-observar</td></tr>
+        <tr><td>3:45</td><td>☕ Descanso (10 min)</td><td></td></tr>
+        <tr><td>3:55</td><td><strong>5 · Planificar, orquestar, administrar</strong></td><td>Niveles 4 y 5 + control de costos</td></tr>
+        <tr><td>4:30</td><td><strong>Reto final y cierre</strong></td><td>Tu propio agente funcionando</td></tr>
       </table>
     </section>
 
@@ -77,7 +77,7 @@
 npm install
 copy .env.example .env
 npm test</code></pre>
-          <p class="pequeno">Si ves <strong>🎉 15 pruebas pasaron</strong>, estás listo.</p>
+          <p class="pequeno">Si ves <strong>🎉 18 pruebas pasaron</strong>, estás listo.</p>
         </div>
       </div>
       <div class="caja ojo"><span class="et">Modo sin claves</span><code>LLM_PROVIDER=mock</code> usa un "LLM de mentira" local: todo el código funciona sin internet ni gastar cuota. Luego cambias a un proveedor real con <strong>una sola línea</strong> (¡eso es Strategy!).</div>
@@ -592,9 +592,9 @@ await llm.chat([{ rol: "user", contenido: "¿Cómo me llamo?" }]);</code></pre>
     <!-- 31 · BLOQUE 3 -->
     <section class="slide bloque">
       <div class="num">3</div>
-      <h2>Memoria y herramientas</h2>
-      <p>Niveles 1 y 2: del chatbot al agente que actúa.</p>
-      <span class="dur">⏱ 40 min</span>
+      <h2>Memoria, herramientas y skills</h2>
+      <p>Niveles 1 y 2, y la diferencia entre una tool y una skill.</p>
+      <span class="dur">⏱ 55 min · incluye Tool vs Skill (laboratorio, pestaña 8)</span>
     </section>
 
     <!-- 32 · MEMORIA STRATEGY -->
@@ -736,6 +736,86 @@ evaluar("process.exit()") // ❌ lanza error</code></pre>
         <a class="enlace" href="https://modelcontextprotocol.io/" target="_blank" rel="noopener"><b>Model Context Protocol (MCP)</b><span>Estándar para conectar herramientas externas a cualquier agente.</span><small>modelcontextprotocol.io</small></a>
       </div>
       <div class="reto-mini"><strong>⏱ Mini-reto (3 min):</strong> compara cómo declara una herramienta cada proveedor. ¿Se parecen? Esa diferencia es la razón por la que nuestro protocolo JSON propio funciona igual en los tres y por la que <code>LLMProvider</code> podría crecer con el tiempo.</div>
+    </section>
+
+    <!-- SKILLS 1 · TOOL ≠ SKILL -->
+    <section class="slide">
+      <h2>¿Tool y Skill son lo mismo? No</h2>
+      <div class="flujo">
+        <div class="nodo azul">🔨 TOOL<small>el martillo: te deja <strong>HACER</strong></small></div>
+        <div class="nodo verde">📘 SKILL<small>el manual de carpintería: te enseña <strong>CÓMO</strong></small></div>
+      </div>
+      <table class="t compacta">
+        <tr><th></th><th>🛠️ Tool (herramienta)</th><th>📘 Skill</th></tr>
+        <tr><td><strong>Qué es</strong></td><td>Una <strong>función</strong> que el agente puede pedir ejecutar</td><td>Un <strong>paquete de instrucciones</strong> (<code>SKILL.md</code>) + archivos opcionales</td></tr>
+        <tr><td><strong>Responde a</strong></td><td>"¿Qué puedo <em>hacer</em>?"</td><td>"¿Cómo lo hago <em>bien</em>?"</td></tr>
+        <tr><td><strong>Quién la ejecuta</strong></td><td>Tu código</td><td>Nadie: el LLM la <strong>lee y la sigue</strong></td></tr>
+        <tr><td><strong>Cómo se carga</strong></td><td>Siempre aparece en la lista de herramientas</td><td>Solo nombre + descripción; el resto <strong>bajo demanda</strong></td></tr>
+        <tr><td><strong>Ejemplo</strong></td><td><code>clima("Cali")</code></td><td>"Cómo presentar un reporte del clima"</td></tr>
+      </table>
+      <div class="caja idea" style="margin:.5em 0"><span class="et">Se complementan</span>La <strong>skill</strong> dice <em>cómo</em> hacer el trabajo y qué tools usar. <strong>MCP</strong> es el estándar para conectar <em>tools</em> externas; no es lo mismo que una skill.</div>
+    </section>
+
+    <!-- SKILLS 2 · ANATOMÍA -->
+    <section class="slide">
+      <h2>Anatomía de una skill: <code>SKILL.md</code></h2>
+      <div class="cols">
+        <div>
+<pre><code>skills/
+└── reporte-clima/
+    ├── SKILL.md      ← obligatorio
+    └── scripts/      ← opcional
+---
+name: reporte-clima
+description: Cómo presentar un reporte
+  del clima. Úsala cuando pidan un
+  reporte del clima.
+---
+1. Usa la tool `clima`.
+2. Formato: 📍 · 🌡️ · 💡
+3. Si llueve: "Lleva paraguas".</code></pre>
+        </div>
+        <div>
+          <h3 style="margin-top:0">Divulgación progresiva</h3>
+          <div class="flujo vertical" style="margin:.2em 0">
+            <div class="nodo verde" style="min-width:16em">1 · Catálogo<small>nombre + descripción · <strong>siempre</strong> visible</small></div>
+            <div class="nodo amar" style="min-width:16em">2 · Instrucciones<small>cuerpo del SKILL.md · al <strong>activarse</strong></small></div>
+            <div class="nodo azul" style="min-width:16em">3 · Archivos extra<small>scripts y referencias · solo si <strong>hacen falta</strong></small></div>
+          </div>
+          
+        </div>
+      </div>
+      <div class="caja ojo" style="margin:.5em 0"><span class="et">Dato real</span>La <code>description</code> decide <strong>cuándo</strong> se usa la skill (qué hace + cuándo usarla). En Claude Code viven en <code>~/.claude/skills/&lt;nombre&gt;/SKILL.md</code>. Formato: <strong>estándar abierto</strong>.</div>
+    </section>
+
+    <!-- SKILLS 3 · EN NUESTRO CÓDIGO -->
+    <section class="slide">
+      <h2>Skills "desde cero" en nuestro código</h2>
+<pre><code>// src/skills/biblioteca.ts
+const skills = new BibliotecaSkills();          // lee skills/*/SKILL.md
+
+skills.catalogo();        // "- reporte-clima: Cómo presentar…"  → va al prompt (barato)
+skills.cargar("reporte-clima");                 // instrucciones completas → bajo demanda
+herramientas.agregar(skills.comoHerramienta()); // ¡la skill llega mediante una TOOL!</code></pre>
+      <p class="pequeno" style="margin:.4em 0"><code>npm run skills</code> → mira la traza:</p>
+<pre><code>[ReAct+Skills · paso 1] 🛠️  cargar_skill("reporte-clima")   ← lee el "manual"
+[ReAct+Skills · paso 2] 🛠️  clima("Bucaramanga")             ← usa la tool que el manual indica
+[ReAct+Skills · paso 3] ✅ Siguiendo la skill "reporte-clima": …</code></pre>
+      <div class="caja idea" style="margin:.5em 0"><span class="et">Idea clave</span>Una skill no ejecuta nada por sí sola: <strong>cambia cómo razona y responde el agente</strong>. Crea <code>skills/mi-skill/SKILL.md</code> y vuelve a ejecutar. Luego: laboratorio, pestaña <strong>8 · Tool vs Skill</strong>.</div>
+    </section>
+
+    <!-- SKILLS 4 · RECURSOS -->
+    <section class="slide recursos">
+      <h2>🔗 Skills: biblioteca de Anthropic y autoskills</h2>
+      <div class="enlaces tres">
+        <a class="enlace" href="https://github.com/anthropics/skills" target="_blank" rel="noopener"><b>Biblioteca oficial de Anthropic</b><span>Skills de ejemplo y las de documentos <strong>docx, pdf, pptx, xlsx</strong>.</span><small>github.com/anthropics/skills</small></a>
+        <a class="enlace" href="https://agentskills.io/home" target="_blank" rel="noopener"><b>Agent Skills (estándar abierto)</b><span>Qué es una skill y la especificación del formato.</span><small>agentskills.io</small></a>
+        <a class="enlace" href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview" target="_blank" rel="noopener"><b>Documentación de Claude</b><span>Cómo funcionan y la divulgación progresiva.</span><small>platform.claude.com/docs → Agent Skills</small></a>
+        <a class="enlace" href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills" target="_blank" rel="noopener"><b>Equipping agents with Agent Skills</b><span>Artículo de Anthropic: por qué existen.</span><small>anthropic.com/engineering</small></a>
+        <a class="enlace" href="https://github.com/midudev/autoskills" target="_blank" rel="noopener"><b>autoskills (midudev)</b><span><code>npx autoskills</code> detecta tu stack e instala skills. Node 22+.</span><small>github.com/midudev/autoskills</small></a>
+        <a class="enlace" href="https://skills.sh/" target="_blank" rel="noopener"><b>skills.sh · directorio</b><span>Directorio público de skills.</span><small>skills.sh</small></a>
+      </div>
+      <div class="caja alerta" style="margin:.4em 0"><span class="et">Seguridad</span>Una skill es texto que tu agente <strong>obedece</strong>: puede esconder instrucciones maliciosas. <strong>Léela antes de instalar</strong> y usa <code>npx autoskills --dry-run</code> para previsualizar.</div>
     </section>
 
     <!-- 38 · BLOQUE 4 -->

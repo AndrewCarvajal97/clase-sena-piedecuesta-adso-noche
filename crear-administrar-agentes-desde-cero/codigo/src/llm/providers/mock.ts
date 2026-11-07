@@ -71,8 +71,12 @@ export class MockProvider implements LLMProvider {
         entrada: siguiente.entrada,
       });
     }
+    // Las observaciones que son instrucciones de una skill no son "datos": se usan como guía.
+    const PREFIJO_SKILL = "Instrucciones de la skill";
+    const skill = /^Instrucciones de la skill "([^"]+)"/.exec(observaciones.find((o) => o.startsWith(PREFIJO_SKILL)) ?? "")?.[1];
+    const datos = observaciones.filter((o) => !o.startsWith(PREFIJO_SKILL));
     const respuesta = observaciones.length
-      ? `Con lo que obtuve: ${observaciones.join(" | ")}`
+      ? `${skill ? `Siguiendo la skill "${skill}": ` : "Con lo que obtuve: "}${datos.join(" | ")}`
       : `No necesito herramientas para esto. (mock) Pregunta: ${pregunta.slice(0, 80)}`;
     return JSON.stringify({ pensamiento: "Ya tengo lo necesario para responder.", respuesta_final: respuesta });
   }
@@ -86,6 +90,11 @@ export class MockProvider implements LLMProvider {
     // Expresión matemática: números, operadores y paréntesis (debe contener al menos un operador).
     const mat = [...texto.matchAll(/\(*\d[\d\s+\-*/^%().]*[\d)]/g)].find((m) => /[+\-*/^%]/.test(m[0]));
     if (mat) hallazgos.push({ pos: mat.index ?? 0, nombre: "calculadora", entrada: mat[0].trim() });
+    // Si piden un "reporte/informe", el mock carga la skill adecuada ANTES de actuar.
+    const rep = /\b(reporte|informe)\b/i.exec(texto);
+    if (rep) {
+      hallazgos.push({ pos: rep.index, nombre: "cargar_skill", entrada: /clima|temperatura/i.test(texto) ? "reporte-clima" : "resumen-ejecutivo" });
+    }
     const hora = /\bhora\b/i.exec(texto);
     if (hora) hallazgos.push({ pos: hora.index, nombre: "hora", entrada: "" });
     const def = /qu[eé] (?:es|son) (?:un |una |el |la |los |las )?(.+?)(?:\s+y\s|[?.,;]|$)/i.exec(texto);

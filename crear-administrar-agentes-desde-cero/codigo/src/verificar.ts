@@ -18,6 +18,7 @@ import { ToolAgent } from "./agentes/ToolAgent.js";
 import { ReActAgent } from "./agentes/ReActAgent.js";
 import { PlanificadorAgent } from "./agentes/PlanificadorAgent.js";
 import { Orquestador } from "./agentes/Orquestador.js";
+import { BibliotecaSkills, parsearSkill } from "./skills/biblioteca.js";
 import type { LLMProvider } from "./llm/types.js";
 
 let ok = 0;
@@ -146,6 +147,30 @@ await prueba("Nivel 5 (Orquestador): delega a especialistas y lleva estadística
   assert.match(r.respuesta, /= 12/);
   assert.equal(jefe.estadisticas.get("matematico")!.exitos, 1);
   assert.equal(jefe.estadisticas.get("investigador")!.exitos, 2);
+});
+
+await prueba("Skills: el catálogo solo trae nombre y descripción (divulgación progresiva)", () => {
+  const b = new BibliotecaSkills();
+  assert.ok(b.nombres().includes("reporte-clima") && b.nombres().includes("resumen-ejecutivo"));
+  assert.match(b.catalogo(), /reporte-clima: Cómo presentar/);
+  assert.doesNotMatch(b.catalogo(), /paraguas/); // el contenido completo NO está en el catálogo…
+  assert.match(b.cargar("reporte-clima"), /paraguas/); // …se obtiene al cargarla
+});
+
+await prueba("Skills: parsearSkill exige 'description' y cargar() da error útil", () => {
+  assert.throws(() => parsearSkill("---\nname: x\n---\ncuerpo", "x"), /description/);
+  assert.throws(() => parsearSkill("sin encabezado", "x"), /encabezado/);
+  assert.throws(() => new BibliotecaSkills().cargar("no-existe"), /Skills válidas: .*reporte-clima/);
+});
+
+await prueba("Agente + skill: carga la skill, luego usa la herramienta y responde", async () => {
+  const b = new BibliotecaSkills();
+  const agente = new ReActAgent({ llm: new MockProvider(), herramientas: todas().agregar(b.comoHerramienta()), rol: `Asistente.\n${b.catalogo()}` });
+  const r = await agente.ejecutar("Haz un reporte del clima en Bucaramanga");
+  assert.equal(r.cortadoPorLimite, false);
+  assert.equal(r.pasos, 3); // cargar_skill → clima → respuesta
+  assert.match(r.respuesta, /Siguiendo la skill "reporte-clima"/);
+  assert.match(r.respuesta, /24 °C/);
 });
 
 console.log(`\n${process.exitCode ? "⚠️  Hay pruebas fallidas" : `🎉 ${ok} pruebas pasaron. ¡Entorno listo!`}`);

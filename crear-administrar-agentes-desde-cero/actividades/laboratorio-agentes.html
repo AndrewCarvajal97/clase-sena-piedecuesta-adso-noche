@@ -92,6 +92,7 @@ label.chk{display:flex;gap:8px;align-items:flex-start;margin:5px 0;cursor:pointe
   <button data-p="p5">5 · Prompt Lab</button>
   <button data-p="p6">6 · Caza-bugs</button>
   <button data-p="p7">7 · Memoria</button>
+  <button data-p="p8">8 · Tool vs Skill</button>
 </nav>
 
 <main>
@@ -276,6 +277,34 @@ label.chk{display:flex;gap:8px;align-items:flex-start;margin:5px 0;cursor:pointe
       <pre id="mmRes" style="display:none"></pre>
     </div>
   </div>
+</section>
+
+<!-- ======================= 8 · TOOL VS SKILL ======================= -->
+<section class="panel" id="p8">
+  <h2>Tool vs Skill vs MCP</h2>
+  <p class="sub"><strong>Tool</strong> = función que el agente ejecuta (hacer). <strong>Skill</strong> = instrucciones que el agente lee (saber cómo). <strong>MCP</strong> = estándar para conectar tools externas.</p>
+  <h3>Parte A · Clasifica</h3>
+  <div class="fila"><span class="kpi" id="skProg">Caso 1/8</span><span class="kpi" id="skPts">Aciertos: 0</span></div>
+  <div class="esc"><h3 id="skCaso" style="margin-top:0"></h3>
+    <div class="nivs"><button class="btn sec" data-c="Tool">🛠️ Tool</button><button class="btn sec" data-c="Skill">📘 Skill</button><button class="btn sec" data-c="MCP">🔌 MCP</button></div>
+    <div id="skFb"></div>
+    <div class="fila"><button class="btn sec" id="skSig" style="display:none">Siguiente →</button></div>
+  </div>
+  <h3>Parte B · ¿Por qué la divulgación progresiva?</h3>
+  <p class="sub">Compara cargar TODAS las skills en el prompt contra cargar solo el catálogo y 1 skill cuando hace falta. (Cifras aproximadas, solo para entender la idea.)</p>
+  <div class="grid2">
+    <div>
+      <div class="fila"><label style="min-width:170px">Skills instaladas: <strong id="spNv">20</strong></label><input type="range" id="spN" min="1" max="60" value="20" style="flex:1"></div>
+      <div class="fila"><label style="min-width:170px">Tokens por SKILL.md: <strong id="spTv">2000</strong></label><input type="range" id="spT" min="300" max="8000" step="100" value="2000" style="flex:1"></div>
+      <div class="caja ojo">Catálogo ≈ <strong>100 tokens</strong> por skill (nombre + descripción).</div>
+    </div>
+    <div>
+      <div class="fila"><span style="min-width:190px">❌ Cargar todo</span><div class="barra" style="flex:1"><i id="spA" style="background:var(--rojo);width:100%"></i></div><strong id="spAv"></strong></div>
+      <div class="fila"><span style="min-width:190px">✅ Catálogo + 1 skill</span><div class="barra" style="flex:1"><i id="spB" style="width:10%"></i></div><strong id="spBv"></strong></div>
+      <div class="caja" id="spTxt"></div>
+    </div>
+  </div>
+  <div class="caja ojo"><strong>Siguiente paso:</strong> mira la biblioteca oficial en <a href="https://github.com/anthropics/skills" target="_blank" rel="noopener">github.com/anthropics/skills</a> y prueba <code>npm run skills</code> en el proyecto de la clase.</div>
 </section>
 
 </main>
@@ -650,6 +679,42 @@ const mmLogros = new Set();
 $("#p7").addEventListener("input", mmRender); $("#p7").addEventListener("change", e => { if (e.target.id === "mmPre") $("#mmTxt").style.display = e.target.value === "x" ? "block" : "none"; mmRender(); });
 mmRender();
 if (location.hash === "#memoria") $("[data-p=p7]").click();
+
+/* =====================================================================
+   8 · TOOL vs SKILL vs MCP
+   ===================================================================== */
+const SKC = [
+  ["consultarClima(ciudad): una función que llama a una API del clima", "Tool", "Es una función que el agente pide ejecutar: una acción, no un manual."],
+  ["Un SKILL.md con los pasos y el formato para armar un reporte con la marca de la empresa", "Skill", "Es un paquete de instrucciones: enseña CÓMO hacer la tarea."],
+  ["Un servidor que expone las herramientas de Google Drive a cualquier agente", "MCP", "MCP es el estándar para conectar tools externas; el servidor las expone."],
+  ["enviarCorreo(destino, asunto, cuerpo)", "Tool", "Acción concreta que ejecuta tu código cuando el agente la pide."],
+  ["Una carpeta con instrucciones y un script para rellenar formularios PDF", "Skill", "Instrucciones + recursos que el agente carga solo cuando la tarea aplica (como las skills de PDF de Anthropic)."],
+  ["Un protocolo estándar para que cualquier agente descubra y use herramientas de otros sistemas", "MCP", "Eso es justo MCP (Model Context Protocol)."],
+  ["buscar_conocimiento(termino)", "Tool", "Función con entrada y salida: una tool."],
+  ["Un checklist de 8 puntos con ejemplos para revisar código antes de aprobarlo", "Skill", "Conocimiento procedimental (cómo hacerlo bien): una skill."]
+];
+let skI = 0, skOk = 0, skR = false;
+function skRender() { skR = false; $("#skCaso").textContent = SKC[skI][0]; $("#skProg").textContent = `Caso ${skI + 1}/${SKC.length}`; $("#skFb").innerHTML = ""; $("#skSig").style.display = "none"; }
+$("#p8 .nivs").onclick = e => {
+  const b = e.target.closest("button"); if (!b || skR || !b.dataset.c) return; skR = true; const [, ok, why] = SKC[skI]; const bien = b.dataset.c === ok;
+  if (bien) { skOk++; sumar(5); } $("#skPts").textContent = "Aciertos: " + skOk;
+  $("#skFb").innerHTML = `<div class="fb ${bien ? "ok" : "mal"}">${bien ? "✅ ¡Correcto! " : `❌ Era ${ok}. `}${why}</div>`;
+  $("#skSig").style.display = "inline-block"; $("#skSig").textContent = skI === SKC.length - 1 ? "Ver resultado" : "Siguiente →";
+};
+$("#skSig").onclick = () => {
+  if (skI === SKC.length - 1) { $("#skCaso").textContent = `🏁 ${skOk}/${SKC.length} aciertos. ${skOk >= 6 ? "¡Ya distingues tool, skill y MCP!" : "Repasa la tabla Tool vs Skill de la presentación y reintenta."}`; $("#p8 .nivs").innerHTML = '<button class="btn" id="skRe">Reintentar</button>'; $("#skFb").innerHTML = ""; $("#skSig").style.display = "none"; if (skOk >= 6) completar("p8"); $("#skRe").onclick = () => { location.hash = "#toolskill"; skI = 0; skOk = 0; $("#skPts").textContent = "Aciertos: 0"; $("#p8 .nivs").innerHTML = '<button class="btn sec" data-c="Tool">🛠️ Tool</button><button class="btn sec" data-c="Skill">📘 Skill</button><button class="btn sec" data-c="MCP">🔌 MCP</button>'; skRender(); }; return; }
+  skI++; skRender();
+};
+skRender();
+function spRender() {
+  const n = +$("#spN").value, t = +$("#spT").value; $("#spNv").textContent = n; $("#spTv").textContent = t;
+  const todo = n * t, prog = n * 100 + t, max = Math.max(todo, 1);
+  $("#spAv").textContent = todo.toLocaleString("es-CO") + " tokens"; $("#spBv").textContent = prog.toLocaleString("es-CO") + " tokens";
+  $("#spB").style.width = Math.max(2, prog / max * 100) + "%";
+  $("#spTxt").innerHTML = `Con <strong>${n}</strong> skills, cargar todo gasta ≈ <strong>${(todo / prog).toFixed(1)}×</strong> más contexto que el catálogo + 1 skill. Menos contexto = menos costo, menos latencia y menos confusión del modelo.`;
+}
+$("#p8").addEventListener("input", e => { if (e.target.id === "spN" || e.target.id === "spT") spRender(); }); spRender();
+if (location.hash === "#toolskill") $("[data-p=p8]").click();
 </script>
 </body>
 </html>
