@@ -1,0 +1,22 @@
+{
+  "name": "agentes-desde-cero",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Clase: crear y administrar agentes de IA desde cero con TypeScript, Node y patrón Strategy",
+  "engines": { "node": ">=20.12" },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "nivel0": "tsx src/niveles/nivel0-llamada.ts",
+    "nivel1": "tsx src/niveles/nivel1-chatbot.ts",
+    "nivel2": "tsx src/niveles/nivel2-herramientas.ts",
+    "nivel3": "tsx src/niveles/nivel3-react.ts",
+    "comparar": "tsx src/niveles/comparar-proveedores.ts",
+    "test": "tsx src/verificar.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}

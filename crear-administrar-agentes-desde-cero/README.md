@@ -31,6 +31,7 @@ crear-administrar-agentes-desde-cero/
 ├── actividades/
 │   └── laboratorio-agentes.html   ← 8 actividades interactivas (funciona sin internet)
 ├── assets/                        ← estilos y motor de diapositivas
+├── paso-a-paso/                   ← cómo construir TODO el código desde cero (13 pasos + checkpoints)
 └── codigo/                        ← proyecto Node + TypeScript
     ├── src/llm/                   ← Strategy: Gemini, Cohere, Groq, Mock, Fallback, Medido, factory
     ├── skills/                    ← skills de ejemplo (reporte-clima, resumen-ejecutivo)
@@ -40,6 +41,10 @@ crear-administrar-agentes-desde-cero/
     ├── src/niveles/               ← los scripts que se ejecutan en clase
     └── src/soluciones/            ← soluciones de los retos (no compartir antes)
 ```
+
+## 🧱 ¿Quieres explicar cómo se construyó todo?
+
+Abre **[`paso-a-paso/index.html`](paso-a-paso/index.html)**: una guía de 13 pasos para programar el proyecto en vivo, del más básico al más avanzado, explicando **por qué** existe cada archivo y **qué problema resuelve**. Incluye checkpoints ejecutables por paso.
 
 ## ▶️ Cómo ejecutarlo
 

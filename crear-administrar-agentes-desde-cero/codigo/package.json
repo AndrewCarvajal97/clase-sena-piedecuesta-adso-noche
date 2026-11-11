@@ -12,7 +12,7 @@
     "nivel2": "tsx src/niveles/nivel2-herramientas.ts",
     "nivel3": "tsx src/niveles/nivel3-react.ts",
     "skills": "tsx src/niveles/nivel3b-skills.ts",
-    "nivel4":"tsx src/niveles/nivel4-planificador.ts",
+    "nivel4": "tsx src/niveles/nivel4-planificador.ts",
     "nivel5": "tsx src/niveles/nivel5-multiagente.ts",
     "comparar": "tsx src/niveles/comparar-proveedores.ts",
     "test": "tsx src/verificar.ts",
