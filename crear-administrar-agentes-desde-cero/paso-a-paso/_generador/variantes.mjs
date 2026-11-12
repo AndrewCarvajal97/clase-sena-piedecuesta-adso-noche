@@ -84,6 +84,7 @@ const SCRIPT_DESDE = {
 /** Paso en el que aparece cada prueba de verificar.ts (según el nombre de la prueba). */
 const PRUEBA_DESDE = [
   [/^LLMMedido/, 2],
+  [/^Factory \+ Singleton/, 2],
   [/^Fallback/, 4],
   [/^Strategy: intercambiar/, 5],
   [/^Memoria:/, 5],
@@ -198,15 +199,23 @@ import { MockProvider } from "./providers/mock.js";
 
 export type NombreProveedor = "mock";
 
+const instancias = new Map<string, LLMProvider>();
+
 /**
- * FÁBRICA de estrategias: convierte un texto ("mock") en un objeto LLMProvider.
- * Es el ÚNICO lugar del proyecto que conoce las clases concretas.
+ * FÁBRICA + SINGLETON: crea el proveedor mock una sola vez por proceso.
  * El resto del código (los agentes) solo ve la interfaz LLMProvider.
  */
 export function crearProveedor(nombre: string = env("LLM_PROVIDER") ?? "mock"): LLMProvider {
-  switch (nombre.toLowerCase()) {
-    case "mock":
-      return new MockProvider();
+  const claveCache = nombre.trim().toLowerCase();
+  const existente = instancias.get(claveCache);
+  if (existente) return existente;
+
+  switch (claveCache) {
+    case "mock": {
+      const proveedor = new MockProvider();
+      instancias.set(claveCache, proveedor);
+      return proveedor;
+    }
     default:
       throw new Error(\`Proveedor desconocido: "\${nombre}". Por ahora solo existe: mock\`);
   }

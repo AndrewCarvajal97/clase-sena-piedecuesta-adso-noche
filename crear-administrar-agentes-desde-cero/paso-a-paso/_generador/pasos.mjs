@@ -55,7 +55,7 @@ export const inicio = {
     { ruta: "src/llm/", que: "Todo lo que habla con modelos de lenguaje", porque: "Aísla a los agentes de los proveedores: aquí vive el patrón Strategy.", paso: 1 },
     { ruta: "src/llm/types.ts", que: "El contrato LLMProvider", porque: "La interfaz común que todo proveedor cumple.", paso: 1 },
     { ruta: "src/llm/providers/", que: "Una clase por proveedor", porque: "Gemini, Cohere, Groq, Mock y Fallback: intercambiables.", paso: 1 },
-    { ruta: "src/llm/factory.ts · medido.ts", que: "Fábrica y medidor", porque: "Elegir proveedor desde .env y controlar llamadas/tokens (Decorator).", paso: 2 },
+    { ruta: "src/llm/factory.ts · medido.ts", que: "Fábrica, Singleton y medidor", porque: "Elegir y reutilizar el proveedor desde .env, y controlar llamadas/tokens (Decorator).", paso: 2 },
     { ruta: "src/tools/", que: "Las «manos» del agente", porque: "Funciones normales con una descripción que el LLM lee.", paso: 6 },
     { ruta: "src/agentes/", que: "Los «cerebros» (niveles 1 al 5)", porque: "ChatAgent, ToolAgent, ReActAgent, Planificador y Orquestador, más memoria, protocolo y eventos.", paso: 5 },
     { ruta: "src/skills/", que: "Cargador de skills", porque: "Lee skills/*/SKILL.md y las entrega por demanda.", paso: 9 },
@@ -183,7 +183,7 @@ export const pasos = [
       "Ya hay contrato, pero faltan tres cosas: (1) elegir el proveedor desde configuración y no desde el código; (2) saber cuánto cuesta cada llamada antes de que llegue la factura; (3) ver con tus propios ojos que cada llamada nace de cero.",
     conceptos: [
       { t: ".env y process.loadEnvFile", d: "Variables de configuración y secretos fuera del código. Node 20.12+ las lee sin instalar «dotenv»." },
-      { t: "Fábrica (Factory)", d: "Convierte un texto («groq») en un objeto LLMProvider. Es el ÚNICO archivo que conoce las clases concretas." },
+      { t: "Fábrica + Singleton", d: "La fábrica elige el proveedor y conserva una instancia por proveedor durante la ejecución. Así se reutilizan clientes sin compartir el presupuesto del medidor." },
       { t: "Decorator (LLMMedido)", d: "Envuelve cualquier proveedor y le agrega métricas y un tope de llamadas sin modificarlo." },
       { t: "Sin estado (stateless)", d: "Cada llamada es independiente. La «memoria» es reenviar mensajes anteriores." },
     ],
@@ -198,9 +198,11 @@ export const pasos = [
         mira: ["Los códigos \\x1b[...m son secuencias ANSI que cualquier terminal moderna entiende."],
       },
       "src/llm/factory.ts": {
-        porque: "La fábrica de estrategias. Lee LLM_PROVIDER y entrega el proveedor correspondiente. Es el único lugar donde aparece `new MockProvider()`.",
+        porque: "La fábrica de estrategias con caché Singleton por proveedor. Lee LLM_PROVIDER, crea el proveedor una sola vez por proceso y entrega siempre esa misma instancia.",
         mira: [
           "El resto del proyecto llamará a `crearProveedor()` y recibirá un `LLMProvider`: no sabrá qué hay detrás.",
+          "La caché usa el nombre normalizado (`mock` y `MOCK` comparten instancia).",
+          "El Singleton se aplica al proveedor, que es el cliente reutilizable; `LLMMedido` sigue siendo nuevo por ejecución para no mezclar métricas ni presupuestos.",
           "El valor por defecto es «mock»: si olvidas configurar, nada se rompe ni se gasta dinero.",
           "Si el nombre no existe, el error dice cuáles existen: mensajes de error útiles ahorran preguntas.",
         ],
@@ -232,14 +234,14 @@ export const pasos = [
       },
       "src/verificar.ts": {
         porque: "Nuestras pruebas automáticas, sin internet (usan el mock). Nacen aquí y crecerán con cada paso: así nunca avanzas sobre código roto.",
-        mira: ["La función `prueba()` ejecuta un bloque y muestra ✅ o ❌ sin detener las demás.", "Primera prueba: el presupuesto del LLMMedido corta la tercera llamada."],
+        mira: ["La función `prueba()` ejecuta un bloque y muestra ✅ o ❌ sin detener las demás.", "La prueba de Factory + Singleton comprueba identidad (`===`) al pedir `mock` con distinta capitalización.", "El presupuesto del LLMMedido corta la tercera llamada."],
       },
     },
     ejecutar: [
       { cmd: "npm run nivel0", run: "npm run -s nivel0", nota: "Observa las tres llamadas y el resumen final.", variable: true },
       { cmd: "npm test", run: "npm run -s test", nota: "Primera prueba automática." },
     ],
-    checkpoint: "El Nivel 0 muestra «No lo sé» en la llamada 2 y «Te llamas Camila» en la 3.",
+    checkpoint: "El Nivel 0 muestra «No lo sé» en la llamada 2 y «Te llamas Camila» en la 3. Además, la prueba confirma que la Factory reutiliza la misma instancia de proveedor.",
     preguntas: [
       "¿Por qué la llamada 2 no sabe el nombre y la 3 sí? ¿Qué cambió?",
       "Si el historial crece a 100 mensajes, ¿qué pasa con los tokens enviados y con el costo?",

@@ -406,6 +406,11 @@ await prueba("LLMMedido: cuenta llamadas y respeta el presupuesto", async () => 
   assert.equal(m.llamadas, 2);
 });
 
+await prueba("Factory + Singleton: reutiliza el proveedor configurado", async () => {
+  const { crearProveedor } = await import("./llm/factory.js");
+  assert.strictEqual(crearProveedor("mock"), crearProveedor("MOCK"));
+});
+
 console.log(`\n${process.exitCode ? "⚠️  Hay pruebas fallidas" : `🎉 ${ok} pruebas pasaron. ¡Entorno listo!`}`);
 ```
 
@@ -429,8 +434,9 @@ npm test
 ✅ Fallback: salta al siguiente proveedor cuando uno falla
 ✅ Fallback: error claro si TODOS fallan
 ✅ LLMMedido: cuenta llamadas y respeta el presupuesto
+✅ Factory + Singleton: reutiliza el proveedor configurado
 
-🎉 7 pruebas pasaron. ¡Entorno listo!
+🎉 8 pruebas pasaron. ¡Entorno listo!
 ```
 
 ## ✅ Checkpoint

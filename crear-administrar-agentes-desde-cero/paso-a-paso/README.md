@@ -49,7 +49,7 @@ Una guía para **programar en vivo** (o repasar) todo el proyecto del curso, des
 | `src/llm/` | Todo lo que habla con modelos de lenguaje | Aísla a los agentes de los proveedores: aquí vive el patrón Strategy. | 1 |
 | `src/llm/types.ts` | El contrato LLMProvider | La interfaz común que todo proveedor cumple. | 1 |
 | `src/llm/providers/` | Una clase por proveedor | Gemini, Cohere, Groq, Mock y Fallback: intercambiables. | 1 |
-| `src/llm/factory.ts · medido.ts` | Fábrica y medidor | Elegir proveedor desde .env y controlar llamadas/tokens (Decorator). | 2 |
+| `src/llm/factory.ts · medido.ts` | Fábrica, Singleton y medidor | Elegir y reutilizar el proveedor desde .env, y controlar llamadas/tokens (Decorator). | 2 |
 | `src/tools/` | Las «manos» del agente | Funciones normales con una descripción que el LLM lee. | 6 |
 | `src/agentes/` | Los «cerebros» (niveles 1 al 5) | ChatAgent, ToolAgent, ReActAgent, Planificador y Orquestador, más memoria, protocolo y eventos. | 5 |
 | `src/skills/` | Cargador de skills | Lee skills/*/SKILL.md y las entrega por demanda. | 9 |

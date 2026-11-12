@@ -318,8 +318,8 @@ npm run soluciones
 ```
 50 USD = 200.000 COP (tasa de ejemplo)
 Error al ejecutar "convertir_moneda": Formato inválido. Usa: "50 USD a COP"
-Clima en Piedecuesta: 22.5 °C, despejado
-Clima en Atlantis: 14.8 °C, parcialmente nublado
+Clima en Piedecuesta: 26 °C, nublado
+Clima en Atlantis: 23.4 °C, nublado
 ```
 
 ## ✅ Checkpoint

@@ -39,4 +39,9 @@ await prueba("LLMMedido: cuenta llamadas y respeta el presupuesto", async () => 
   assert.equal(m.llamadas, 2);
 });
 
+await prueba("Factory + Singleton: reutiliza el proveedor configurado", async () => {
+  const { crearProveedor } = await import("./llm/factory.js");
+  assert.strictEqual(crearProveedor("mock"), crearProveedor("MOCK"));
+});
+
 console.log(`\n${process.exitCode ? "⚠️  Hay pruebas fallidas" : `🎉 ${ok} pruebas pasaron. ¡Entorno listo!`}`);

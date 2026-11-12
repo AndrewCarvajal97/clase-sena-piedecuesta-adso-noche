@@ -90,6 +90,11 @@ await prueba("LLMMedido: cuenta llamadas y respeta el presupuesto", async () => 
   assert.equal(m.llamadas, 2);
 });
 
+await prueba("Factory + Singleton: reutiliza el proveedor configurado", async () => {
+  const { crearProveedor } = await import("./llm/factory.js");
+  assert.strictEqual(crearProveedor("mock"), crearProveedor("MOCK"));
+});
+
 await prueba("Nivel 2: usa UNA herramienta", async () => {
   const r = await new ToolAgent(new MockProvider(), todas()).ejecutar("¿Cuánto es (12 + 8) * 3?");
   assert.match(r, /60/);

@@ -539,6 +539,11 @@ await prueba("LLMMedido: cuenta llamadas y respeta el presupuesto", async () => 
   assert.equal(m.llamadas, 2);
 });
 
+await prueba("Factory + Singleton: reutiliza el proveedor configurado", async () => {
+  const { crearProveedor } = await import("./llm/factory.js");
+  assert.strictEqual(crearProveedor("mock"), crearProveedor("MOCK"));
+});
+
 console.log(`\n${process.exitCode ? "⚠️  Hay pruebas fallidas" : `🎉 ${ok} pruebas pasaron. ¡Entorno listo!`}`);
 ```
 
@@ -579,7 +584,7 @@ Tú: ¿Cómo me llamo?
 Bot: No lo sé: no está en el historial que recibí.
    (mensajes enviados en memoria: 4)
 
-📊 5 llamadas · ~312 tokens in / ~88 out · 2 ms · 0 errores
+📊 5 llamadas · ~312 tokens in / ~88 out · 0 ms · 0 errores
 ```
 
 **2.** Con memoria completa SÍ lo recuerda.

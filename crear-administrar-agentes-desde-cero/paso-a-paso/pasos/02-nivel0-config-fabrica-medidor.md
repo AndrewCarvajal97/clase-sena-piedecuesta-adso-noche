@@ -13,7 +13,7 @@ Ya hay contrato, pero faltan tres cosas: (1) elegir el proveedor desde configura
 ## 🧠 Conceptos clave
 
 - **.env y process.loadEnvFile:** Variables de configuración y secretos fuera del código. Node 20.12+ las lee sin instalar «dotenv».
-- **Fábrica (Factory):** Convierte un texto («groq») en un objeto LLMProvider. Es el ÚNICO archivo que conoce las clases concretas.
+- **Fábrica + Singleton:** La fábrica elige el proveedor y conserva una instancia por proveedor durante la ejecución. Así se reutilizan clientes sin compartir el presupuesto del medidor.
 - **Decorator (LLMMedido):** Envuelve cualquier proveedor y le agrega métricas y un tope de llamadas sin modificarlo.
 - **Sin estado (stateless):** Cada llamada es independiente. La «memoria» es reenviar mensajes anteriores.
 
@@ -89,11 +89,13 @@ export const titulo = (t: string) =>
 
 ### 3. `src/llm/factory.ts` — 🆕 nuevo
 
-**Por qué:** La fábrica de estrategias. Lee LLM_PROVIDER y entrega el proveedor correspondiente. Es el único lugar donde aparece `new MockProvider()`.
+**Por qué:** La fábrica de estrategias con caché Singleton por proveedor. Lee LLM_PROVIDER, crea el proveedor una sola vez por proceso y entrega siempre esa misma instancia.
 
 **Qué mirar:**
 
 - El resto del proyecto llamará a `crearProveedor()` y recibirá un `LLMProvider`: no sabrá qué hay detrás.
+- La caché usa el nombre normalizado (`mock` y `MOCK` comparten instancia).
+- El Singleton se aplica al proveedor, que es el cliente reutilizable; `LLMMedido` sigue siendo nuevo por ejecución para no mezclar métricas ni presupuestos.
 - El valor por defecto es «mock»: si olvidas configurar, nada se rompe ni se gasta dinero.
 - Si el nombre no existe, el error dice cuáles existen: mensajes de error útiles ahorran preguntas.
 
@@ -104,15 +106,23 @@ import { MockProvider } from "./providers/mock.js";
 
 export type NombreProveedor = "mock";
 
+const instancias = new Map<string, LLMProvider>();
+
 /**
- * FÁBRICA de estrategias: convierte un texto ("mock") en un objeto LLMProvider.
- * Es el ÚNICO lugar del proyecto que conoce las clases concretas.
+ * FÁBRICA + SINGLETON: crea el proveedor mock una sola vez por proceso.
  * El resto del código (los agentes) solo ve la interfaz LLMProvider.
  */
 export function crearProveedor(nombre: string = env("LLM_PROVIDER") ?? "mock"): LLMProvider {
-  switch (nombre.toLowerCase()) {
-    case "mock":
-      return new MockProvider();
+  const claveCache = nombre.trim().toLowerCase();
+  const existente = instancias.get(claveCache);
+  if (existente) return existente;
+
+  switch (claveCache) {
+    case "mock": {
+      const proveedor = new MockProvider();
+      instancias.set(claveCache, proveedor);
+      return proveedor;
+    }
     default:
       throw new Error(`Proveedor desconocido: "${nombre}". Por ahora solo existe: mock`);
   }
@@ -282,7 +292,8 @@ LLM_PROVIDER=mock
 **Qué mirar:**
 
 - La función `prueba()` ejecuta un bloque y muestra ✅ o ❌ sin detener las demás.
-- Primera prueba: el presupuesto del LLMMedido corta la tercera llamada.
+- La prueba de Factory + Singleton comprueba identidad (`===`) al pedir `mock` con distinta capitalización.
+- El presupuesto del LLMMedido corta la tercera llamada.
 
 ```ts
 /**
@@ -312,6 +323,11 @@ await prueba("LLMMedido: cuenta llamadas y respeta el presupuesto", async () => 
   await m.chat([{ rol: "user", contenido: "dos" }]);
   await assert.rejects(() => m.chat([{ rol: "user", contenido: "tres" }]), /Presupuesto agotado/);
   assert.equal(m.llamadas, 2);
+});
+
+await prueba("Factory + Singleton: reutiliza el proveedor configurado", async () => {
+  const { crearProveedor } = await import("./llm/factory.js");
+  assert.strictEqual(crearProveedor("mock"), crearProveedor("MOCK"));
 });
 
 console.log(`\n${process.exitCode ? "⚠️  Hay pruebas fallidas" : `🎉 ${ok} pruebas pasaron. ¡Entorno listo!`}`);
@@ -402,13 +418,14 @@ npm test
 
 ```
 ✅ LLMMedido: cuenta llamadas y respeta el presupuesto
+✅ Factory + Singleton: reutiliza el proveedor configurado
 
-🎉 1 pruebas pasaron. ¡Entorno listo!
+🎉 2 pruebas pasaron. ¡Entorno listo!
 ```
 
 ## ✅ Checkpoint
 
-El Nivel 0 muestra «No lo sé» en la llamada 2 y «Te llamas Camila» en la 3.
+El Nivel 0 muestra «No lo sé» en la llamada 2 y «Te llamas Camila» en la 3. Además, la prueba confirma que la Factory reutiliza la misma instancia de proveedor.
 
 Si te quedaste atrás, copia `checkpoints/paso-02/`, ejecuta `npm install` y continúa.
 

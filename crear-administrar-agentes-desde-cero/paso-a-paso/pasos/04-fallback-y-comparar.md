@@ -182,10 +182,10 @@ main().catch((e) => {
 - export type NombreProveedor = "gemini" | "cohere" | "groq" | "mock";
 + export type NombreProveedor = "gemini" | "cohere" | "groq" | "mock" | "fallback";
   
-  /**
+  const instancias = new Map<string, LLMProvider>();
   …
-      case "mock":
-        return new MockProvider();
+        proveedor = new MockProvider();
+        break;
 +     case "fallback": {
 +       const orden = (env("FALLBACK_ORDER") ?? "groq,gemini,cohere").split(",").map((s) => s.trim());
 +       // Solo incluimos los proveedores que SÍ tienen clave configurada.
@@ -198,13 +198,14 @@ main().catch((e) => {
 +         }
 +       }
 +       if (!disponibles.length) throw new Error("fallback: no hay ninguna clave configurada en .env");
-+       return new FallbackProvider(disponibles);
++       proveedor = new FallbackProvider(disponibles);
++       break;
 +     }
       default:
 -       throw new Error(`Proveedor desconocido: "${nombre}". Usa gemini | cohere | groq | mock`);
 +       throw new Error(`Proveedor desconocido: "${nombre}". Usa gemini | cohere | groq | mock | fallback`);
     }
-  }
+  
   …
 ```
 
@@ -221,27 +222,39 @@ import { FallbackProvider } from "./providers/fallback.js";
 
 export type NombreProveedor = "gemini" | "cohere" | "groq" | "mock" | "fallback";
 
+const instancias = new Map<string, LLMProvider>();
+
 /**
- * FÁBRICA de estrategias: convierte un texto ("groq") en un objeto LLMProvider.
+ * FÁBRICA + SINGLETON por proveedor: convierte un texto ("groq") en un
+ * LLMProvider y reutiliza la misma instancia durante toda la ejecución.
  * Es el ÚNICO lugar del proyecto que conoce las clases concretas.
  * El resto del código (los agentes) solo ve la interfaz LLMProvider.
  */
 export function crearProveedor(nombre: string = env("LLM_PROVIDER") ?? "mock"): LLMProvider {
+  const claveCache = nombre.trim().toLowerCase();
+  const existente = instancias.get(claveCache);
+  if (existente) return existente;
+
   const clave = (variable: string) => {
     const k = env(variable);
     if (!k) throw new Error(`Falta ${variable} en tu archivo .env (o usa LLM_PROVIDER=mock para practicar sin claves)`);
     return k;
   };
 
-  switch (nombre.toLowerCase()) {
+  let proveedor: LLMProvider;
+  switch (claveCache) {
     case "gemini":
-      return new GeminiProvider(clave("GEMINI_API_KEY"));
+      proveedor = new GeminiProvider(clave("GEMINI_API_KEY"));
+      break;
     case "cohere":
-      return new CohereProvider(clave("COHERE_API_KEY"));
+      proveedor = new CohereProvider(clave("COHERE_API_KEY"));
+      break;
     case "groq":
-      return new GroqProvider(clave("GROQ_API_KEY"));
+      proveedor = new GroqProvider(clave("GROQ_API_KEY"));
+      break;
     case "mock":
-      return new MockProvider();
+      proveedor = new MockProvider();
+      break;
     case "fallback": {
       const orden = (env("FALLBACK_ORDER") ?? "groq,gemini,cohere").split(",").map((s) => s.trim());
       // Solo incluimos los proveedores que SÍ tienen clave configurada.
@@ -254,11 +267,15 @@ export function crearProveedor(nombre: string = env("LLM_PROVIDER") ?? "mock"): 
         }
       }
       if (!disponibles.length) throw new Error("fallback: no hay ninguna clave configurada en .env");
-      return new FallbackProvider(disponibles);
+      proveedor = new FallbackProvider(disponibles);
+      break;
     }
     default:
       throw new Error(`Proveedor desconocido: "${nombre}". Usa gemini | cohere | groq | mock | fallback`);
   }
+
+  instancias.set(claveCache, proveedor);
+  return proveedor;
 }
 ```
 
@@ -522,6 +539,11 @@ await prueba("LLMMedido: cuenta llamadas y respeta el presupuesto", async () => 
   assert.equal(m.llamadas, 2);
 });
 
+await prueba("Factory + Singleton: reutiliza el proveedor configurado", async () => {
+  const { crearProveedor } = await import("./llm/factory.js");
+  assert.strictEqual(crearProveedor("mock"), crearProveedor("MOCK"));
+});
+
 console.log(`\n${process.exitCode ? "⚠️  Hay pruebas fallidas" : `🎉 ${ok} pruebas pasaron. ¡Entorno listo!`}`);
 ```
 
@@ -547,14 +569,14 @@ Pregunta: Explica en una sola frase qué es un agente de IA.
 (omito gemini: no hay GEMINI_API_KEY en .env)
 (omito cohere: no hay COHERE_API_KEY en .env)
 
-✔ mock                               0 ms
+✔ mock                               1 ms
    (mock) Recibí 1 mensaje(s). Tu último mensaje fue: "Explica en una sola frase qué es un agente de IA."
 
 
 ════════════════════════════════════════════════════════════
 FALLBACK · el primero falla y el sistema sigue
 ════════════════════════════════════════════════════════════
-✔ fallback[proveedor-caido → mock-respaldo] 1 ms
+✔ fallback[proveedor-caido → mock-respaldo] 0 ms
    (mock) Recibí 1 mensaje(s). Tu último mensaje fue: "Explica en una sola frase qué es un agente de IA."
 
 Bitácora del fallback:
@@ -574,8 +596,9 @@ npm test
 ✅ Fallback: salta al siguiente proveedor cuando uno falla
 ✅ Fallback: error claro si TODOS fallan
 ✅ LLMMedido: cuenta llamadas y respeta el presupuesto
+✅ Factory + Singleton: reutiliza el proveedor configurado
 
-🎉 3 pruebas pasaron. ¡Entorno listo!
+🎉 4 pruebas pasaron. ¡Entorno listo!
 ```
 
 ## ✅ Checkpoint

@@ -87,7 +87,7 @@ ul.lista{margin:6px 0 6px 20px}ul.lista li{margin:4px 0}
   <tr><td><strong>0</strong></td><td><a data-ir="paso-0" href="#paso-0">Preparar el proyecto</a></td><td>Preparación</td><td>10 min</td></tr><tr><td><strong>1</strong></td><td><a data-ir="paso-1" href="#paso-1">El contrato LLMProvider y un LLM de mentira</a></td><td>Nivel 0 · parte 1</td><td>15 min</td></tr><tr><td><strong>2</strong></td><td><a data-ir="paso-2" href="#paso-2">Configuración, fábrica, medidor y el Nivel 0</a></td><td>Nivel 0 · parte 2</td><td>20 min</td></tr><tr><td><strong>3</strong></td><td><a data-ir="paso-3" href="#paso-3">Proveedores reales: Gemini, Cohere y Groq</a></td><td>Infraestructura</td><td>20 min</td></tr><tr><td><strong>4</strong></td><td><a data-ir="paso-4" href="#paso-4">Resiliencia: Fallback y comparar proveedores</a></td><td>Infraestructura</td><td>15 min</td></tr><tr><td><strong>5</strong></td><td><a data-ir="paso-5" href="#paso-5">Chatbot con rol y memoria</a></td><td>Nivel 1</td><td>20 min</td></tr><tr><td><strong>6</strong></td><td><a data-ir="paso-6" href="#paso-6">Herramientas: las «manos» del agente</a></td><td>Nivel 2 · parte 1</td><td>20 min</td></tr><tr><td><strong>7</strong></td><td><a data-ir="paso-7" href="#paso-7">El protocolo JSON y el ToolAgent</a></td><td>Nivel 2 · parte 2</td><td>25 min</td></tr><tr><td><strong>8</strong></td><td><a data-ir="paso-8" href="#paso-8">ReAct: pensar → actuar → observar</a></td><td>Nivel 3</td><td>25 min</td></tr><tr><td><strong>9</strong></td><td><a data-ir="paso-9" href="#paso-9">Skills: conocimiento experto bajo demanda</a></td><td>Nivel 3b</td><td>20 min</td></tr><tr><td><strong>10</strong></td><td><a data-ir="paso-10" href="#paso-10">Plan-and-Execute: planificar antes de actuar</a></td><td>Nivel 4</td><td>20 min</td></tr><tr><td><strong>11</strong></td><td><a data-ir="paso-11" href="#paso-11">Multi-agente: orquestador y especialistas</a></td><td>Nivel 5</td><td>25 min</td></tr><tr><td><strong>12</strong></td><td><a data-ir="paso-12" href="#paso-12">Retos: extender sin tocar los agentes</a></td><td>Retos</td><td>25 min</td></tr></table>
   <h3 class="sec">🗂️ Estructura final y por qué existe cada parte</h3>
   <table><tr><th>Carpeta / archivo</th><th>Qué es</th><th>Por qué existe</th><th>Paso</th></tr>
-  <tr><td><code>agentes-desde-cero/</code></td><td>Raíz del proyecto</td><td>Todo lo que se instala y ejecuta vive aquí.</td><td><a data-ir="paso-0" href="#paso-0">0</a></td></tr><tr><td><code>package.json · tsconfig.json</code></td><td>Identidad del proyecto y reglas de TypeScript</td><td>Hacen que todos tengan el mismo entorno y que los errores aparezcan al escribir.</td><td><a data-ir="paso-0" href="#paso-0">0</a></td></tr><tr><td><code>.env.example → .env</code></td><td>Configuración y secretos</td><td>Las claves y el proveedor elegido no se escriben en el código ni se suben a GitHub.</td><td><a data-ir="paso-2" href="#paso-2">2</a></td></tr><tr><td><code>skills/</code></td><td>Conocimiento experto en Markdown (SKILL.md)</td><td>Enseña al agente CÓMO hacer tareas sin recompilar código.</td><td><a data-ir="paso-9" href="#paso-9">9</a></td></tr><tr><td><code>src/llm/</code></td><td>Todo lo que habla con modelos de lenguaje</td><td>Aísla a los agentes de los proveedores: aquí vive el patrón Strategy.</td><td><a data-ir="paso-1" href="#paso-1">1</a></td></tr><tr><td><code>src/llm/types.ts</code></td><td>El contrato LLMProvider</td><td>La interfaz común que todo proveedor cumple.</td><td><a data-ir="paso-1" href="#paso-1">1</a></td></tr><tr><td><code>src/llm/providers/</code></td><td>Una clase por proveedor</td><td>Gemini, Cohere, Groq, Mock y Fallback: intercambiables.</td><td><a data-ir="paso-1" href="#paso-1">1</a></td></tr><tr><td><code>src/llm/factory.ts · medido.ts</code></td><td>Fábrica y medidor</td><td>Elegir proveedor desde .env y controlar llamadas/tokens (Decorator).</td><td><a data-ir="paso-2" href="#paso-2">2</a></td></tr><tr><td><code>src/tools/</code></td><td>Las «manos» del agente</td><td>Funciones normales con una descripción que el LLM lee.</td><td><a data-ir="paso-6" href="#paso-6">6</a></td></tr><tr><td><code>src/agentes/</code></td><td>Los «cerebros» (niveles 1 al 5)</td><td>ChatAgent, ToolAgent, ReActAgent, Planificador y Orquestador, más memoria, protocolo y eventos.</td><td><a data-ir="paso-5" href="#paso-5">5</a></td></tr><tr><td><code>src/skills/</code></td><td>Cargador de skills</td><td>Lee skills/*/SKILL.md y las entrega por demanda.</td><td><a data-ir="paso-9" href="#paso-9">9</a></td></tr><tr><td><code>src/util/</code></td><td>Utilidades pequeñas</td><td>HTTP con reintentos, extracción de JSON y colores de consola.</td><td><a data-ir="paso-2" href="#paso-2">2</a></td></tr><tr><td><code>src/niveles/</code></td><td>Los ejecutables de la clase</td><td>Un script por nivel: lo que se corre y se muestra a los aprendices.</td><td><a data-ir="paso-2" href="#paso-2">2</a></td></tr><tr><td><code>src/soluciones/</code></td><td>Retos resueltos</td><td>Muestran cómo extender el sistema sin tocar los agentes.</td><td><a data-ir="paso-12" href="#paso-12">12</a></td></tr><tr><td><code>src/bootstrap.ts · config.ts</code></td><td>Arranque compartido</td><td>Crear el LLM, cargar .env y manejar errores igual en todos los scripts.</td><td><a data-ir="paso-2" href="#paso-2">2</a></td></tr><tr><td><code>src/verificar.ts</code></td><td>Pruebas sin internet</td><td>Red de seguridad que usa el Mock: crece con cada paso.</td><td><a data-ir="paso-2" href="#paso-2">2</a></td></tr></table>
+  <tr><td><code>agentes-desde-cero/</code></td><td>Raíz del proyecto</td><td>Todo lo que se instala y ejecuta vive aquí.</td><td><a data-ir="paso-0" href="#paso-0">0</a></td></tr><tr><td><code>package.json · tsconfig.json</code></td><td>Identidad del proyecto y reglas de TypeScript</td><td>Hacen que todos tengan el mismo entorno y que los errores aparezcan al escribir.</td><td><a data-ir="paso-0" href="#paso-0">0</a></td></tr><tr><td><code>.env.example → .env</code></td><td>Configuración y secretos</td><td>Las claves y el proveedor elegido no se escriben en el código ni se suben a GitHub.</td><td><a data-ir="paso-2" href="#paso-2">2</a></td></tr><tr><td><code>skills/</code></td><td>Conocimiento experto en Markdown (SKILL.md)</td><td>Enseña al agente CÓMO hacer tareas sin recompilar código.</td><td><a data-ir="paso-9" href="#paso-9">9</a></td></tr><tr><td><code>src/llm/</code></td><td>Todo lo que habla con modelos de lenguaje</td><td>Aísla a los agentes de los proveedores: aquí vive el patrón Strategy.</td><td><a data-ir="paso-1" href="#paso-1">1</a></td></tr><tr><td><code>src/llm/types.ts</code></td><td>El contrato LLMProvider</td><td>La interfaz común que todo proveedor cumple.</td><td><a data-ir="paso-1" href="#paso-1">1</a></td></tr><tr><td><code>src/llm/providers/</code></td><td>Una clase por proveedor</td><td>Gemini, Cohere, Groq, Mock y Fallback: intercambiables.</td><td><a data-ir="paso-1" href="#paso-1">1</a></td></tr><tr><td><code>src/llm/factory.ts · medido.ts</code></td><td>Fábrica, Singleton y medidor</td><td>Elegir y reutilizar el proveedor desde .env, y controlar llamadas/tokens (Decorator).</td><td><a data-ir="paso-2" href="#paso-2">2</a></td></tr><tr><td><code>src/tools/</code></td><td>Las «manos» del agente</td><td>Funciones normales con una descripción que el LLM lee.</td><td><a data-ir="paso-6" href="#paso-6">6</a></td></tr><tr><td><code>src/agentes/</code></td><td>Los «cerebros» (niveles 1 al 5)</td><td>ChatAgent, ToolAgent, ReActAgent, Planificador y Orquestador, más memoria, protocolo y eventos.</td><td><a data-ir="paso-5" href="#paso-5">5</a></td></tr><tr><td><code>src/skills/</code></td><td>Cargador de skills</td><td>Lee skills/*/SKILL.md y las entrega por demanda.</td><td><a data-ir="paso-9" href="#paso-9">9</a></td></tr><tr><td><code>src/util/</code></td><td>Utilidades pequeñas</td><td>HTTP con reintentos, extracción de JSON y colores de consola.</td><td><a data-ir="paso-2" href="#paso-2">2</a></td></tr><tr><td><code>src/niveles/</code></td><td>Los ejecutables de la clase</td><td>Un script por nivel: lo que se corre y se muestra a los aprendices.</td><td><a data-ir="paso-2" href="#paso-2">2</a></td></tr><tr><td><code>src/soluciones/</code></td><td>Retos resueltos</td><td>Muestran cómo extender el sistema sin tocar los agentes.</td><td><a data-ir="paso-12" href="#paso-12">12</a></td></tr><tr><td><code>src/bootstrap.ts · config.ts</code></td><td>Arranque compartido</td><td>Crear el LLM, cargar .env y manejar errores igual en todos los scripts.</td><td><a data-ir="paso-2" href="#paso-2">2</a></td></tr><tr><td><code>src/verificar.ts</code></td><td>Pruebas sin internet</td><td>Red de seguridad que usa el Mock: crece con cada paso.</td><td><a data-ir="paso-2" href="#paso-2">2</a></td></tr></table>
   <pre class="arbol">agentes-desde-cero/
 ├── skills/
 │   ├── reporte-clima/
@@ -358,7 +358,7 @@ console.log(respuesta);</code></pre></details>
 <section class="paso" id="paso-2" data-paso="paso-2">
 <div class="cab"><span class="nivel">Nivel 0 · parte 2</span> <span class="nivel" style="background:rgba(255,255,255,.2)">⏱ ~20 min</span><h2>Paso 2 · Configuración, fábrica, medidor y el Nivel 0</h2><p>Elegir el proveedor desde .env, medir llamadas y tokens, y demostrar con código que un LLM NO tiene memoria.</p></div>
 <h3 class="sec">❓ Qué problema resuelve</h3><div class="caja ojo">Ya hay contrato, pero faltan tres cosas: (1) elegir el proveedor desde configuración y no desde el código; (2) saber cuánto cuesta cada llamada antes de que llegue la factura; (3) ver con tus propios ojos que cada llamada nace de cero.</div>
-<h3 class="sec">🧠 Conceptos clave</h3><div class="tarjetas"><div class="tarjeta"><b>.env y process.loadEnvFile</b><br>Variables de configuración y secretos fuera del código. Node 20.12+ las lee sin instalar «dotenv».</div><div class="tarjeta"><b>Fábrica (Factory)</b><br>Convierte un texto («groq») en un objeto LLMProvider. Es el ÚNICO archivo que conoce las clases concretas.</div><div class="tarjeta"><b>Decorator (LLMMedido)</b><br>Envuelve cualquier proveedor y le agrega métricas y un tope de llamadas sin modificarlo.</div><div class="tarjeta"><b>Sin estado (stateless)</b><br>Cada llamada es independiente. La «memoria» es reenviar mensajes anteriores.</div></div>
+<h3 class="sec">🧠 Conceptos clave</h3><div class="tarjetas"><div class="tarjeta"><b>.env y process.loadEnvFile</b><br>Variables de configuración y secretos fuera del código. Node 20.12+ las lee sin instalar «dotenv».</div><div class="tarjeta"><b>Fábrica + Singleton</b><br>La fábrica elige el proveedor y conserva una instancia por proveedor durante la ejecución. Así se reutilizan clientes sin compartir el presupuesto del medidor.</div><div class="tarjeta"><b>Decorator (LLMMedido)</b><br>Envuelve cualquier proveedor y le agrega métricas y un tope de llamadas sin modificarlo.</div><div class="tarjeta"><b>Sin estado (stateless)</b><br>Cada llamada es independiente. La «memoria» es reenviar mensajes anteriores.</div></div>
 <h3 class="sec">🗂️ Estructura al terminar este paso</h3><p style="margin:4px 0 6px"><small>🆕 nuevo · ✏️ modificado en este paso</small></p><pre class="arbol">agentes-desde-cero/
 ├── src/
 │   ├── llm/
@@ -401,23 +401,31 @@ export const titulo = (t: string) =&gt;
   console.log(`\n${negrita(verde("═".repeat(60)))}\n${negrita(t)}\n${negrita(verde("═".repeat(60)))}`);</code></pre></details>
 </article>
 <article class="archivo"><header><span class="badge nuevo">🆕 Nuevo</span><code>src/llm/factory.ts</code><button class="copiar" data-t="c-2-2">Copiar</button></header>
-<p class="porque"><strong>Por qué:</strong> La fábrica de estrategias. Lee LLM_PROVIDER y entrega el proveedor correspondiente. Es el único lugar donde aparece <code>new MockProvider()</code>.</p>
-<ul class="mira"><li>El resto del proyecto llamará a <code>crearProveedor()</code> y recibirá un <code>LLMProvider</code>: no sabrá qué hay detrás.</li><li>El valor por defecto es «mock»: si olvidas configurar, nada se rompe ni se gasta dinero.</li><li>Si el nombre no existe, el error dice cuáles existen: mensajes de error útiles ahorran preguntas.</li></ul>
+<p class="porque"><strong>Por qué:</strong> La fábrica de estrategias con caché Singleton por proveedor. Lee LLM_PROVIDER, crea el proveedor una sola vez por proceso y entrega siempre esa misma instancia.</p>
+<ul class="mira"><li>El resto del proyecto llamará a <code>crearProveedor()</code> y recibirá un <code>LLMProvider</code>: no sabrá qué hay detrás.</li><li>La caché usa el nombre normalizado (<code>mock</code> y <code>MOCK</code> comparten instancia).</li><li>El Singleton se aplica al proveedor, que es el cliente reutilizable; <code>LLMMedido</code> sigue siendo nuevo por ejecución para no mezclar métricas ni presupuestos.</li><li>El valor por defecto es «mock»: si olvidas configurar, nada se rompe ni se gasta dinero.</li><li>Si el nombre no existe, el error dice cuáles existen: mensajes de error útiles ahorran preguntas.</li></ul>
 <details open><summary>Código</summary><pre><code id="c-2-2" data-lang="ts">import { env } from "../config.js";
 import type { LLMProvider } from "./types.js";
 import { MockProvider } from "./providers/mock.js";
 
 export type NombreProveedor = "mock";
 
+const instancias = new Map&lt;string, LLMProvider&gt;();
+
 /**
- * FÁBRICA de estrategias: convierte un texto ("mock") en un objeto LLMProvider.
- * Es el ÚNICO lugar del proyecto que conoce las clases concretas.
+ * FÁBRICA + SINGLETON: crea el proveedor mock una sola vez por proceso.
  * El resto del código (los agentes) solo ve la interfaz LLMProvider.
  */
 export function crearProveedor(nombre: string = env("LLM_PROVIDER") ?? "mock"): LLMProvider {
-  switch (nombre.toLowerCase()) {
-    case "mock":
-      return new MockProvider();
+  const claveCache = nombre.trim().toLowerCase();
+  const existente = instancias.get(claveCache);
+  if (existente) return existente;
+
+  switch (claveCache) {
+    case "mock": {
+      const proveedor = new MockProvider();
+      instancias.set(claveCache, proveedor);
+      return proveedor;
+    }
     default:
       throw new Error(`Proveedor desconocido: "${nombre}". Por ahora solo existe: mock`);
   }
@@ -546,7 +554,7 @@ LLM_PROVIDER=mock</code></pre></details>
 </article>
 <article class="archivo"><header><span class="badge nuevo">🆕 Nuevo</span><code>src/verificar.ts</code><button class="copiar" data-t="c-2-7">Copiar</button></header>
 <p class="porque"><strong>Por qué:</strong> Nuestras pruebas automáticas, sin internet (usan el mock). Nacen aquí y crecerán con cada paso: así nunca avanzas sobre código roto.</p>
-<ul class="mira"><li>La función <code>prueba()</code> ejecuta un bloque y muestra ✅ o ❌ sin detener las demás.</li><li>Primera prueba: el presupuesto del LLMMedido corta la tercera llamada.</li></ul>
+<ul class="mira"><li>La función <code>prueba()</code> ejecuta un bloque y muestra ✅ o ❌ sin detener las demás.</li><li>La prueba de Factory + Singleton comprueba identidad (<code>===</code>) al pedir <code>mock</code> con distinta capitalización.</li><li>El presupuesto del LLMMedido corta la tercera llamada.</li></ul>
 <details open><summary>Código</summary><pre><code id="c-2-7" data-lang="ts">/**
  * Autotest SIN internet ni claves (usa el MockProvider).
  * Ejecuta:  npm test
@@ -574,6 +582,11 @@ await prueba("LLMMedido: cuenta llamadas y respeta el presupuesto", async () =&g
   await m.chat([{ rol: "user", contenido: "dos" }]);
   await assert.rejects(() =&gt; m.chat([{ rol: "user", contenido: "tres" }]), /Presupuesto agotado/);
   assert.equal(m.llamadas, 2);
+});
+
+await prueba("Factory + Singleton: reutiliza el proveedor configurado", async () =&gt; {
+  const { crearProveedor } = await import("./llm/factory.js");
+  assert.strictEqual(crearProveedor("mock"), crearProveedor("MOCK"));
 });
 
 console.log(`\n${process.exitCode ? "⚠️  Hay pruebas fallidas" : `🎉 ${ok} pruebas pasaron. ¡Entorno listo!`}`);</code></pre></details>
@@ -620,9 +633,10 @@ Te llamas Camila. ¡Lo recuerdo porque está en el historial que me enviaron!
 
 📊 3 llamadas · ~56 tokens in / ~53 out · 0 ms · 0 errores</code></pre></div>
 <div class="cmd"><div class="nota"><strong>2.</strong> Primera prueba automática.</div><pre><code>npm test</code></pre><div class="sal-titulo">Debes ver</div><pre class="salida"><code>✅ LLMMedido: cuenta llamadas y respeta el presupuesto
+✅ Factory + Singleton: reutiliza el proveedor configurado
 
-🎉 1 pruebas pasaron. ¡Entorno listo!</code></pre></div>
-<h3 class="sec">✅ Checkpoint</h3><div class="caja">El Nivel 0 muestra «No lo sé» en la llamada 2 y «Te llamas Camila» en la 3.<br><small>¿Te quedaste atrás? Copia <code>checkpoints/paso-02/</code>, ejecuta <code>npm install</code> y continúa.</small></div>
+🎉 2 pruebas pasaron. ¡Entorno listo!</code></pre></div>
+<h3 class="sec">✅ Checkpoint</h3><div class="caja">El Nivel 0 muestra «No lo sé» en la llamada 2 y «Te llamas Camila» en la 3. Además, la prueba confirma que la Factory reutiliza la misma instancia de proveedor.<br><small>¿Te quedaste atrás? Copia <code>checkpoints/paso-02/</code>, ejecuta <code>npm install</code> y continúa.</small></div>
 <label class="check"><input type="checkbox" class="marcar" data-paso="paso-2"> <strong>Marcar este paso como completado</strong></label>
 <h3 class="sec">💬 Preguntas para los aprendices</h3><ul class="lista"><li>¿Por qué la llamada 2 no sabe el nombre y la 3 sí? ¿Qué cambió?</li><li>Si el historial crece a 100 mensajes, ¿qué pasa con los tokens enviados y con el costo?</li><li>¿Por qué el tope <code>maxLlamadas</code> es una medida de seguridad y no solo de ahorro?</li></ul>
 <h3 class="sec">🚑 Errores comunes</h3><table><tr><th>Síntoma</th><th>Causa</th></tr><tr><td>process.loadEnvFile is not a function</td><td>Tu Node es anterior a 20.12. Actualiza a Node 22 LTS.</td></tr><tr><td>Proveedor desconocido: "xyz"</td><td>Escribiste mal LLM_PROVIDER en .env. Por ahora el único válido es mock.</td></tr></table>
@@ -841,7 +855,7 @@ export class GroqProvider implements LLMProvider {
 <article class="archivo"><header><span class="badge mod">✏️ Modificado</span><code>src/llm/factory.ts</code><button class="copiar" data-t="c-3-4">Copiar</button></header>
 <p class="porque"><strong>Por qué:</strong> La fábrica ahora también conoce a Gemini, Cohere y Groq. Es el único archivo que cambia para «enchufar» proveedores.</p>
 <ul class="mira"><li><code>clave()</code> valida que exista la variable y dice exactamente cuál falta.</li><li>Los agentes (que aún ni existen) no sabrán que hay tres proveedores nuevos.</li></ul>
-<details open><summary>Qué cambió respecto al paso anterior</summary><pre class="diff"><div class="sal">  import { env } from "../config.js";</div><div class="sal">  import type { LLMProvider } from "./types.js";</div><div class="mas">+ import { GeminiProvider } from "./providers/gemini.js";</div><div class="mas">+ import { CohereProvider } from "./providers/cohere.js";</div><div class="mas">+ import { GroqProvider } from "./providers/groq.js";</div><div class="sal">  import { MockProvider } from "./providers/mock.js";</div><div class="sal">  </div><div class="menos">- export type NombreProveedor = "mock";</div><div class="mas">+ export type NombreProveedor = "gemini" | "cohere" | "groq" | "mock";</div><div class="sal">  </div><div class="sal">  /**</div><div class="menos">-  * FÁBRICA de estrategias: convierte un texto ("mock") en un objeto LLMProvider.</div><div class="mas">+  * FÁBRICA de estrategias: convierte un texto ("groq") en un objeto LLMProvider.</div><div class="sal">   * Es el ÚNICO lugar del proyecto que conoce las clases concretas.</div><div class="sal">   * El resto del código (los agentes) solo ve la interfaz LLMProvider.</div><div class="sal">   */</div><div class="sal">  export function crearProveedor(nombre: string = env("LLM_PROVIDER") ?? "mock"): LLMProvider {</div><div class="mas">+   const clave = (variable: string) =&gt; {</div><div class="mas">+     const k = env(variable);</div><div class="mas">+     if (!k) throw new Error(`Falta ${variable} en tu archivo .env (o usa LLM_PROVIDER=mock para practicar sin claves)`);</div><div class="mas">+     return k;</div><div class="mas">+   };</div><div class="mas">+ </div><div class="sal">    switch (nombre.toLowerCase()) {</div><div class="mas">+     case "gemini":</div><div class="mas">+       return new GeminiProvider(clave("GEMINI_API_KEY"));</div><div class="mas">+     case "cohere":</div><div class="mas">+       return new CohereProvider(clave("COHERE_API_KEY"));</div><div class="mas">+     case "groq":</div><div class="mas">+       return new GroqProvider(clave("GROQ_API_KEY"));</div><div class="sal">      case "mock":</div><div class="sal">        return new MockProvider();</div><div class="sal">      default:</div><div class="menos">-       throw new Error(`Proveedor desconocido: "${nombre}". Por ahora solo existe: mock`);</div><div class="mas">+       throw new Error(`Proveedor desconocido: "${nombre}". Usa gemini | cohere | groq | mock`);</div><div class="sal">    }</div><div class="sal">  }</div><div class="sal">  …</div></pre></details>
+<details open><summary>Qué cambió respecto al paso anterior</summary><pre class="diff"><div class="sal">  import { env } from "../config.js";</div><div class="sal">  import type { LLMProvider } from "./types.js";</div><div class="mas">+ import { GeminiProvider } from "./providers/gemini.js";</div><div class="mas">+ import { CohereProvider } from "./providers/cohere.js";</div><div class="mas">+ import { GroqProvider } from "./providers/groq.js";</div><div class="sal">  import { MockProvider } from "./providers/mock.js";</div><div class="sal">  </div><div class="menos">- export type NombreProveedor = "mock";</div><div class="mas">+ export type NombreProveedor = "gemini" | "cohere" | "groq" | "mock";</div><div class="sal">  </div><div class="sal">  const instancias = new Map&lt;string, LLMProvider&gt;();</div><div class="sal">  </div><div class="sal">  /**</div><div class="menos">-  * FÁBRICA + SINGLETON: crea el proveedor mock una sola vez por proceso.</div><div class="mas">+  * FÁBRICA + SINGLETON por proveedor: convierte un texto ("groq") en un</div><div class="mas">+  * LLMProvider y reutiliza la misma instancia durante toda la ejecución.</div><div class="mas">+  * Es el ÚNICO lugar del proyecto que conoce las clases concretas.</div><div class="sal">   * El resto del código (los agentes) solo ve la interfaz LLMProvider.</div><div class="sal">   */</div><div class="sal">  …</div><div class="sal">    if (existente) return existente;</div><div class="sal">  </div><div class="mas">+   const clave = (variable: string) =&gt; {</div><div class="mas">+     const k = env(variable);</div><div class="mas">+     if (!k) throw new Error(`Falta ${variable} en tu archivo .env (o usa LLM_PROVIDER=mock para practicar sin claves)`);</div><div class="mas">+     return k;</div><div class="mas">+   };</div><div class="mas">+ </div><div class="mas">+   let proveedor: LLMProvider;</div><div class="sal">    switch (claveCache) {</div><div class="menos">-     case "mock": {</div><div class="menos">-       const proveedor = new MockProvider();</div><div class="menos">-       instancias.set(claveCache, proveedor);</div><div class="menos">-       return proveedor;</div><div class="menos">-     }</div><div class="mas">+     case "gemini":</div><div class="mas">+       proveedor = new GeminiProvider(clave("GEMINI_API_KEY"));</div><div class="mas">+       break;</div><div class="mas">+     case "cohere":</div><div class="mas">+       proveedor = new CohereProvider(clave("COHERE_API_KEY"));</div><div class="mas">+       break;</div><div class="mas">+     case "groq":</div><div class="mas">+       proveedor = new GroqProvider(clave("GROQ_API_KEY"));</div><div class="mas">+       break;</div><div class="mas">+     case "mock":</div><div class="mas">+       proveedor = new MockProvider();</div><div class="mas">+       break;</div><div class="sal">      default:</div><div class="menos">-       throw new Error(`Proveedor desconocido: "${nombre}". Por ahora solo existe: mock`);</div><div class="mas">+       throw new Error(`Proveedor desconocido: "${nombre}". Usa gemini | cohere | groq | mock`);</div><div class="sal">    }</div><div class="mas">+ </div><div class="mas">+   instancias.set(claveCache, proveedor);</div><div class="mas">+   return proveedor;</div><div class="sal">  }</div><div class="sal">  </div></pre></details>
 <details><summary>Ver el archivo completo (para reemplazarlo)</summary><pre><code id="c-3-4" data-lang="ts">import { env } from "../config.js";
 import type { LLMProvider } from "./types.js";
 import { GeminiProvider } from "./providers/gemini.js";
@@ -851,30 +865,45 @@ import { MockProvider } from "./providers/mock.js";
 
 export type NombreProveedor = "gemini" | "cohere" | "groq" | "mock";
 
+const instancias = new Map&lt;string, LLMProvider&gt;();
+
 /**
- * FÁBRICA de estrategias: convierte un texto ("groq") en un objeto LLMProvider.
+ * FÁBRICA + SINGLETON por proveedor: convierte un texto ("groq") en un
+ * LLMProvider y reutiliza la misma instancia durante toda la ejecución.
  * Es el ÚNICO lugar del proyecto que conoce las clases concretas.
  * El resto del código (los agentes) solo ve la interfaz LLMProvider.
  */
 export function crearProveedor(nombre: string = env("LLM_PROVIDER") ?? "mock"): LLMProvider {
+  const claveCache = nombre.trim().toLowerCase();
+  const existente = instancias.get(claveCache);
+  if (existente) return existente;
+
   const clave = (variable: string) =&gt; {
     const k = env(variable);
     if (!k) throw new Error(`Falta ${variable} en tu archivo .env (o usa LLM_PROVIDER=mock para practicar sin claves)`);
     return k;
   };
 
-  switch (nombre.toLowerCase()) {
+  let proveedor: LLMProvider;
+  switch (claveCache) {
     case "gemini":
-      return new GeminiProvider(clave("GEMINI_API_KEY"));
+      proveedor = new GeminiProvider(clave("GEMINI_API_KEY"));
+      break;
     case "cohere":
-      return new CohereProvider(clave("COHERE_API_KEY"));
+      proveedor = new CohereProvider(clave("COHERE_API_KEY"));
+      break;
     case "groq":
-      return new GroqProvider(clave("GROQ_API_KEY"));
+      proveedor = new GroqProvider(clave("GROQ_API_KEY"));
+      break;
     case "mock":
-      return new MockProvider();
+      proveedor = new MockProvider();
+      break;
     default:
       throw new Error(`Proveedor desconocido: "${nombre}". Usa gemini | cohere | groq | mock`);
   }
+
+  instancias.set(claveCache, proveedor);
+  return proveedor;
 }</code></pre></details>
 </article>
 <article class="archivo"><header><span class="badge mod">✏️ Modificado</span><code>.env.example</code><button class="copiar" data-t="c-3-5">Copiar</button></header>
@@ -913,7 +942,7 @@ Te llamas Camila. ¡Lo recuerdo porque está en el historial que me enviaron!
 
 👉 La 'memoria' es un truco nuestro: reenviar los mensajes anteriores.
 
-📊 3 llamadas · ~56 tokens in / ~53 out · 0 ms · 0 errores</code></pre></div>
+📊 3 llamadas · ~56 tokens in / ~53 out · 1 ms · 0 errores</code></pre></div>
 <div class="cmd"><div class="nota"><strong>3.</strong> Con una clave real el MISMO Nivel 0 responde con un modelo de verdad. Claves gratis: aistudio.google.com/apikey · dashboard.cohere.com/api-keys · console.groq.com/keys.</div><pre><code># En .env:  LLM_PROVIDER=groq  y  GROQ_API_KEY=tu_clave
 npm run nivel0</code></pre></div>
 <h3 class="sec">✅ Checkpoint</h3><div class="caja">Con mock todo sigue igual. Con una clave real, el Nivel 0 responde con el modelo elegido sin cambiar código.<br><small>¿Te quedaste atrás? Copia <code>checkpoints/paso-03/</code>, ejecuta <code>npm install</code> y continúa.</small></div>
@@ -1050,7 +1079,7 @@ main().catch((e) =&gt; {
 <article class="archivo"><header><span class="badge mod">✏️ Modificado</span><code>src/llm/factory.ts</code><button class="copiar" data-t="c-4-2">Copiar</button></header>
 <p class="porque"><strong>Por qué:</strong> Se suma la opción <code>fallback</code>: construye la cadena según FALLBACK_ORDER usando solo los proveedores que tienen clave.</p>
 <ul class="mira"><li>Omite sin ruido los proveedores sin clave: un aprendiz con solo Groq también puede usar «fallback».</li><li>Para el agente, <code>LLM_PROVIDER=fallback</code> es solo otro nombre más.</li></ul>
-<details open><summary>Qué cambió respecto al paso anterior</summary><pre class="diff"><div class="sal">  …</div><div class="sal">  import { GroqProvider } from "./providers/groq.js";</div><div class="sal">  import { MockProvider } from "./providers/mock.js";</div><div class="mas">+ import { FallbackProvider } from "./providers/fallback.js";</div><div class="sal">  </div><div class="menos">- export type NombreProveedor = "gemini" | "cohere" | "groq" | "mock";</div><div class="mas">+ export type NombreProveedor = "gemini" | "cohere" | "groq" | "mock" | "fallback";</div><div class="sal">  </div><div class="sal">  /**</div><div class="sal">  …</div><div class="sal">      case "mock":</div><div class="sal">        return new MockProvider();</div><div class="mas">+     case "fallback": {</div><div class="mas">+       const orden = (env("FALLBACK_ORDER") ?? "groq,gemini,cohere").split(",").map((s) =&gt; s.trim());</div><div class="mas">+       // Solo incluimos los proveedores que SÍ tienen clave configurada.</div><div class="mas">+       const disponibles: LLMProvider[] = [];</div><div class="mas">+       for (const n of orden) {</div><div class="mas">+         try {</div><div class="mas">+           disponibles.push(crearProveedor(n));</div><div class="mas">+         } catch {</div><div class="mas">+           /* sin clave: se omite */</div><div class="mas">+         }</div><div class="mas">+       }</div><div class="mas">+       if (!disponibles.length) throw new Error("fallback: no hay ninguna clave configurada en .env");</div><div class="mas">+       return new FallbackProvider(disponibles);</div><div class="mas">+     }</div><div class="sal">      default:</div><div class="menos">-       throw new Error(`Proveedor desconocido: "${nombre}". Usa gemini | cohere | groq | mock`);</div><div class="mas">+       throw new Error(`Proveedor desconocido: "${nombre}". Usa gemini | cohere | groq | mock | fallback`);</div><div class="sal">    }</div><div class="sal">  }</div><div class="sal">  …</div></pre></details>
+<details open><summary>Qué cambió respecto al paso anterior</summary><pre class="diff"><div class="sal">  …</div><div class="sal">  import { GroqProvider } from "./providers/groq.js";</div><div class="sal">  import { MockProvider } from "./providers/mock.js";</div><div class="mas">+ import { FallbackProvider } from "./providers/fallback.js";</div><div class="sal">  </div><div class="menos">- export type NombreProveedor = "gemini" | "cohere" | "groq" | "mock";</div><div class="mas">+ export type NombreProveedor = "gemini" | "cohere" | "groq" | "mock" | "fallback";</div><div class="sal">  </div><div class="sal">  const instancias = new Map&lt;string, LLMProvider&gt;();</div><div class="sal">  …</div><div class="sal">        proveedor = new MockProvider();</div><div class="sal">        break;</div><div class="mas">+     case "fallback": {</div><div class="mas">+       const orden = (env("FALLBACK_ORDER") ?? "groq,gemini,cohere").split(",").map((s) =&gt; s.trim());</div><div class="mas">+       // Solo incluimos los proveedores que SÍ tienen clave configurada.</div><div class="mas">+       const disponibles: LLMProvider[] = [];</div><div class="mas">+       for (const n of orden) {</div><div class="mas">+         try {</div><div class="mas">+           disponibles.push(crearProveedor(n));</div><div class="mas">+         } catch {</div><div class="mas">+           /* sin clave: se omite */</div><div class="mas">+         }</div><div class="mas">+       }</div><div class="mas">+       if (!disponibles.length) throw new Error("fallback: no hay ninguna clave configurada en .env");</div><div class="mas">+       proveedor = new FallbackProvider(disponibles);</div><div class="mas">+       break;</div><div class="mas">+     }</div><div class="sal">      default:</div><div class="menos">-       throw new Error(`Proveedor desconocido: "${nombre}". Usa gemini | cohere | groq | mock`);</div><div class="mas">+       throw new Error(`Proveedor desconocido: "${nombre}". Usa gemini | cohere | groq | mock | fallback`);</div><div class="sal">    }</div><div class="sal">  </div><div class="sal">  …</div></pre></details>
 <details><summary>Ver el archivo completo (para reemplazarlo)</summary><pre><code id="c-4-2" data-lang="ts">import { env } from "../config.js";
 import type { LLMProvider } from "./types.js";
 import { GeminiProvider } from "./providers/gemini.js";
@@ -1061,27 +1090,39 @@ import { FallbackProvider } from "./providers/fallback.js";
 
 export type NombreProveedor = "gemini" | "cohere" | "groq" | "mock" | "fallback";
 
+const instancias = new Map&lt;string, LLMProvider&gt;();
+
 /**
- * FÁBRICA de estrategias: convierte un texto ("groq") en un objeto LLMProvider.
+ * FÁBRICA + SINGLETON por proveedor: convierte un texto ("groq") en un
+ * LLMProvider y reutiliza la misma instancia durante toda la ejecución.
  * Es el ÚNICO lugar del proyecto que conoce las clases concretas.
  * El resto del código (los agentes) solo ve la interfaz LLMProvider.
  */
 export function crearProveedor(nombre: string = env("LLM_PROVIDER") ?? "mock"): LLMProvider {
+  const claveCache = nombre.trim().toLowerCase();
+  const existente = instancias.get(claveCache);
+  if (existente) return existente;
+
   const clave = (variable: string) =&gt; {
     const k = env(variable);
     if (!k) throw new Error(`Falta ${variable} en tu archivo .env (o usa LLM_PROVIDER=mock para practicar sin claves)`);
     return k;
   };
 
-  switch (nombre.toLowerCase()) {
+  let proveedor: LLMProvider;
+  switch (claveCache) {
     case "gemini":
-      return new GeminiProvider(clave("GEMINI_API_KEY"));
+      proveedor = new GeminiProvider(clave("GEMINI_API_KEY"));
+      break;
     case "cohere":
-      return new CohereProvider(clave("COHERE_API_KEY"));
+      proveedor = new CohereProvider(clave("COHERE_API_KEY"));
+      break;
     case "groq":
-      return new GroqProvider(clave("GROQ_API_KEY"));
+      proveedor = new GroqProvider(clave("GROQ_API_KEY"));
+      break;
     case "mock":
-      return new MockProvider();
+      proveedor = new MockProvider();
+      break;
     case "fallback": {
       const orden = (env("FALLBACK_ORDER") ?? "groq,gemini,cohere").split(",").map((s) =&gt; s.trim());
       // Solo incluimos los proveedores que SÍ tienen clave configurada.
@@ -1094,11 +1135,15 @@ export function crearProveedor(nombre: string = env("LLM_PROVIDER") ?? "mock"): 
         }
       }
       if (!disponibles.length) throw new Error("fallback: no hay ninguna clave configurada en .env");
-      return new FallbackProvider(disponibles);
+      proveedor = new FallbackProvider(disponibles);
+      break;
     }
     default:
       throw new Error(`Proveedor desconocido: "${nombre}". Usa gemini | cohere | groq | mock | fallback`);
   }
+
+  instancias.set(claveCache, proveedor);
+  return proveedor;
 }</code></pre></details>
 </article>
 <article class="archivo"><header><span class="badge mod">✏️ Modificado</span><code>src/llm/providers/mock.ts</code><button class="copiar" data-t="c-4-3">Copiar</button></header>
@@ -1240,6 +1285,11 @@ await prueba("LLMMedido: cuenta llamadas y respeta el presupuesto", async () =&g
   assert.equal(m.llamadas, 2);
 });
 
+await prueba("Factory + Singleton: reutiliza el proveedor configurado", async () =&gt; {
+  const { crearProveedor } = await import("./llm/factory.js");
+  assert.strictEqual(crearProveedor("mock"), crearProveedor("MOCK"));
+});
+
 console.log(`\n${process.exitCode ? "⚠️  Hay pruebas fallidas" : `🎉 ${ok} pruebas pasaron. ¡Entorno listo!`}`);</code></pre></details>
 </article>
 <h3 class="sec">▶️ Ejecutar y comprobar</h3>
@@ -1252,14 +1302,14 @@ Pregunta: Explica en una sola frase qué es un agente de IA.
 (omito gemini: no hay GEMINI_API_KEY en .env)
 (omito cohere: no hay COHERE_API_KEY en .env)
 
-✔ mock                               0 ms
+✔ mock                               1 ms
    (mock) Recibí 1 mensaje(s). Tu último mensaje fue: "Explica en una sola frase qué es un agente de IA."
 
 
 ════════════════════════════════════════════════════════════
 FALLBACK · el primero falla y el sistema sigue
 ════════════════════════════════════════════════════════════
-✔ fallback[proveedor-caido → mock-respaldo] 1 ms
+✔ fallback[proveedor-caido → mock-respaldo] 0 ms
    (mock) Recibí 1 mensaje(s). Tu último mensaje fue: "Explica en una sola frase qué es un agente de IA."
 
 Bitácora del fallback:
@@ -1268,8 +1318,9 @@ Bitácora del fallback:
 <div class="cmd"><div class="nota"><strong>2.</strong> Dos pruebas nuevas de fallback.</div><pre><code>npm test</code></pre><div class="sal-titulo">Debes ver</div><pre class="salida"><code>✅ Fallback: salta al siguiente proveedor cuando uno falla
 ✅ Fallback: error claro si TODOS fallan
 ✅ LLMMedido: cuenta llamadas y respeta el presupuesto
+✅ Factory + Singleton: reutiliza el proveedor configurado
 
-🎉 3 pruebas pasaron. ¡Entorno listo!</code></pre></div>
+🎉 4 pruebas pasaron. ¡Entorno listo!</code></pre></div>
 <h3 class="sec">✅ Checkpoint</h3><div class="caja">El fallback salta del proveedor caído al sano y la bitácora lo muestra.<br><small>¿Te quedaste atrás? Copia <code>checkpoints/paso-04/</code>, ejecuta <code>npm install</code> y continúa.</small></div>
 <label class="check"><input type="checkbox" class="marcar" data-paso="paso-4"> <strong>Marcar este paso como completado</strong></label>
 <h3 class="sec">💬 Preguntas para los aprendices</h3><ul class="lista"><li>¿Por qué FallbackProvider implementa LLMProvider? ¿Qué se rompería si no lo hiciera?</li><li>¿Qué orden pondrías en la cadena: el más rápido, el más barato o el más inteligente primero?</li></ul>
@@ -1648,6 +1699,11 @@ await prueba("LLMMedido: cuenta llamadas y respeta el presupuesto", async () =&g
   assert.equal(m.llamadas, 2);
 });
 
+await prueba("Factory + Singleton: reutiliza el proveedor configurado", async () =&gt; {
+  const { crearProveedor } = await import("./llm/factory.js");
+  assert.strictEqual(crearProveedor("mock"), crearProveedor("MOCK"));
+});
+
 console.log(`\n${process.exitCode ? "⚠️  Hay pruebas fallidas" : `🎉 ${ok} pruebas pasaron. ¡Entorno listo!`}`);</code></pre></details>
 </article>
 <h3 class="sec">▶️ Ejecutar y comprobar</h3>
@@ -1675,7 +1731,7 @@ Tú: ¿Cómo me llamo?
 Bot: No lo sé: no está en el historial que recibí.
    (mensajes enviados en memoria: 4)
 
-📊 5 llamadas · ~312 tokens in / ~88 out · 2 ms · 0 errores</code></pre></div>
+📊 5 llamadas · ~312 tokens in / ~88 out · 0 ms · 0 errores</code></pre></div>
 <div class="cmd"><div class="nota"><strong>2.</strong> Con memoria completa SÍ lo recuerda.</div><pre><code>npm run nivel1 -- completa --demo</code></pre><div class="sal-titulo">Debes ver (los valores pueden variar)</div><pre class="salida"><code>════════════════════════════════════════════════════════════
 NIVEL 1 · Chatbot · LLM: mock · memoria: completa
 ════════════════════════════════════════════════════════════
@@ -2032,6 +2088,11 @@ await prueba("LLMMedido: cuenta llamadas y respeta el presupuesto", async () =&g
   assert.equal(m.llamadas, 2);
 });
 
+await prueba("Factory + Singleton: reutiliza el proveedor configurado", async () =&gt; {
+  const { crearProveedor } = await import("./llm/factory.js");
+  assert.strictEqual(crearProveedor("mock"), crearProveedor("MOCK"));
+});
+
 console.log(`\n${process.exitCode ? "⚠️  Hay pruebas fallidas" : `🎉 ${ok} pruebas pasaron. ¡Entorno listo!`}`);</code></pre></details>
 </article>
 <h3 class="sec">▶️ Ejecutar y comprobar</h3>
@@ -2042,8 +2103,9 @@ console.log(`\n${process.exitCode ? "⚠️  Hay pruebas fallidas" : `🎉 ${ok}
 ✅ Fallback: salta al siguiente proveedor cuando uno falla
 ✅ Fallback: error claro si TODOS fallan
 ✅ LLMMedido: cuenta llamadas y respeta el presupuesto
+✅ Factory + Singleton: reutiliza el proveedor configurado
 
-🎉 7 pruebas pasaron. ¡Entorno listo!</code></pre></div>
+🎉 8 pruebas pasaron. ¡Entorno listo!</code></pre></div>
 <h3 class="sec">✅ Checkpoint</h3><div class="caja">Las pruebas de la calculadora pasan, incluida la que rechaza <code>process.exit()</code>.<br><small>¿Te quedaste atrás? Copia <code>checkpoints/paso-06/</code>, ejecuta <code>npm install</code> y continúa.</small></div>
 <label class="check"><input type="checkbox" class="marcar" data-paso="paso-6"> <strong>Marcar este paso como completado</strong></label>
 <h3 class="sec">💬 Preguntas para los aprendices</h3><ul class="lista"><li>¿Por qué es peligroso usar eval() con texto que viene de un LLM?</li><li>¿Por qué la descripción de una herramienta es tan importante como su código?</li></ul>
@@ -2527,6 +2589,11 @@ await prueba("LLMMedido: cuenta llamadas y respeta el presupuesto", async () =&g
   assert.equal(m.llamadas, 2);
 });
 
+await prueba("Factory + Singleton: reutiliza el proveedor configurado", async () =&gt; {
+  const { crearProveedor } = await import("./llm/factory.js");
+  assert.strictEqual(crearProveedor("mock"), crearProveedor("MOCK"));
+});
+
 await prueba("Nivel 2: usa UNA herramienta", async () =&gt; {
   const r = await new ToolAgent(new MockProvider(), todas()).ejecutar("¿Cuánto es (12 + 8) * 3?");
   assert.match(r, /60/);
@@ -2547,8 +2614,8 @@ NIVEL 2 · Agente con herramientas · LLM: mock
 ❓ ¿Qué hora es en Colombia?
   [Nivel2 · paso 1] 💭 Necesito usar "hora" para avanzar.
   [Nivel2 · paso 1] 🛠️  hora("")
-  [Nivel2 · paso 1] 👁️  martes, 10 de noviembre de 2026, 7:46 p. m.
-➡️  Respuesta: Con lo que obtuve: martes, 10 de noviembre de 2026, 7:46 p. m.
+  [Nivel2 · paso 1] 👁️  jueves, 12 de noviembre de 2026, 9:58 a. m.
+➡️  Respuesta: Con lo que obtuve: jueves, 12 de noviembre de 2026, 9:58 a. m.
 
 ❓ ¿Cuánto es (12 + 8) * 3?
   [Nivel2 · paso 1] 💭 Necesito usar "calculadora" para avanzar.
@@ -2571,10 +2638,11 @@ NIVEL 2 · Agente con herramientas · LLM: mock
 ✅ Fallback: salta al siguiente proveedor cuando uno falla
 ✅ Fallback: error claro si TODOS fallan
 ✅ LLMMedido: cuenta llamadas y respeta el presupuesto
+✅ Factory + Singleton: reutiliza el proveedor configurado
 ✅ Nivel 2: usa UNA herramienta
 ✅ Nivel 2: se queda corto con 2 herramientas (límite esperado)
 
-🎉 10 pruebas pasaron. ¡Entorno listo!</code></pre></div>
+🎉 11 pruebas pasaron. ¡Entorno listo!</code></pre></div>
 <h3 class="sec">✅ Checkpoint</h3><div class="caja">Las dos primeras preguntas se resuelven; la tercera muestra «(Nivel 2 solo usa una herramienta)».<br><small>¿Te quedaste atrás? Copia <code>checkpoints/paso-07/</code>, ejecuta <code>npm install</code> y continúa.</small></div>
 <label class="check"><input type="checkbox" class="marcar" data-paso="paso-7"> <strong>Marcar este paso como completado</strong></label>
 <h3 class="sec">💬 Preguntas para los aprendices</h3><ul class="lista"><li>¿Quién ejecuta realmente la herramienta: el LLM o tu código? ¿Por qué importa para la seguridad?</li><li>¿Qué le falta a este agente para poder usar dos herramientas en la misma pregunta?</li></ul>
@@ -2908,6 +2976,11 @@ await prueba("LLMMedido: cuenta llamadas y respeta el presupuesto", async () =&g
   assert.equal(m.llamadas, 2);
 });
 
+await prueba("Factory + Singleton: reutiliza el proveedor configurado", async () =&gt; {
+  const { crearProveedor } = await import("./llm/factory.js");
+  assert.strictEqual(crearProveedor("mock"), crearProveedor("MOCK"));
+});
+
 await prueba("Nivel 2: usa UNA herramienta", async () =&gt; {
   const r = await new ToolAgent(new MockProvider(), todas()).ejecutar("¿Cuánto es (12 + 8) * 3?");
   assert.match(r, /60/);
@@ -2971,7 +3044,7 @@ NIVEL 3 · Agente ReAct · LLM: mock
 ➡️  Respuesta final: Con lo que obtuve: Un token es un trozo de texto (≈ 4 caracteres). Los proveedores cobran y limitan el uso por tokens de entrada y salida. | (1000 / 4) + 50 = 300
    pasos usados: 3
 
-📊 6 llamadas · ~2420 tokens in / ~213 out · 0 ms · 0 errores</code></pre></div>
+📊 6 llamadas · ~2420 tokens in / ~213 out · 1 ms · 0 errores</code></pre></div>
 <div class="cmd"><div class="nota"><strong>2.</strong> La herramienta falla y el agente NO se cae: el error vuelve como observación.</div><pre><code>npm run nivel3 -- "¿Qué clima hace en Atlantis?"</code></pre><div class="sal-titulo">Debes ver</div><pre class="salida"><code>════════════════════════════════════════════════════════════
 NIVEL 3 · Agente ReAct · LLM: mock
 ════════════════════════════════════════════════════════════
@@ -2994,13 +3067,14 @@ NIVEL 3 · Agente ReAct · LLM: mock
 ✅ Fallback: salta al siguiente proveedor cuando uno falla
 ✅ Fallback: error claro si TODOS fallan
 ✅ LLMMedido: cuenta llamadas y respeta el presupuesto
+✅ Factory + Singleton: reutiliza el proveedor configurado
 ✅ Nivel 2: usa UNA herramienta
 ✅ Nivel 2: se queda corto con 2 herramientas (límite esperado)
 ✅ Nivel 3 (ReAct): encadena clima + calculadora
 ✅ Nivel 3 (ReAct): freno de emergencia con maxPasos
 ✅ Nivel 3 (ReAct): un error de herramienta no tumba al agente
 
-🎉 13 pruebas pasaron. ¡Entorno listo!</code></pre></div>
+🎉 14 pruebas pasaron. ¡Entorno listo!</code></pre></div>
 <h3 class="sec">✅ Checkpoint</h3><div class="caja">«Clima en Bucaramanga y 25 × 4» se resuelve en 3 pasos usando dos herramientas.<br><small>¿Te quedaste atrás? Copia <code>checkpoints/paso-08/</code>, ejecuta <code>npm install</code> y continúa.</small></div>
 <label class="check"><input type="checkbox" class="marcar" data-paso="paso-8"> <strong>Marcar este paso como completado</strong></label>
 <h3 class="sec">💬 Preguntas para los aprendices</h3><ul class="lista"><li>¿Qué evita la «huella» de acciones? ¿Qué pasaría sin ella?</li><li>¿Por qué los errores de una herramienta se devuelven como observación en vez de lanzar una excepción?</li><li>Con un LLM real, ¿qué defensa crees que se activará con más frecuencia?</li></ul>
@@ -3471,6 +3545,11 @@ await prueba("LLMMedido: cuenta llamadas y respeta el presupuesto", async () =&g
   assert.equal(m.llamadas, 2);
 });
 
+await prueba("Factory + Singleton: reutiliza el proveedor configurado", async () =&gt; {
+  const { crearProveedor } = await import("./llm/factory.js");
+  assert.strictEqual(crearProveedor("mock"), crearProveedor("MOCK"));
+});
+
 await prueba("Nivel 2: usa UNA herramienta", async () =&gt; {
   const r = await new ToolAgent(new MockProvider(), todas()).ejecutar("¿Cuánto es (12 + 8) * 3?");
   assert.match(r, /60/);
@@ -3572,6 +3651,7 @@ Sigue estos pasos EN ORDEN:
 ✅ Fallback: salta al siguiente proveedor cuando uno falla
 ✅ Fallback: error claro si TODOS fallan
 ✅ LLMMedido: cuenta llamadas y respeta el presupuesto
+✅ Factory + Singleton: reutiliza el proveedor configurado
 ✅ Nivel 2: usa UNA herramienta
 ✅ Nivel 2: se queda corto con 2 herramientas (límite esperado)
 ✅ Nivel 3 (ReAct): encadena clima + calculadora
@@ -3581,7 +3661,7 @@ Sigue estos pasos EN ORDEN:
 ✅ Skills: parsearSkill exige 'description' y cargar() da error útil
 ✅ Agente + skill: carga la skill, luego usa la herramienta y responde
 
-🎉 16 pruebas pasaron. ¡Entorno listo!</code></pre></div>
+🎉 17 pruebas pasaron. ¡Entorno listo!</code></pre></div>
 <h3 class="sec">✅ Checkpoint</h3><div class="caja">La traza muestra <code>cargar_skill("reporte-clima")</code> antes de usar <code>clima</code>.<br><small>¿Te quedaste atrás? Copia <code>checkpoints/paso-09/</code>, ejecuta <code>npm install</code> y continúa.</small></div>
 <label class="check"><input type="checkbox" class="marcar" data-paso="paso-9"> <strong>Marcar este paso como completado</strong></label>
 <h3 class="sec">💬 Preguntas para los aprendices</h3><ul class="lista"><li>¿Qué diferencia hay entre una tool y una skill? Da un ejemplo de cada una.</li><li>¿Por qué no pegar todas las skills en el prompt desde el inicio?</li><li>Una skill es texto que el agente obedece: ¿qué riesgo tiene instalar skills de terceros sin leerlas?</li></ul>
@@ -4013,6 +4093,11 @@ await prueba("LLMMedido: cuenta llamadas y respeta el presupuesto", async () =&g
   await m.chat([{ rol: "user", contenido: "dos" }]);
   await assert.rejects(() =&gt; m.chat([{ rol: "user", contenido: "tres" }]), /Presupuesto agotado/);
   assert.equal(m.llamadas, 2);
+});
+
+await prueba("Factory + Singleton: reutiliza el proveedor configurado", async () =&gt; {
+  const { crearProveedor } = await import("./llm/factory.js");
+  assert.strictEqual(crearProveedor("mock"), crearProveedor("MOCK"));
 });
 
 await prueba("Nivel 2: usa UNA herramienta", async () =&gt; {
@@ -4632,6 +4717,11 @@ await prueba("LLMMedido: cuenta llamadas y respeta el presupuesto", async () =&g
   assert.equal(m.llamadas, 2);
 });
 
+await prueba("Factory + Singleton: reutiliza el proveedor configurado", async () =&gt; {
+  const { crearProveedor } = await import("./llm/factory.js");
+  assert.strictEqual(crearProveedor("mock"), crearProveedor("MOCK"));
+});
+
 await prueba("Nivel 2: usa UNA herramienta", async () =&gt; {
   const r = await new ToolAgent(new MockProvider(), todas()).ejecutar("¿Cuánto es (12 + 8) * 3?");
   assert.match(r, /60/);
@@ -4758,8 +4848,8 @@ Resultados:
 3. matematico: cuánto es 144 / 12 → Con lo que obtuve: 144 / 12 = 12
 
 📋 Tablero de agentes:
-  investigador   ejecuciones=2  ok=2  fallos=0  tiempo=2ms
-  matematico     ejecuciones=1  ok=1  fallos=0  tiempo=0ms
+  investigador   ejecuciones=2  ok=2  fallos=0  tiempo=1ms
+  matematico     ejecuciones=1  ok=1  fallos=0  tiempo=1ms
 📊 8 llamadas · ~2095 tokens in / ~383 out · 0 ms · 0 errores</code></pre></div>
 <h3 class="sec">✅ Checkpoint</h3><div class="caja">El tablero muestra qué especialista trabajó, cuántas veces y con qué resultado.<br><small>¿Te quedaste atrás? Copia <code>checkpoints/paso-11/</code>, ejecuta <code>npm install</code> y continúa.</small></div>
 <label class="check"><input type="checkbox" class="marcar" data-paso="paso-11"> <strong>Marcar este paso como completado</strong></label>
@@ -5004,8 +5094,8 @@ console.log(await caja.ejecutar("clima", "Atlantis"));</code></pre></details>
 <h3 class="sec">▶️ Ejecutar y comprobar</h3>
 <div class="cmd"><div class="nota"><strong>1.</strong> El clima real necesita internet; los valores cambian.</div><pre><code>npm run soluciones</code></pre><div class="sal-titulo">Debes ver (los valores pueden variar)</div><pre class="salida"><code>50 USD = 200.000 COP (tasa de ejemplo)
 Error al ejecutar "convertir_moneda": Formato inválido. Usa: "50 USD a COP"
-Clima en Piedecuesta: 22.5 °C, despejado
-Clima en Atlantis: 14.8 °C, parcialmente nublado</code></pre></div>
+Clima en Piedecuesta: 26 °C, nublado
+Clima en Atlantis: 23.4 °C, nublado</code></pre></div>
 <h3 class="sec">✅ Checkpoint</h3><div class="caja">Las soluciones se ejecutan. El proyecto de este paso es IDÉNTICO al proyecto final de la clase.<br><small>¿Te quedaste atrás? Copia <code>checkpoints/paso-12/</code>, ejecuta <code>npm install</code> y continúa.</small></div>
 <label class="check"><input type="checkbox" class="marcar" data-paso="paso-12"> <strong>Marcar este paso como completado</strong></label>
 <h3 class="sec">💬 Preguntas para los aprendices</h3><ul class="lista"><li>¿Cuántos archivos de agentes tuviste que modificar para agregar el clima real? (Ninguno.)</li><li>¿Qué agregarías para que el orquestador tenga un tercer especialista?</li></ul>

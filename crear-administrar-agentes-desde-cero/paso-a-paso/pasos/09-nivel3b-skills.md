@@ -621,6 +621,11 @@ await prueba("LLMMedido: cuenta llamadas y respeta el presupuesto", async () => 
   assert.equal(m.llamadas, 2);
 });
 
+await prueba("Factory + Singleton: reutiliza el proveedor configurado", async () => {
+  const { crearProveedor } = await import("./llm/factory.js");
+  assert.strictEqual(crearProveedor("mock"), crearProveedor("MOCK"));
+});
+
 await prueba("Nivel 2: usa UNA herramienta", async () => {
   const r = await new ToolAgent(new MockProvider(), todas()).ejecutar("¿Cuánto es (12 + 8) * 3?");
   assert.match(r, /60/);
@@ -746,6 +751,7 @@ npm test
 ✅ Fallback: salta al siguiente proveedor cuando uno falla
 ✅ Fallback: error claro si TODOS fallan
 ✅ LLMMedido: cuenta llamadas y respeta el presupuesto
+✅ Factory + Singleton: reutiliza el proveedor configurado
 ✅ Nivel 2: usa UNA herramienta
 ✅ Nivel 2: se queda corto con 2 herramientas (límite esperado)
 ✅ Nivel 3 (ReAct): encadena clima + calculadora
@@ -755,7 +761,7 @@ npm test
 ✅ Skills: parsearSkill exige 'description' y cargar() da error útil
 ✅ Agente + skill: carga la skill, luego usa la herramienta y responde
 
-🎉 16 pruebas pasaron. ¡Entorno listo!
+🎉 17 pruebas pasaron. ¡Entorno listo!
 ````
 
 ## ✅ Checkpoint

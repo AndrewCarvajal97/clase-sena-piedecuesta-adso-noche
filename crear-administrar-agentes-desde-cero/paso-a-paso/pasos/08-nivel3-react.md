@@ -430,6 +430,11 @@ await prueba("LLMMedido: cuenta llamadas y respeta el presupuesto", async () => 
   assert.equal(m.llamadas, 2);
 });
 
+await prueba("Factory + Singleton: reutiliza el proveedor configurado", async () => {
+  const { crearProveedor } = await import("./llm/factory.js");
+  assert.strictEqual(crearProveedor("mock"), crearProveedor("MOCK"));
+});
+
 await prueba("Nivel 2: usa UNA herramienta", async () => {
   const r = await new ToolAgent(new MockProvider(), todas()).ejecutar("¿Cuánto es (12 + 8) * 3?");
   assert.match(r, /60/);
@@ -506,7 +511,7 @@ NIVEL 3 · Agente ReAct · LLM: mock
 ➡️  Respuesta final: Con lo que obtuve: Un token es un trozo de texto (≈ 4 caracteres). Los proveedores cobran y limitan el uso por tokens de entrada y salida. | (1000 / 4) + 50 = 300
    pasos usados: 3
 
-📊 6 llamadas · ~2420 tokens in / ~213 out · 0 ms · 0 errores
+📊 6 llamadas · ~2420 tokens in / ~213 out · 1 ms · 0 errores
 ```
 
 **2.** La herramienta falla y el agente NO se cae: el error vuelve como observación.
@@ -551,13 +556,14 @@ npm test
 ✅ Fallback: salta al siguiente proveedor cuando uno falla
 ✅ Fallback: error claro si TODOS fallan
 ✅ LLMMedido: cuenta llamadas y respeta el presupuesto
+✅ Factory + Singleton: reutiliza el proveedor configurado
 ✅ Nivel 2: usa UNA herramienta
 ✅ Nivel 2: se queda corto con 2 herramientas (límite esperado)
 ✅ Nivel 3 (ReAct): encadena clima + calculadora
 ✅ Nivel 3 (ReAct): freno de emergencia con maxPasos
 ✅ Nivel 3 (ReAct): un error de herramienta no tumba al agente
 
-🎉 13 pruebas pasaron. ¡Entorno listo!
+🎉 14 pruebas pasaron. ¡Entorno listo!
 ````
 
 ## ✅ Checkpoint

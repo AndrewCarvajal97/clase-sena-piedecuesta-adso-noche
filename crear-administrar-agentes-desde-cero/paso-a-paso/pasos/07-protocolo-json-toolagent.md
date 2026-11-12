@@ -718,6 +718,11 @@ await prueba("LLMMedido: cuenta llamadas y respeta el presupuesto", async () => 
   assert.equal(m.llamadas, 2);
 });
 
+await prueba("Factory + Singleton: reutiliza el proveedor configurado", async () => {
+  const { crearProveedor } = await import("./llm/factory.js");
+  assert.strictEqual(crearProveedor("mock"), crearProveedor("MOCK"));
+});
+
 await prueba("Nivel 2: usa UNA herramienta", async () => {
   const r = await new ToolAgent(new MockProvider(), todas()).ejecutar("¿Cuánto es (12 + 8) * 3?");
   assert.match(r, /60/);
@@ -751,8 +756,8 @@ NIVEL 2 · Agente con herramientas · LLM: mock
 ❓ ¿Qué hora es en Colombia?
   [Nivel2 · paso 1] 💭 Necesito usar "hora" para avanzar.
   [Nivel2 · paso 1] 🛠️  hora("")
-  [Nivel2 · paso 1] 👁️  martes, 10 de noviembre de 2026, 7:46 p. m.
-➡️  Respuesta: Con lo que obtuve: martes, 10 de noviembre de 2026, 7:46 p. m.
+  [Nivel2 · paso 1] 👁️  jueves, 12 de noviembre de 2026, 9:58 a. m.
+➡️  Respuesta: Con lo que obtuve: jueves, 12 de noviembre de 2026, 9:58 a. m.
 
 ❓ ¿Cuánto es (12 + 8) * 3?
   [Nivel2 · paso 1] 💭 Necesito usar "calculadora" para avanzar.
@@ -786,10 +791,11 @@ npm test
 ✅ Fallback: salta al siguiente proveedor cuando uno falla
 ✅ Fallback: error claro si TODOS fallan
 ✅ LLMMedido: cuenta llamadas y respeta el presupuesto
+✅ Factory + Singleton: reutiliza el proveedor configurado
 ✅ Nivel 2: usa UNA herramienta
 ✅ Nivel 2: se queda corto con 2 herramientas (límite esperado)
 
-🎉 10 pruebas pasaron. ¡Entorno listo!
+🎉 11 pruebas pasaron. ¡Entorno listo!
 ````
 
 ## ✅ Checkpoint
